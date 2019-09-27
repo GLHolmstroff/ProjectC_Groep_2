@@ -12,8 +12,11 @@ version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 
+//Force JUnit version
+ext["junit-jupiter.version"]   = "5.5.2"
+
 dependencies {
-	//compile("org.jetbrains.exposed:exposed:0.17.4")
+	compile("org.jetbrains.exposed:exposed:0.17.4")
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -33,6 +36,7 @@ allprojects {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	include("**/*Tests")
 }
 
 tasks.withType<KotlinCompile>{
