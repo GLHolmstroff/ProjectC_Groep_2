@@ -13,6 +13,7 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 
 dependencies {
+	//compile("org.jetbrains.exposed:exposed:0.17.4")
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -20,13 +21,22 @@ dependencies {
 	{
 		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
 	}
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.2")
+}
+
+allprojects {
+	repositories {
+		jcenter()
+		mavenCentral()
+	}
 }
 
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
-tasks.withType<KotlinCompile> {
+tasks.withType<KotlinCompile>{
+
 	kotlinOptions {
 		freeCompilerArgs = listOf("-Xjsr305=strict")
 		jvmTarget = "1.8"
