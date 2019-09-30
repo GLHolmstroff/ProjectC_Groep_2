@@ -8,4 +8,5 @@ class HuishoudApplication
 
 fun main(args: Array<String>) {
 	runApplication<HuishoudApplication>(*args)
+
 }

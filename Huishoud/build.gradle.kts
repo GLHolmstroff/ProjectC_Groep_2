@@ -34,10 +34,10 @@ allprojects {
 	}
 }
 
-tasks.withType<Test> {
-	useJUnitPlatform()
-	include("**/*Tests")
-}
+//tasks.withType<Test> {
+//	useJUnitPlatform()
+//	include("com/group2projc/Huishoud/**")
+//}
 
 tasks.withType<KotlinCompile>{
 

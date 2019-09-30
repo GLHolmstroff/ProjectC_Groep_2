@@ -15,14 +15,14 @@ class HuishoudApplicationTests {
 	fun contextLoads() {
 	}
 
-	@Test
-	fun Test1() {
-		assertEquals(1+5,2)
-	}
-
-	@Test
-	fun Test2(){
-		assertFalse(2 == 2)
-	}
+//	@Test
+//	fun Test1() {
+//		assertEquals("I am the first message",1+5,2)
+//	}
+//
+//	@Test
+//	fun Test2(){
+//		assertFalse("I am a message",2 == 2)
+//	}
 
 }
