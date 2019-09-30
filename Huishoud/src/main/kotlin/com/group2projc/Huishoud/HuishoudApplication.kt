@@ -4,9 +4,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class HuishoudApplication
+class HuishoudApplication {
 
-fun main(args: Array<String>) {
-	runApplication<HuishoudApplication>(*args)
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            runApplication<HuishoudApplication>(*args)
+        }
+        fun doSomeThing():String = "Hello, I am the output"
+    }
+
 
 }

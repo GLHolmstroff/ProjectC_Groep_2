@@ -34,6 +34,10 @@ allprojects {
 	}
 }
 
+springBoot {
+	mainClassName = "com.group2projc.Huishoud.HuishoudApplication"
+}
+
 //tasks.withType<Test> {
 //	useJUnitPlatform()
 //	include("com/group2projc/Huishoud/**")
