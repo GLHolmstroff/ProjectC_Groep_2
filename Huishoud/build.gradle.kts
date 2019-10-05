@@ -16,6 +16,7 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 ext["junit-jupiter.version"]   = "5.5.2"
 
 dependencies {
+	implementation("com.google.firebase:firebase-admin:6.10.0")
 	implementation("org.postgresql:postgresql:42.2.2")
 	implementation("org.jetbrains.exposed:exposed:0.17.4")
 	implementation("org.jetbrains.exposed:spring-transaction:0.17.4")
