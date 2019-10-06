@@ -19,16 +19,18 @@ class HuishoudApplication {
         @JvmStatic
         fun main(args: Array<String>) {
             runApplication<HuishoudApplication>(*args)
-            val serviceAccount = FileInputStream("pathgoeshere")
-
-            val options = FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .setDatabaseUrl("https://huishoud-3417b.firebaseio.com")
-                    .build()
-
-            FirebaseApp.initializeApp(options)
+//            val serviceAccount = FileInputStream("pathgoeshere")
+//
+//            val options = FirebaseOptions.Builder()
+//                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+//                    .setDatabaseUrl("https://huishoud-3417b.firebaseio.com")
+//                    .build()
+//
+//            FirebaseApp.initializeApp(options)
             val dbHelper:DatabaseHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
-            dbHelper.test1()
+            dbHelper.createUserTable()
+            dbHelper.registerFireBaseUser("Tokengoeshere")
+            dbHelper.addUserToGroup(1,2)
         }
         fun doSomeThing():String = "Hello, I am the output"
     }
