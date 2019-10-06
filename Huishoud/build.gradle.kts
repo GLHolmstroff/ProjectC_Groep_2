@@ -13,7 +13,7 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 
 //Force JUnit version
-ext["junit-jupiter.version"]   = "5.5.2"
+extra["junit-jupiter.version"]   = "5.5.2"
 
 dependencies {
 	implementation("com.google.firebase:firebase-admin:6.10.0")

@@ -1,12 +1,11 @@
 package com.group2projc.Huishoud.auth
 
-
-import org.apache.http.entity.StringEntity
 import org.jetbrains.exposed.dao.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class DatabaseHelper(url:String){
+    //Singleton pattern for Database connection, Multiple connect calls will cause memory leaks.
     val db by lazy {
         Database.connect(url,
                 driver = "org.postgresql.Driver",
@@ -48,7 +47,7 @@ class DatabaseHelper(url:String){
         addLogger(StdOutSqlLogger)
         val user = User.findById(userID)
         println(user.toString())
-            user?.group = groupID
+        user?.group = groupID
 
     }
 
