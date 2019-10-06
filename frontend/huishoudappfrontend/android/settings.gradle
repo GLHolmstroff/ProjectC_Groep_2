@@ -1,4 +1,4 @@
-include ':app'
+include ':app', ':Huishoud-0.0.1-SNAPSHOT'
 
 def flutterProjectRoot = rootProject.projectDir.parentFile.toPath()
 

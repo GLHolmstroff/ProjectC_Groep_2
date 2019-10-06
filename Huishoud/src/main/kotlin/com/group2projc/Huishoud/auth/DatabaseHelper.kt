@@ -13,7 +13,7 @@ class DatabaseHelper(url:String){
                 password = "admin")
 
     }
-    //SQL : CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, "token" VARCHAR(50) NOT NULL)
+    //SQL : CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, "token" VARCHAR(50) NOT NULL, "group" INT)
     object Users : IntIdTable(){
         val token = varchar("token",50)
         val group = integer("group").nullable()

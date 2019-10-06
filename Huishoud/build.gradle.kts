@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
 	id("org.springframework.boot") version "2.1.8.RELEASE"
@@ -44,6 +45,14 @@ springBoot {
 //tasks.withType<Test> {
 //	useJUnitPlatform()
 //}
+
+tasks.withType<BootJar> {
+	enabled = false
+}
+
+tasks.withType<Jar> {
+	enabled = true
+}
 
 tasks.withType<KotlinCompile>{
 
