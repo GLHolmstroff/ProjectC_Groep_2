@@ -25,30 +25,38 @@ class DatabaseHelper(url:String){
         var group by Users.group
     }
 
-    fun createUserTable() = transaction(db){
+    fun createUserTable():DatabaseHelper {
+        transaction(db) {
             //Write SQL statements to console
             addLogger(StdOutSqlLogger)
 
             //Create table
             SchemaUtils.create(Users)
         }
-
-
-    fun registerFireBaseUser(t:String) = transaction(db){
-        addLogger(StdOutSqlLogger)
-        val fireBaseUser = User.new{
-            token = t
-            group = null
-        }
+        return this@DatabaseHelper
     }
 
 
-    fun addUserToGroup(userID:Int,groupID:Int) = transaction(db){
-        addLogger(StdOutSqlLogger)
-        val user = User.findById(userID)
-        println(user.toString())
-        user?.group = groupID
+    fun registerFireBaseUser(t:String):DatabaseHelper {
+        transaction(db) {
+            addLogger(StdOutSqlLogger)
+            val fireBaseUser = User.new {
+                token = t
+                group = null
+            }
+        }
+        return this@DatabaseHelper
+    }
 
+    fun addUserToGroup(userID:Int,groupID:Int):DatabaseHelper {
+        transaction(db){
+            addLogger(StdOutSqlLogger)
+            val user = User.findById(userID)
+            println(user.toString())
+            user?.group = groupID
+
+        }
+        return this@DatabaseHelper
     }
 
 
