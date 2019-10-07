@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:huishoudappfrontend/createaccount_page.dart';
 
 import 'home_page.dart';
+import 'createaccount_page.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
@@ -63,7 +65,9 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final signIn = FlatButton(
-      onPressed: increase,
+      onPressed: () {
+        Navigator.of(context).pushNamed(CreateAccount.tag);
+      },
       child: Text(
         'Account aanmaken',
         textAlign: TextAlign.center,
