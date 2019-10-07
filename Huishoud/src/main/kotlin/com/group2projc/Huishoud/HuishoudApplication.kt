@@ -8,10 +8,6 @@ import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseOptions
 import java.io.FileInputStream
 
-
-
-
-
 @SpringBootApplication
 class HuishoudApplication {
 
@@ -27,10 +23,10 @@ class HuishoudApplication {
 //                    .build()
 //
 //            FirebaseApp.initializeApp(options)
-            val dbHelper:DatabaseHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
-                    .createUserTable()
-                    .registerFireBaseUser("Tokengoeshere")
-                    .addUserToGroup(3,2)
+//            val dbHelper:DatabaseHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+//                    .createUserTable()
+//                    .registerFireBaseUser("Tokengoeshere")
+//                    .addUserToGroup(3,2)
 
         }
         fun doSomeThing():String = "Hello, I am the output"
