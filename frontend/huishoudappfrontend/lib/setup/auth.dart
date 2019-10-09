@@ -24,7 +24,6 @@ class Auth implements BaseAuth{
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   @override
-  // TODO: implement onAuthStateChanged
   Stream<String> get onAuthStateChanged => _firebaseAuth.onAuthStateChanged.map(
     (FirebaseUser user) => user?.uid
     );
@@ -59,5 +58,6 @@ class Auth implements BaseAuth{
   Future<String> signOut() {
     return _firebaseAuth.signOut();
   }
+  
 
 }
