@@ -10,6 +10,10 @@ class CreateAccount extends StatefulWidget {
 }
 
 class _CreateAccountState extends State<CreateAccount> {
+  // The formkey contains the email and password entered by user
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String _email, _password;
+
   @override
   Widget build(BuildContext context) {
     final registerText = Text(
@@ -30,6 +34,12 @@ class _CreateAccountState extends State<CreateAccount> {
     );
 
     final emailInput = TextFormField(
+      validator: (input) {
+        if (input.isEmpty) {
+          return 'Geen geldig email';
+        }
+      },
+      onSaved: (input) => _email = input,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         hintText: 'Email',
@@ -39,6 +49,12 @@ class _CreateAccountState extends State<CreateAccount> {
     );
 
     final passwordInput = TextFormField(
+      validator: (input) {
+        if (input.length < 6) {
+          return 'Wachtwoord moet minstens uit 6 tekens bestaan';
+        }
+      },
+      onSaved: (input) => _password = input,
       keyboardType: TextInputType.visiblePassword,
       decoration: InputDecoration(
         hintText: 'Wachtwoord',
@@ -72,6 +88,7 @@ class _CreateAccountState extends State<CreateAccount> {
     return Scaffold(
       backgroundColor: Colors.blue[50],
       body: Center(
+        key: _formKey,
         child: ListView(
           padding: EdgeInsets.only(left: 40.0, right: 40.0),
           children: <Widget>[
