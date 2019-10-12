@@ -13,9 +13,8 @@ class AuthResponseController {
     @RequestMapping("/authResponse")
     fun authResponse(@RequestParam(value = "name", defaultValue = "World") name: String): AuthResponse {
         val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
-                .createUserTable()
-                .registerFireBaseUser(name)
-                .addUserToGroup(1,2)
+
+                //TODO: add new methods
         return AuthResponse(counter.incrementAndGet().toInt(),
                 String.format(template, name))
     }
@@ -23,7 +22,7 @@ class AuthResponseController {
     @RequestMapping("/authUserGroup")
     fun authUserGroup(@RequestParam(value = "name", defaultValue = "World") name: Int): AuthResponse {
         val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
-                .addUserToGroup(name,2)
+//                .addUserToGroup(name,2)
         return AuthResponse(counter.incrementAndGet().toInt(),
                 template + name)
     }
