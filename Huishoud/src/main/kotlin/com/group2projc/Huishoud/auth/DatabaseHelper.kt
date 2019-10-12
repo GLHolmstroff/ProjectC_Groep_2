@@ -211,5 +211,19 @@ class DatabaseHelper(url:String){
         return this@DatabaseHelper
     }
 
+    fun getAllInGroup(gid:Int):HashMap<String,String> {
+        var uid = ""
+        var uname = ""
+        var out = HashMap<String, String>()
+        transaction(db) {
+            Users.select { (Users.groupid eq gid) }.forEach {
+                uid = it[Users.id]
+                uname = it[Users.displayname]
+                out.put(uname, uid)
+            }
+        }
+        return out
+    }
+
 }
 
