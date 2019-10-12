@@ -3,6 +3,7 @@ package com.group2projc.Huishoud.auth
 import org.apache.http.entity.StringEntity
 import org.jetbrains.exposed.dao.*
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDate
 import org.postgresql.jdbc.*
@@ -50,6 +51,7 @@ class DatabaseHelper(url:String){
         val userid = reference("userid",Users.id).primaryKey()
         val count = integer("count")
     }
+//TODO: Find out if it's Possible to use DAO, find way to pass EntityID to postgres
 
 //    //Entity (Row) objects for main tables.
 //    // Support for Entities on tables with multiple primary keys is not supported yet :/
@@ -144,37 +146,64 @@ class DatabaseHelper(url:String){
                 p = "groupAdmin"
 
             setGroupPermission(gid,uid,p)
+            createBeerEntry(gid,uid)
         }
         return this@DatabaseHelper
     }
 
     fun setGroupPermission(gid: Int, uid:String, p:String):DatabaseHelper {
-        val group = 0
-        val user = ""
-        transaction(db){
+        transaction(db) {
             var gpg = 0
             var gpu = ""
             //Find if There is an entry for a permission for this user in this group
 
-            GroupPermissions.select { (GroupPermissions.groupid eq gid) and (GroupPermissions.userid eq uid)}.forEach {
+            GroupPermissions.select { (GroupPermissions.groupid eq gid) and (GroupPermissions.userid eq uid) }.forEach {
                 gpg = it[GroupPermissions.groupid]
                 gpu = it[GroupPermissions.userid]
             }
             //If yes, update it
             if (gpg != 0 && gpu != "") {
-                GroupPermissions.update ({ (GroupPermissions.groupid eq gpg) and (GroupPermissions.userid eq gpu) }) {
+                GroupPermissions.update({ (GroupPermissions.groupid eq gpg) and (GroupPermissions.userid eq gpu) }) {
                     it[permission] = p
                 }
             //If no, create it
-            } else if (group == null || user == null) {
-                println("bruh")
-                //TODO: Add error Handling
             } else {
                 GroupPermissions.insert {
                     it[groupid] = gid
                     it[userid] = uid
                     it[permission] = p
                 }
+            }
+        }
+        return this@DatabaseHelper
+    }
+
+    fun createBeerEntry(gid:Int, uid:String):DatabaseHelper {
+        transaction(db){
+
+            BeerTallies.insert{
+                it[groupid] = gid
+                it[userid] = uid
+                it[count] = 0
+            }
+        }
+        return this@DatabaseHelper
+    }
+
+    fun updateBeerEntry(gid:Int, uid:String, count:Int):DatabaseHelper {
+        var bg = 0
+        var bu = ""
+        transaction(db){
+            BeerTallies.select { (BeerTallies.groupid eq gid) and (BeerTallies.userid eq uid) }.forEach {
+                bg = it[BeerTallies.groupid]
+                bu = it[BeerTallies.userid]
+            }
+            if (bg != 0 && bu != "") {
+                BeerTallies.update ({ (BeerTallies.groupid eq gid) and (BeerTallies.userid eq uid) }) {
+                    it[BeerTallies.count] = count
+                }
+            }else{
+                createBeerEntry(gid,uid)
             }
         }
         return this@DatabaseHelper
