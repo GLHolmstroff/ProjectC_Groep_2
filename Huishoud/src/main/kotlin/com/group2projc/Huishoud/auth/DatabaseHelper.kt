@@ -7,6 +7,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDate
 import org.postgresql.jdbc.*
+import kotlin.math.absoluteValue
 
 class DatabaseHelper(url:String){
     //Singleton pattern for Database connection, Multiple connect calls will cause memory leaks.
@@ -103,13 +104,14 @@ class DatabaseHelper(url:String){
         return this@DatabaseHelper
     }
 
-    fun createGroup(n:String):DatabaseHelper {
+    fun createGroup(n:String, uid: String):DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
             val group = Groups.insert {
                 it[created_at] = LocalDate.now().toString()
                 it[name] = n
             }
+            addUserToGroup(uid, group[Groups.id],creator = true)
         }
         return this@DatabaseHelper
     }

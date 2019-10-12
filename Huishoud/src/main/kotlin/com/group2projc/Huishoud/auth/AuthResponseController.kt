@@ -1,31 +1,33 @@
-package com.group2projc.Huishoud
+package com.group2projc.Huishoud.auth
 
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.group2projc.Huishoud.auth.DatabaseHelper
 
 @RestController
 class AuthResponseController {
     private val counter = AtomicLong()
 
-    @RequestMapping("/authResponse")
-    fun authResponse(@RequestParam(value = "name", defaultValue = "World") name: String): AuthResponse {
+    @RequestMapping("/authRegister")
+    fun authResponse(@RequestParam(value = "uid", defaultValue = "TokenNotSet") uid: String,
+                     @RequestParam(value= "name", defaultValue = "EmptyName") name:String): AuthResponse {
         val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
-
-                //TODO: add new methods
+                .registerFireBaseUser(uid,name)
         return AuthResponse(counter.incrementAndGet().toInt(),
-                String.format(template, name))
+                String.format(template, uid))
     }
 
-    @RequestMapping("/authUserGroup")
-    fun authUserGroup(@RequestParam(value = "name", defaultValue = "World") name: Int): AuthResponse {
+    @RequestMapping("/createGroup")
+    fun authUserGroup(@RequestParam(value = "name", defaultValue = "World") name: String,
+                      @RequestParam(value= "uid", defaultValue = "")uid: String): AuthResponse {
         val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
-//                .addUserToGroup(name,2)
+                .createGroup(name,uid)
         return AuthResponse(counter.incrementAndGet().toInt(),
                 template + name)
     }
+
+    
 
     companion object {
 

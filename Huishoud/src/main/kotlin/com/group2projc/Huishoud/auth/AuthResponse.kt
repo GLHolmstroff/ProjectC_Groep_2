@@ -1,4 +1,4 @@
-package com.group2projc.Huishoud
+package com.group2projc.Huishoud.auth
 
 class AuthResponse(id:Int,content:String) {
     private val id:Int
