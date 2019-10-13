@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
-import 'package:huishoudappfrontend/setup/auth.dart';
+import 'package:huishoudappfrontend/setup/auth.dart' as auth;
 import 'package:huishoudappfrontend/setup/validators.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 import 'login_page.dart';
 import 'main.dart';
+
 
 class CreateAccount extends StatefulWidget {
   static String tag = 'createaccount-page';
@@ -19,6 +20,16 @@ class _CreateAccountState extends State<CreateAccount> {
 
   String _email, _password;
   FormType _formType = FormType.register;
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  //Dispose of textcontroller after use to save resources
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   bool validate() {
     final form = formKey.currentState;
@@ -32,20 +43,20 @@ class _CreateAccountState extends State<CreateAccount> {
   }
 
   void submit() async {
-    if (validate()) {
+    // if (validate()) {
       try {
         final auth = Provider.of(context).auth;
         if (_formType == FormType.login) {
           String userId = await auth.signInWithEmailAndPassword(
-            _email,
-            _password,
+            emailController.text.toString(),
+            passwordController.text.toString()
           );
 
           print('Signed in $userId');
         } else {
           String userId = await auth.createUserWithEmailAndPassword(
-            _email,
-            _password,
+            emailController.text.toString(),
+            passwordController.text.toString()
           );
 
           print('Registered in $userId');
@@ -53,7 +64,7 @@ class _CreateAccountState extends State<CreateAccount> {
       } catch (e) {
         print(e);
       }
-    }
+    // }
   }
 
   @override
@@ -76,6 +87,7 @@ class _CreateAccountState extends State<CreateAccount> {
     );
 
     final emailInput = TextFormField(
+      controller: emailController,
       validator: EmailValidator.validate,
       onSaved: (input) => _email = input,
       keyboardType: TextInputType.emailAddress,
@@ -87,6 +99,7 @@ class _CreateAccountState extends State<CreateAccount> {
     );
 
     final passwordInput = TextFormField(
+      controller: passwordController,
       validator: PasswordValidator.validate,
       onSaved: (input) => _password = input,
       keyboardType: TextInputType.visiblePassword,
@@ -110,7 +123,8 @@ class _CreateAccountState extends State<CreateAccount> {
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: RaisedButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        onPressed: () {
+        onPressed: ()  async{
+          submit();
           Navigator.of(context).pushNamed(LoginPage.tag);
         },
         padding: EdgeInsets.all(12),
