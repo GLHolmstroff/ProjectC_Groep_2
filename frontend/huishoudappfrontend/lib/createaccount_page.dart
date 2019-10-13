@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:huishoudappfrontend/login_page.dart';
+import 'package:huishoudappfrontend/setup/provider.dart';
+import 'package:huishoudappfrontend/setup/auth.dart';
+import 'package:huishoudappfrontend/setup/validators.dart';
+import 'package:flutter_signin_button/button_list.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 import 'login_page.dart';
+import 'main.dart';
 
 class CreateAccount extends StatefulWidget {
   static String tag = 'createaccount-page';
@@ -10,9 +15,46 @@ class CreateAccount extends StatefulWidget {
 }
 
 class _CreateAccountState extends State<CreateAccount> {
-  // The formkey contains the email and password entered by user
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
+
   String _email, _password;
+  FormType _formType = FormType.register;
+
+  bool validate() {
+    final form = formKey.currentState;
+    form.save();
+    if (form.validate()) {
+      form.save();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void submit() async {
+    if (validate()) {
+      try {
+        final auth = Provider.of(context).auth;
+        if (_formType == FormType.login) {
+          String userId = await auth.signInWithEmailAndPassword(
+            _email,
+            _password,
+          );
+
+          print('Signed in $userId');
+        } else {
+          String userId = await auth.createUserWithEmailAndPassword(
+            _email,
+            _password,
+          );
+
+          print('Registered in $userId');
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +130,7 @@ class _CreateAccountState extends State<CreateAccount> {
     return Scaffold(
       backgroundColor: Colors.blue[50],
       body: Center(
-        key: _formKey,
+        key: formKey,
         child: ListView(
           padding: EdgeInsets.only(left: 40.0, right: 40.0),
           children: <Widget>[

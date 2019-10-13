@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:huishoudappfrontend/createaccount_page.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/validators.dart';
+import 'package:flutter_signin_button/button_list.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 
+import 'package:huishoudappfrontend/createaccount_page.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
@@ -67,90 +69,95 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  List<Widget> buildInputs() {
-    return [
-      TextFormField(
-        validator: EmailValidator.validate,
-        decoration: InputDecoration(labelText: 'Email'),
-        onSaved: (value) => _email = value,
-      ),
-      TextFormField(
-        validator: PasswordValidator.validate,
-        decoration: InputDecoration(labelText: 'Password'),
-        obscureText: true,
-        onSaved: (value) => _password = value,
-      ),
-    ];
-  }
-
-  List<Widget> buildButtons() {
-    if (_formType == FormType.login) {
-      return [
-        RaisedButton(
-          child: Text('Login'),
-          color: Colors.blueAccent,
-          onPressed: submit,
-        ),
-        FlatButton(
-          child: Text('Register Account'),
-          color: Colors.teal,
-          onPressed: () {
-            switchFormState('register');
-          },
-        ),
-        Divider(
-          height: 50.0,
-        ),
-        FlatButton(
-          child: Text("Sign in with Google"),
-          color: Colors.lightGreen,
-          onPressed: () async {
-            try {
-              final _auth = Provider.of(context).auth;
-              final id = await _auth.signInWithGoogle();
-              print('signed in with google $id');
-            } catch (e) {
-              print(e);
-            }
-          },
-        ),
-      ];
-    } else {
-      return [
-        RaisedButton(
-          child: Text('Create Account'),
-          color: Colors.blueAccent,
-          onPressed: submit,
-        ),
-        FlatButton(
-          child: Text('Go to Login'),
-          color: Colors.teal,
-          onPressed: () {
-            switchFormState('login');
-          },
-        )
-      ];
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Form Page'),
+    // Widget variables
+    final logo = Image.asset(
+      'images/testlogoapp.png',
+      width: 150,
+      height: 180,
+    );
+
+    final email = TextFormField(
+      keyboardType: TextInputType.emailAddress,
+      validator: EmailValidator.validate,
+      onSaved: (value) => _email = value,
+      decoration: InputDecoration(
+        hintText: 'Gebruikersnaam',
+        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
       ),
-      resizeToAvoidBottomPadding: false,
-      body: Center(
-        child: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: buildInputs() + buildButtons(),
-          ),
+    );
+
+    final password = TextFormField(
+      keyboardType: TextInputType.visiblePassword,
+      validator: PasswordValidator.validate,
+      onSaved: (value) => _password = value,
+      decoration: InputDecoration(
+        hintText: 'Wachtwoord',
+        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+      ),
+    );
+
+    final loginButton = Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        onPressed: submit,
+        padding: EdgeInsets.all(12),
+        color: Colors.lightBlueAccent,
+        child: Text('Log In', style: TextStyle(color: Colors.white)),
+      ),
+    );
+
+    final googleLogIn = SignInButton(
+      Buttons.Google,
+      onPressed: () async {
+        try {
+          final _auth = Provider.of(context).auth;
+          final id = await _auth.signInWithGoogle();
+        } catch (e) {
+          print(e);
+        }
+      },
+    );
+
+    final signIn = FlatButton(
+      onPressed: () {
+        Navigator.of(context).pushNamed(CreateAccount.tag);
+      },
+      child: Text(
+        'Account aanmaken',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 17,
         ),
       ),
+    );
+
+    return Scaffold(
+      body: Center(
+        child: ListView(
+          padding: EdgeInsets.only(left: 40.0, right: 40.0),
+          children: <Widget>[
+            SizedBox(height: 70),
+            logo,
+            SizedBox(height: 50),
+            email,
+            SizedBox(height: 10),
+            password,
+            SizedBox(height: 10),
+            loginButton,
+            googleLogIn,
+            SizedBox(height: 8),
+            SizedBox(height: 40),
+            signIn,
+          ],
+        ),
+      ),
+      backgroundColor: Colors.blue[50],
     );
   }
 }
