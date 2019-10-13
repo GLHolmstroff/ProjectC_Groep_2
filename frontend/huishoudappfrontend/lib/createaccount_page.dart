@@ -76,11 +76,7 @@ class _CreateAccountState extends State<CreateAccount> {
     );
 
     final emailInput = TextFormField(
-      validator: (input) {
-        if (input.isEmpty) {
-          return 'Geen geldig email';
-        }
-      },
+      validator: EmailValidator.validate,
       onSaved: (input) => _email = input,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
@@ -91,11 +87,7 @@ class _CreateAccountState extends State<CreateAccount> {
     );
 
     final passwordInput = TextFormField(
-      validator: (input) {
-        if (input.length < 6) {
-          return 'Wachtwoord moet minstens uit 6 tekens bestaan';
-        }
-      },
+      validator: PasswordValidator.validate,
       onSaved: (input) => _password = input,
       keyboardType: TextInputType.visiblePassword,
       decoration: InputDecoration(

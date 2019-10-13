@@ -83,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
       validator: EmailValidator.validate,
       onSaved: (value) => _email = value,
       decoration: InputDecoration(
-        hintText: 'Gebruikersnaam',
+        hintText: 'Email',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
       ),
@@ -139,22 +139,25 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       body: Center(
-        child: ListView(
-          padding: EdgeInsets.only(left: 40.0, right: 40.0),
-          children: <Widget>[
-            SizedBox(height: 70),
-            logo,
-            SizedBox(height: 50),
-            email,
-            SizedBox(height: 10),
-            password,
-            SizedBox(height: 10),
-            loginButton,
-            googleLogIn,
-            SizedBox(height: 8),
-            SizedBox(height: 40),
-            signIn,
-          ],
+        child: Form(
+          key: formKey,
+          child: ListView(
+            padding: EdgeInsets.only(left: 40.0, right: 40.0),
+            children: <Widget>[
+              SizedBox(height: 70),
+              logo,
+              SizedBox(height: 50),
+              email,
+              SizedBox(height: 10),
+              password,
+              SizedBox(height: 10),
+              loginButton,
+              googleLogIn,
+              SizedBox(height: 8),
+              SizedBox(height: 40),
+              signIn,
+            ],
+          ),
         ),
       ),
       backgroundColor: Colors.blue[50],
