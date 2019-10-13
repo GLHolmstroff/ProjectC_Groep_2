@@ -1,5 +1,7 @@
 package com.group2projc.Huishoud.auth
 
+import com.group2projc.Huishoud.auth.DatabaseHelper.BeerTallies.count
+import com.group2projc.Huishoud.auth.DatabaseHelper.BeerTallies.userid
 import org.apache.http.entity.StringEntity
 import org.jetbrains.exposed.dao.*
 import org.jetbrains.exposed.sql.*
@@ -8,6 +10,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDate
 import org.postgresql.jdbc.*
 import kotlin.math.absoluteValue
+import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
 class DatabaseHelper(url:String){
     //Singleton pattern for Database connection, Multiple connect calls will cause memory leaks.
@@ -132,6 +135,19 @@ class DatabaseHelper(url:String){
         return this@DatabaseHelper
     }
 
+    fun getUser(uid:String):HashMap<String,Any?> {
+        var out = HashMap<String,Any?>()
+        transaction(db) {
+            Users.select ({ Users.id eq uid }).forEach{
+                out["uid"] = it[Users.id]
+                out["groupid"] = it[Users.groupid]
+                out["global_permissions"] = it[Users.global_permissions]
+                out["display_name"] = it[Users.displayname]
+            }
+        }
+        return out
+    }
+
     fun addUserToGroup(uid:String,gid:Int,creator:Boolean=false):DatabaseHelper {
         transaction(db){
             addLogger(StdOutSqlLogger)
@@ -180,6 +196,16 @@ class DatabaseHelper(url:String){
         return this@DatabaseHelper
     }
 
+    fun getTallyforGroup(gid:Int):HashMap<String,Int>{
+        var out = HashMap<String,Int>()
+        transaction(db){
+            BeerTallies.select {(BeerTallies.groupid eq gid)}.forEach {
+                out[it[userid]] = it[count]
+            }
+        }
+        return out;
+    }
+
     fun createBeerEntry(gid:Int, uid:String):DatabaseHelper {
         transaction(db){
 
@@ -217,9 +243,7 @@ class DatabaseHelper(url:String){
         var out = HashMap<String, String>()
         transaction(db) {
             Users.select { (Users.groupid eq gid) }.forEach {
-                uid = it[Users.id]
-                uname = it[Users.displayname]
-                out.put(uname, uid)
+                out[it[Users.displayname]] = it[Users.id]
             }
         }
         return out

@@ -10,14 +10,22 @@ class AuthResponseController {
     //TODO: Move corresponding functions to separate Restcontrollers
     //TODO: Update response structures
     private val counter = AtomicLong()
+    private val template = "Hello, "
 
     @RequestMapping("/authRegister")
-    fun authResponse(@RequestParam(value = "uid", defaultValue = "TokenNotSet") uid: String,
+    fun authRegister(@RequestParam(value = "uid", defaultValue = "TokenNotSet") uid: String,
                      @RequestParam(value= "name", defaultValue = "EmptyName") name:String): AuthResponse {
         val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
                 .registerFireBaseUser(uid,name)
         return AuthResponse(counter.incrementAndGet().toInt(),
-                String.format(template, uid))
+                template + uid)
+    }
+
+    @RequestMapping("/authCurrent")
+    fun authCurrent(@RequestParam(value = "uid", defaultValue = "TokenNotSet") uid: String ): HashMap<String,Any?> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .getUser(uid)
+        return map
     }
 
     @RequestMapping("/createGroup")
@@ -43,12 +51,11 @@ class AuthResponseController {
                 .getAllInGroup(gid)
         return map
     }
+    @RequestMapping("/getTally")
+    fun getTally(@RequestParam(value= "gid",defaultValue = "") gid: Int): HashMap<String, Int> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .getTallyforGroup(gid)
+        return map
 
-
-
-
-    companion object {
-
-        private val template = "Hello, %s!"
     }
 }
