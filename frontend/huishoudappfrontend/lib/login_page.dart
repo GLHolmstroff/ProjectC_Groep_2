@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:huishoudappfrontend/home_page.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/validators.dart';
@@ -17,7 +18,6 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
 
   String _email, _password;
-  FormType _formType = FormType.login;
 
   bool validate() {
     final form = formKey.currentState;
@@ -34,38 +34,15 @@ class _LoginPageState extends State<LoginPage> {
     if (validate()) {
       try {
         final auth = Provider.of(context).auth;
-        if (_formType == FormType.login) {
-          String userId = await auth.signInWithEmailAndPassword(
-            _email,
-            _password,
-          );
-
-          print('Signed in $userId');
-        } else {
-          String userId = await auth.createUserWithEmailAndPassword(
-            _email,
-            _password,
-          );
-
-          print('Registered in $userId');
-        }
+        String userId = await auth.signInWithEmailAndPassword(
+          _email,
+          _password,
+        );
+        print('Signed in $userId');
+        Navigator.of(context).pushNamed(HomePage.tag);
       } catch (e) {
         print(e);
       }
-    }
-  }
-
-  void switchFormState(String state) {
-    formKey.currentState.reset();
-
-    if (state == 'register') {
-      setState(() {
-        _formType = FormType.register;
-      });
-    } else {
-      setState(() {
-        _formType = FormType.login;
-      });
     }
   }
 

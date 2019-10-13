@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:huishoudappfrontend/home_page.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart' as auth;
 import 'package:huishoudappfrontend/setup/validators.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:toast/toast.dart';
 
 import 'login_page.dart';
-import 'main.dart';
-
 
 class CreateAccount extends StatefulWidget {
   static String tag = 'createaccount-page';
@@ -18,16 +18,16 @@ class CreateAccount extends StatefulWidget {
 class _CreateAccountState extends State<CreateAccount> {
   final formKey = GlobalKey<FormState>();
 
-  String _email, _password;
-  FormType _formType = FormType.register;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final passwordCheckController = TextEditingController();
 
   //Dispose of textcontroller after use to save resources
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    passwordCheckController.dispose();
     super.dispose();
   }
 
@@ -42,27 +42,32 @@ class _CreateAccountState extends State<CreateAccount> {
     }
   }
 
+  bool checkPasswords() {
+    if (passwordController.text.toString() ==
+        passwordCheckController.text.toString()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   void submit() async {
     // if (validate()) {
-      try {
-        final auth = Provider.of(context).auth;
-        if (_formType == FormType.login) {
-          String userId = await auth.signInWithEmailAndPassword(
+    try {
+      final auth = Provider.of(context).auth;
+      if (checkPasswords()) {
+        String userId = await auth.createUserWithEmailAndPassword(
             emailController.text.toString(),
-            passwordController.text.toString()
-          );
-
-          print('Signed in $userId');
-        } else {
-          String userId = await auth.createUserWithEmailAndPassword(
-            emailController.text.toString(),
-            passwordController.text.toString()
-          );
-          print('Registered in $userId');
-        }
-      } catch (e) {
-        print(e);
+            passwordController.text.toString());
+        print('Registered in $userId');
+        Navigator.of(context).pushNamed(LoginPage.tag);
+      } else {
+        Toast.show('Wachtwoorden komen niet overeen', context);
+        print("Account not created due to passwords incorrection");
       }
+    } catch (e) {
+      print(e);
+    }
     // }
   }
 
@@ -88,7 +93,6 @@ class _CreateAccountState extends State<CreateAccount> {
     final emailInput = TextFormField(
       controller: emailController,
       validator: EmailValidator.validate,
-      onSaved: (input) => _email = input,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         hintText: 'Email',
@@ -100,7 +104,6 @@ class _CreateAccountState extends State<CreateAccount> {
     final passwordInput = TextFormField(
       controller: passwordController,
       validator: PasswordValidator.validate,
-      onSaved: (input) => _password = input,
       keyboardType: TextInputType.visiblePassword,
       decoration: InputDecoration(
         hintText: 'Wachtwoord',
@@ -111,6 +114,7 @@ class _CreateAccountState extends State<CreateAccount> {
 
     final passwordCheckInput = TextFormField(
       keyboardType: TextInputType.visiblePassword,
+      controller: passwordCheckController,
       decoration: InputDecoration(
         hintText: 'Wachtwoord herhalen',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -122,9 +126,8 @@ class _CreateAccountState extends State<CreateAccount> {
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: RaisedButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        onPressed: ()  async{
+        onPressed: () async {
           submit();
-          Navigator.of(context).pushNamed(LoginPage.tag);
         },
         padding: EdgeInsets.all(12),
         color: Colors.lightBlueAccent,
