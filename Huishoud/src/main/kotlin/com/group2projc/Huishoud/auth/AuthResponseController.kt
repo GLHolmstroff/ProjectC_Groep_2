@@ -14,11 +14,10 @@ class AuthResponseController {
 
     @RequestMapping("/authRegister")
     fun authRegister(@RequestParam(value = "uid", defaultValue = "TokenNotSet") uid: String,
-                     @RequestParam(value= "name", defaultValue = "EmptyName") name:String): AuthResponse {
+                     @RequestParam(value= "name", defaultValue = "EmptyName") name:String): HashMap<String,Any?> {
         val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
                 .registerFireBaseUser(uid,name)
-        return AuthResponse(counter.incrementAndGet().toInt(),
-                template + uid)
+        return dbHelper.getUser(uid)
     }
 
     @RequestMapping("/authCurrent")

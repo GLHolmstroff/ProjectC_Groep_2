@@ -243,8 +243,10 @@ class DatabaseHelper(url:String){
         var uname = ""
         var out = HashMap<String, String>()
         transaction(db) {
+            var i = 0
             Users.select { (Users.groupid eq gid) }.forEach {
-                out[it[Users.displayname]] = it[Users.id]
+                out["UserId${i}"] = it[Users.id]
+                i++
             }
         }
         return out
