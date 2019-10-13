@@ -4,7 +4,7 @@ import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/validators.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-
+import 'package:http/http.dart';
 import 'package:huishoudappfrontend/createaccount_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -117,6 +117,12 @@ class _LoginPageState extends State<LoginPage> {
         try {
           final _auth = Provider.of(context).auth;
           final id = await _auth.signInWithGoogle();
+          final response = await get("http://10.0.2.2:8080/authRegister?uid=$id");
+          if (response.statusCode == 200){
+            print("Succesfully Registered");
+          }else{
+            print("Connection Failed");
+          }
         } catch (e) {
           print(e);
         }

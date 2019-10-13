@@ -122,13 +122,14 @@ class DatabaseHelper(url:String){
     fun registerFireBaseUser(t:String,n:String):DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
-
-            Users.insert {
-                it[id] = t
-                it[groupid] = null
-                it[global_permissions] = "user"
-                it[displayname] = n
-
+            val query:Query = Users.select {Users.id eq t}
+            if (query.count() == 0){
+                Users.insert {
+                    it[id] = t
+                    it[groupid] = null
+                    it[global_permissions] = "user"
+                    it[displayname] = n
+                }
             }
 
         }
