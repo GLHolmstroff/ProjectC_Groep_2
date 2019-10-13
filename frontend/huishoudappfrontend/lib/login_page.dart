@@ -113,6 +113,7 @@ class _LoginPageState extends State<LoginPage> {
 
     final googleLogIn = SignInButton(
       Buttons.Google,
+      text: 'Log in met je Google account',
       onPressed: () async {
         try {
           final _auth = Provider.of(context).auth;

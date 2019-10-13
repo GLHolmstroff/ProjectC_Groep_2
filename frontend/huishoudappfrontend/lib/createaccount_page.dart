@@ -47,7 +47,6 @@ class _CreateAccountState extends State<CreateAccount> {
             _email,
             _password,
           );
-
           print('Registered in $userId');
         }
       } catch (e) {
@@ -110,9 +109,7 @@ class _CreateAccountState extends State<CreateAccount> {
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: RaisedButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        onPressed: () {
-          Navigator.of(context).pushNamed(LoginPage.tag);
-        },
+        onPressed: submit,
         padding: EdgeInsets.all(12),
         color: Colors.lightBlueAccent,
         child: Text('Account aanmaken', style: TextStyle(color: Colors.white)),
