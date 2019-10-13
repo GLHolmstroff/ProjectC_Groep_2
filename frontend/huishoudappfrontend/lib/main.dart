@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-
+import 'package:huishoudappfrontend/createaccount_page.dart';
+import 'login_page.dart';
+import 'home_page.dart';
+import 'createaccount_page.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/validators.dart';
@@ -7,6 +10,11 @@ import 'package:huishoudappfrontend/setup/validators.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  final routes = <String, WidgetBuilder>{
+    LoginPage.tag: (context) => LoginPage(),
+    HomePage.tag: (context) => HomePage(),
+    CreateAccount.tag: (context) => CreateAccount(),
+  };
   @override
   Widget build(BuildContext context) {
     return Provider(
@@ -15,6 +23,7 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData.dark(),
         home: MyHomePage(),
+        routes: routes,
       ),
     );
   }
@@ -149,9 +158,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
-    );
-  }
-
+      
   List<Widget> buildInputs() {
     return [
       TextFormField(
