@@ -58,12 +58,18 @@ class BeerTally {
   BeerTally({this.count});
 
   factory BeerTally.fromJson(Map<String,dynamic> json) {
-    Map<String,int> count;
+    Map<String,int> count = new Map<String, int>();
     json.forEach((k,v) => count[k] = v);
     
     return BeerTally(
       count: count
     );
+  }
+
+  String toString(){
+    String out = "";
+    this.count.forEach((k,v) => out += k + " drank " + v.toString() + " beers" + "\n");
+    return out;
   }
 }
 
