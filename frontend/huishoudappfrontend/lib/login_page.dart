@@ -10,7 +10,11 @@ import 'package:huishoudappfrontend/createaccount_page.dart';
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _LoginPageState createState() {
+     _LoginPageState s = _LoginPageState();
+    //  s.switchFormState("login");
+     return s;
+  }
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -39,7 +43,12 @@ class _LoginPageState extends State<LoginPage> {
             _email,
             _password,
           );
-
+          final response = await get("http://10.0.2.2:8080/authRegister?uid=$userId");
+          if (response.statusCode == 200){
+            print("Succesfully Registered");
+          }else{
+            print("Connection Failed");
+          }
           print('Signed in $userId');
         } else {
           String userId = await auth.createUserWithEmailAndPassword(
@@ -56,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void switchFormState(String state) {
-    formKey.currentState.reset();
+    // formKey.currentState.reset();
 
     if (state == 'register') {
       setState(() {
