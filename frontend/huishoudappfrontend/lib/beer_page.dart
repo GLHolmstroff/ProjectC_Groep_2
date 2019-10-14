@@ -28,6 +28,21 @@ class BeerPage extends StatefulWidget {
 class BeerPageState extends State<BeerPage> {
   String _beerinfo;
 
+  Future<BeerTally> getBeer() async {
+     int currentGroup = widget.currentUser.groupId;
+     BeerTally currentBeer;
+    final Response res = await get("http://10.0.2.2:8080/getTallyByName?gid=$currentGroup",
+        headers: {'Content-Type': 'application/json' });
+        print(res.statusCode);
+        if (res.statusCode == 200) {
+          // If server returns an OK response, parse the JSON.
+          currentBeer = BeerTally.fromJson(json.decode(res.body));
+        }else{
+          print("Could not find user");
+      }
+      return currentBeer;
+  }
+
     void _changeBeerInfo(String newinfo) {
       setState(() {
       _beerinfo =  newinfo;
@@ -45,29 +60,18 @@ class BeerPageState extends State<BeerPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              '$_beerinfo',
-            ),
-            (FlatButton(
-              child: Text('Get Beer info'),
-              onPressed: () async {
-                try {
-                  Auth auth = Provider.of(context).auth;
-                  User currentUser = widget.currentUser;
-                  int gid = currentUser.groupId;
-                  final Response res2 = await get("http://10.0.2.2:8080/getTallyByName?gid=$gid",
-                  headers: {'Content-Type': 'application/json' });
-                  print(res2.statusCode);
-                  if (res2.statusCode == 200){
-                    BeerTally beer = BeerTally.fromJson(json.decode(res2.body));
-                    _changeBeerInfo(beer.toString());
-                  }
-                  
-                } catch (e) {
-                  print(e);
+            FutureBuilder<BeerTally>(
+              future: getBeer(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text("Welcome, " + snapshot.data.toString());
+                } else if (snapshot.hasError) {
+                  return Text("${snapshot.error}");
                 }
-                },
-            )
+
+                // By default, show a loading spinner.
+                return CircularProgressIndicator();
+              },
             ),
             (FlatButton(
               child: Text("Drink a beer"),
