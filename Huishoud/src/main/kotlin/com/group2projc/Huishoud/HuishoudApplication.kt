@@ -24,7 +24,7 @@ class HuishoudApplication {
 //
 //            FirebaseApp.initializeApp(options)
             val dbHelper:DatabaseHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
-                    .addUserToGroup("JdQOZfDU0fclLWzqjMCfpp9m8hz2",1)
+
         }
 
         fun doSomeThing():String = "Hello, I am the output"

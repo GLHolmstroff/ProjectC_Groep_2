@@ -49,13 +49,13 @@ class BeerPageState extends State<BeerPage> {
               '$_beerinfo',
             ),
             (FlatButton(
-              child: Text('Get Group info'),
+              child: Text('Get Beer info'),
               onPressed: () async {
                 try {
                   Auth auth = Provider.of(context).auth;
                   User currentUser = widget.currentUser;
                   int gid = currentUser.groupId;
-                  final Response res2 = await get("http://10.0.2.2:8080/getTally?gid=$gid",
+                  final Response res2 = await get("http://10.0.2.2:8080/getTallyByName?gid=$gid",
                   headers: {'Content-Type': 'application/json' });
                   print(res2.statusCode);
                   if (res2.statusCode == 200){
@@ -67,31 +67,29 @@ class BeerPageState extends State<BeerPage> {
                   print(e);
                 }
                 },
-            // Text(
-            //   '$_counter',
-            //   style: Theme.of(context).textTheme.display1,
-            // ),
             )
             ),
             (FlatButton(
-              child: Text("Go to Beer"),
+              child: Text("Drink a beer"),
               onPressed: () async {
-              Auth auth = Provider.of(context).auth;
-                  String uid = await auth.currentUser();
-                  print(uid);
-                  final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
+                Auth auth = Provider.of(context).auth;
+                User currentUser = widget.currentUser;
+                String uid = currentUser.userId;
+                int gid = currentUser.groupId;
+                final Response res2 = await get("http://10.0.2.2:8080/getTally?gid=$gid",
+                headers: {'Content-Type': 'application/json' });
+                print(res2.statusCode);
+                if (res2.statusCode == 200){
+                  BeerTally beer = BeerTally.fromJson(json.decode(res2.body));
+                  int count = beer.count[uid] + 1;
+                  final Response res = await get("http://10.0.2.2:8080/updateTally?gid=$gid&uid=$uid&count=$count",
                   headers: {'Content-Type': 'application/json' });
                   print(res.statusCode);
                   if (res.statusCode == 200) {
-
-                    // If server returns an OK response, parse the JSON.
-                    User currentUser = User.fromJson(json.decode(res.body));
-                    Navigator.push(
-                      context, 
-                      MaterialPageRoute(
-                        builder: (context) => BeerPage(currentUser:currentUser),
-                      ));
+                    BeerTally beer = BeerTally.fromJson(json.decode(res.body));
+                    _changeBeerInfo(beer.toString());
                   }
+                }
               })
             ),
             ],

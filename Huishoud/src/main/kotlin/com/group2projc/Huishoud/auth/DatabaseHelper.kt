@@ -207,6 +207,24 @@ class DatabaseHelper(url:String){
         return out;
     }
 
+    fun getTallyforGroupByName(gid:Int):HashMap<String,Int>{
+        var temp = HashMap<String,Int>()
+        var out = HashMap<String,Int>()
+        transaction(db){
+            BeerTallies.select {(BeerTallies.groupid eq gid)}.forEach {
+                temp[it[userid]] = it[count]
+            }
+            temp.forEach {
+                k,v ->
+                Users.select {(Users.id eq k)}.forEach {
+                    out[it[Users.displayname]] = v
+                }
+            }
+
+        }
+        return out;
+    }
+
     fun createBeerEntry(gid:Int, uid:String):DatabaseHelper {
         transaction(db){
 

@@ -57,4 +57,22 @@ class AuthResponseController {
         return map
 
     }
+
+    @RequestMapping("/getTallyByName")
+    fun getTallyByName(@RequestParam(value= "gid",defaultValue = "") gid: Int): HashMap<String, Int> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .getTallyforGroupByName(gid)
+        return map
+
+    }
+
+    @RequestMapping("/updateTally")
+    fun updateTally(@RequestParam(value="gid",defaultValue = "")gid:Int,
+                    @RequestParam(value="uid",defaultValue = "")uid:String,
+                    @RequestParam(value="count",defaultValue = "")count:Int):HashMap<String,Int> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .updateBeerEntry(gid,uid,count)
+                .getTallyforGroupByName(gid)
+        return map
+    }
 }
