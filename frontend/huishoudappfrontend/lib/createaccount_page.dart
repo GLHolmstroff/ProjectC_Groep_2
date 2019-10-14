@@ -131,7 +131,6 @@ class _CreateAccountState extends State<CreateAccount> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         onPressed: ()  async{
           submit();
-          Navigator.of(context).pushNamed(LoginPage.tag);
         },
         padding: EdgeInsets.all(12),
         color: Colors.lightBlueAccent,

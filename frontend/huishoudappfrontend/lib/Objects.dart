@@ -31,7 +31,7 @@ class Group {
   Group({this.users});
 
   factory Group.fromJson(Map<String,dynamic> json) {
-    List<String> users;
+    List<String> users = new List<String>();
     String keyPart = "UserId";
 
     for( var i = 0; i < json.length; i++){
@@ -42,6 +42,12 @@ class Group {
     return Group(
       users: users
     );
+  }
+
+  String toString() {
+    String out = "";
+    this.users.forEach((el) => out += el + "\n");
+    return out;
   }
 }
 
