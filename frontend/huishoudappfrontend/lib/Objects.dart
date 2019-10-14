@@ -14,6 +14,14 @@ class User {
       displayName: json['display_name'],
     );
   }
+
+  @override
+  String toString() {
+    return "userID: " + this.userId + "\n" +
+             "groupID: " + this.groupId.toString() + "\n" +
+            "permission: " + this.globalPermissions + "\n" +
+            "Name: " + this.displayName + "\n";
+  }
 }
 
 class Group {

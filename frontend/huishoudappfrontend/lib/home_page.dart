@@ -1,12 +1,35 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/createaccount_page.dart';
+import 'package:huishoudappfrontend/main.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/validators.dart';
+import 'package:http/http.dart';
+import 'Objects.dart';
 
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   static String tag = 'home-page';
+  
+
+  @override
+  State<StatefulWidget> createState() {
+    return new HomePageState();
+  }
+}
+  
+class HomePageState extends State<HomePage> {
+  String _userinfo;
+
+  void _changeUserInfo(String newinfo) {
+    setState(() {
+     _userinfo =  newinfo;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,11 +49,44 @@ class HomePage extends StatelessWidget {
           )
         ],
       ),
-      body: Container(
-        child: Center(
-          child: Text('Welcome'),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              '$_userinfo',
+            ),
+            (FlatButton(
+              child: Text('Get User info'),
+              onPressed: () async {
+                try {
+                  Auth auth = Provider.of(context).auth;
+                  String uid = await auth.currentUser();
+                  print(uid);
+                  print("http://10.0.2.2:8080/authCurrent?uid=$uid");
+                  final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
+                  headers: {'Content-Type': 'application/json' });
+                  print(res.statusCode);
+                  if (res.statusCode == 200) {
+
+                    // If server returns an OK response, parse the JSON.
+                    User currentUser = User.fromJson(json.decode(res.body));
+                    _changeUserInfo(currentUser.toString());
+                  };
+                } catch (e) {
+                  print(e);
+                }
+                },
+            // Text(
+            //   '$_counter',
+            //   style: Theme.of(context).textTheme.display1,
+            // ),
+            )
+            )
+            ],
+          ),
         ),
-      ),
-    );
+      );
   }
 }
+
