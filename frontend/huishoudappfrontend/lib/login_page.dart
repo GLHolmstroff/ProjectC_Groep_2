@@ -10,6 +10,7 @@ import 'package:huishoudappfrontend/createaccount_page.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -18,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
 
   String _email, _password;
+  FormType _formType = FormType.login;
 
   bool validate() {
     final form = formKey.currentState;
@@ -34,12 +36,14 @@ class _LoginPageState extends State<LoginPage> {
     if (validate()) {
       try {
         final auth = Provider.of(context).auth;
-        String userId = await auth.signInWithEmailAndPassword(
-          _email,
-          _password,
-        );
-        print('Signed in $userId');
-        Navigator.of(context).pushNamed(HomePage.tag);
+        print(_formType);
+        if (_formType == FormType.login){
+          String userId = await auth.signInWithEmailAndPassword(
+            _email,
+            _password,
+          );
+          print('Signed in $userId');
+        }
       } catch (e) {
         print(e);
       }
