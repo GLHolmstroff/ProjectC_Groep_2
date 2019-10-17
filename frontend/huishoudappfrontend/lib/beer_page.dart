@@ -64,7 +64,7 @@ class BeerPageState extends State<BeerPage> {
               future: getBeer(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return Text("Welcome, " + snapshot.data.toString());
+                  return Text(snapshot.data.toString());
                 } else if (snapshot.hasError) {
                   return Text("${snapshot.error}");
                 }

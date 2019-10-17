@@ -75,4 +75,16 @@ class AuthResponseController {
                 .getTallyforGroupByName(gid)
         return map
     }
+
+    @RequestMapping("/initDatabase")
+    fun initDB():HashMap<String,String> {
+        val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .initDataBase()
+        return hashMapOf(Pair<String,String>("success","True"))
+    }
+
+    @RequestMapping("/stopRunning")
+    fun stopRunning() {
+
+    }
 }

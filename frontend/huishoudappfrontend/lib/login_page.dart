@@ -52,6 +52,13 @@ class _LoginPageState extends State<LoginPage> {
           }else{
             print("Connection Failed");
           }
+          print('Signed in $userId');
+          // Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+        } else {
+          String userId = await auth.createUserWithEmailAndPassword(
+            _email,
+            _password,
+          );
 
           print('Signed in $userId');
         }

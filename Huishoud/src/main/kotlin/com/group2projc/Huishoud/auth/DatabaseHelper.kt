@@ -2,17 +2,11 @@ package com.group2projc.Huishoud.auth
 
 import com.group2projc.Huishoud.auth.DatabaseHelper.BeerTallies.count
 import com.group2projc.Huishoud.auth.DatabaseHelper.BeerTallies.userid
-import org.apache.http.entity.StringEntity
-import org.jetbrains.exposed.dao.*
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDate
-import org.postgresql.jdbc.*
-import kotlin.math.absoluteValue
-import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
-class DatabaseHelper(url:String){
+class DatabaseHelper(url: String) {
     //Singleton pattern for Database connection, Multiple connect calls will cause memory leaks.
     val db by lazy {
         Database.connect(url,
@@ -23,36 +17,37 @@ class DatabaseHelper(url:String){
     }
     //Table definitions
 
-    object Groups : Table(){
+    object Groups : Table() {
         val id = integer("groupid").primaryKey().autoIncrement()
         val created_at = varchar("created_at", 20)
         val name = varchar("name", 50)
     }
+
     //SQL : CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, "token" VARCHAR(50) NOT NULL, "group" INT)
-    object Users : Table(){
-        val id = varchar("userid",50).primaryKey()
-        val groupid = reference("groupid",Groups.id).nullable()
-        val global_permissions = varchar("global_permissions",10)
+    object Users : Table() {
+        val id = varchar("userid", 50).primaryKey()
+        val groupid = reference("groupid", Groups.id).nullable()
+        val global_permissions = varchar("global_permissions", 10)
         val displayname = varchar("displayname", 20)
     }
 
-    object GroupPermissions : Table(){
+    object GroupPermissions : Table() {
         val groupid = reference("groupid", Groups.id).primaryKey()
-        val userid = reference("userid",Users.id).primaryKey()
-        val permission = varchar("permission",10)
+        val userid = reference("userid", Users.id).primaryKey()
+        val permission = varchar("permission", 10)
     }
 
-    object Schedules : Table(){
+    object Schedules : Table() {
         val groupid = reference("groupid", Groups.id).primaryKey()
-        val useridto = reference("useridto",Users.id).primaryKey()
-        val datedue = varchar("datetime",20).primaryKey()
-        val useridby = reference("useridby",Users.id)
+        val useridto = reference("useridto", Users.id).primaryKey()
+        val datedue = varchar("datetime", 20).primaryKey()
+        val useridby = reference("useridby", Users.id)
         val description = varchar("description", 50)
     }
 
-    object BeerTallies : Table(){
+    object BeerTallies : Table() {
         val groupid = reference("groupid", Groups.id).primaryKey()
-        val userid = reference("userid",Users.id).primaryKey()
+        val userid = reference("userid", Users.id).primaryKey()
         val count = integer("count")
     }
 //TODO: Find out if it's Possible to use DAO, find way to pass EntityID to postgres
@@ -98,32 +93,32 @@ class DatabaseHelper(url:String){
 //    }
 
 
-    fun initDataBase():DatabaseHelper {
+    fun initDataBase(): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
-            SchemaUtils.create(Groups,Users,GroupPermissions,Schedules,BeerTallies)
+            SchemaUtils.create(Groups, Users, GroupPermissions, Schedules, BeerTallies)
         }
 
         return this@DatabaseHelper
     }
 
-    fun createGroup(n:String, uid: String):DatabaseHelper {
-        transaction(db) {
-            addLogger(StdOutSqlLogger)
-            val group = Groups.insert {
-                it[created_at] = LocalDate.now().toString()
-                it[name] = n
-            }
-            addUserToGroup(uid, group[Groups.id],creator = true)
-        }
-        return this@DatabaseHelper
-    }
+//    fun createGroup(n: String, uid: String): DatabaseHelper {
+//        transaction(db) {
+//            addLogger(StdOutSqlLogger)
+//            val group = Groups.insert {
+//                it[created_at] = LocalDate.now().toString()
+//                it[name] = n
+//            }
+//            addUserToGroup(uid, group[Groups.id], creator = true)
+//        }
+//        return this@DatabaseHelper
+//    }
 
-    fun registerFireBaseUser(t:String,n:String):DatabaseHelper {
+    fun registerFireBaseUser(t: String, n: String): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
-            val query:Query = Users.select {Users.id eq t}
-            if (query.count() == 0){
+            val query: Query = Users.select { Users.id eq t }
+            if (query.count() == 0) {
                 Users.insert {
                     it[id] = t
                     it[groupid] = null
@@ -136,10 +131,10 @@ class DatabaseHelper(url:String){
         return this@DatabaseHelper
     }
 
-    fun getUser(uid:String):HashMap<String,Any?> {
-        var out = HashMap<String,Any?>()
+    fun getUser(uid: String): HashMap<String, Any?> {
+        var out = HashMap<String, Any?>()
         transaction(db) {
-            Users.select ({ Users.id eq uid }).forEach{
+            Users.select({ Users.id eq uid }).forEach {
                 out["uid"] = it[Users.id]
                 out["groupid"] = it[Users.groupid]
                 out["global_permissions"] = it[Users.global_permissions]
@@ -149,28 +144,28 @@ class DatabaseHelper(url:String){
         return out
     }
 
-    fun addUserToGroup(uid:String,gid:Int,creator:Boolean=false):DatabaseHelper {
-        transaction(db){
+    fun addUserToGroup(uid: String, gid: Int, makeUserAdmin: Boolean = false): DatabaseHelper {
+        transaction(db) {
             addLogger(StdOutSqlLogger)
             var group = 0
-            Groups.select {Groups.id eq gid}.forEach{
+            Groups.select { Groups.id eq gid }.forEach {
                 group = it[Groups.id]
             }
-            Users.update ({ Users.id eq uid }) {
-                it[Users.groupid] = group
+            Users.update({ Users.id eq uid }) {
+                it[groupid] = group
             }
 
             var p = "user"
-            if (creator)
+            if (makeUserAdmin)
                 p = "groupAdmin"
 
-            setGroupPermission(gid,uid,p)
-            createBeerEntry(gid,uid)
+            setGroupPermission(gid, uid, p)
+            createBeerEntry(gid, uid)
         }
         return this@DatabaseHelper
     }
 
-    fun setGroupPermission(gid: Int, uid:String, p:String):DatabaseHelper {
+    fun setGroupPermission(gid: Int, uid: String, p: String): DatabaseHelper {
         transaction(db) {
             var gpg = 0
             var gpu = ""
@@ -185,7 +180,7 @@ class DatabaseHelper(url:String){
                 GroupPermissions.update({ (GroupPermissions.groupid eq gpg) and (GroupPermissions.userid eq gpu) }) {
                     it[permission] = p
                 }
-            //If no, create it
+                //If no, create it
             } else {
                 GroupPermissions.insert {
                     it[groupid] = gid
@@ -197,26 +192,25 @@ class DatabaseHelper(url:String){
         return this@DatabaseHelper
     }
 
-    fun getTallyforGroup(gid:Int):HashMap<String,Int>{
-        var out = HashMap<String,Int>()
-        transaction(db){
-            BeerTallies.select {(BeerTallies.groupid eq gid)}.forEach {
+    fun getTallyforGroup(gid: Int): HashMap<String, Int> {
+        var out = HashMap<String, Int>()
+        transaction(db) {
+            BeerTallies.select { (BeerTallies.groupid eq gid) }.forEach {
                 out[it[userid]] = it[count]
             }
         }
         return out;
     }
 
-    fun getTallyforGroupByName(gid:Int):HashMap<String,Int>{
-        var temp = HashMap<String,Int>()
-        var out = HashMap<String,Int>()
-        transaction(db){
-            BeerTallies.select {(BeerTallies.groupid eq gid)}.forEach {
+    fun getTallyforGroupByName(gid: Int): HashMap<String, Int> {
+        var temp = HashMap<String, Int>()
+        var out = HashMap<String, Int>()
+        transaction(db) {
+            BeerTallies.select { (BeerTallies.groupid eq gid) }.forEach {
                 temp[it[userid]] = it[count]
             }
-            temp.forEach {
-                k,v ->
-                Users.select {(Users.id eq k)}.forEach {
+            temp.forEach { k, v ->
+                Users.select { (Users.id eq k) }.forEach {
                     out[it[Users.displayname]] = v
                 }
             }
@@ -225,10 +219,10 @@ class DatabaseHelper(url:String){
         return out;
     }
 
-    fun createBeerEntry(gid:Int, uid:String):DatabaseHelper {
-        transaction(db){
+    fun createBeerEntry(gid: Int, uid: String): DatabaseHelper {
+        transaction(db) {
 
-            BeerTallies.insert{
+            BeerTallies.insert {
                 it[groupid] = gid
                 it[userid] = uid
                 it[count] = 0
@@ -237,26 +231,26 @@ class DatabaseHelper(url:String){
         return this@DatabaseHelper
     }
 
-    fun updateBeerEntry(gid:Int, uid:String, count:Int):DatabaseHelper {
+    fun updateBeerEntry(gid: Int, uid: String, count: Int): DatabaseHelper {
         var bg = 0
         var bu = ""
-        transaction(db){
+        transaction(db) {
             BeerTallies.select { (BeerTallies.groupid eq gid) and (BeerTallies.userid eq uid) }.forEach {
                 bg = it[BeerTallies.groupid]
                 bu = it[BeerTallies.userid]
             }
             if (bg != 0 && bu != "") {
-                BeerTallies.update ({ (BeerTallies.groupid eq gid) and (BeerTallies.userid eq uid) }) {
+                BeerTallies.update({ (BeerTallies.groupid eq gid) and (BeerTallies.userid eq uid) }) {
                     it[BeerTallies.count] = count
                 }
-            }else{
-                createBeerEntry(gid,uid)
+            } else {
+                createBeerEntry(gid, uid)
             }
         }
         return this@DatabaseHelper
     }
 
-    fun getAllInGroup(gid:Int):HashMap<String,String> {
+    fun getAllInGroup(gid: Int): HashMap<String, String> {
         var uid = ""
         var uname = ""
         var out = HashMap<String, String>()
@@ -272,3 +266,14 @@ class DatabaseHelper(url:String){
 
 }
 
+fun DatabaseHelper.createGroup(n: String, uid: String): DatabaseHelper {
+    transaction(db) {
+        addLogger(StdOutSqlLogger)
+        val group = DatabaseHelper.Groups.insert {
+            it[created_at] = LocalDate.now().toString()
+            it[name] = n
+        }
+        addUserToGroup(uid, group[DatabaseHelper.Groups.id], makeUserAdmin = true)
+    }
+    return this
+}
