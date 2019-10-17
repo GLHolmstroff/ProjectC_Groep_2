@@ -5,14 +5,18 @@ import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/validators.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-
+import 'package:http/http.dart';
 import 'package:huishoudappfrontend/createaccount_page.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _LoginPageState createState() {
+     _LoginPageState s = _LoginPageState();
+    //  s.switchFormState("login");
+     return s;
+  }
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -42,11 +46,32 @@ class _LoginPageState extends State<LoginPage> {
             _email,
             _password,
           );
+          final response = await get("http://10.0.2.2:8080/authRegister?uid=$userId");
+          if (response.statusCode == 200){
+            print("Succesfully Registered");
+          }else{
+            print("Connection Failed");
+          }
+
           print('Signed in $userId');
         }
       } catch (e) {
         print(e);
       }
+    }
+  }
+
+  void switchFormState(String state) {
+    // formKey.currentState.reset();
+
+    if (state == 'register') {
+      setState(() {
+        _formType = FormType.register;
+      });
+    } else {
+      setState(() {
+        _formType = FormType.login;
+      });
     }
   }
 
@@ -99,6 +124,12 @@ class _LoginPageState extends State<LoginPage> {
         try {
           final _auth = Provider.of(context).auth;
           final id = await _auth.signInWithGoogle();
+          final response = await get("http://10.0.2.2:8080/authRegister?uid=$id");
+          if (response.statusCode == 200){
+            print("Succesfully Registered");
+          }else{
+            print("Connection Failed");
+          }
         } catch (e) {
           print(e);
         }

@@ -122,13 +122,14 @@ class DatabaseHelper(url:String){
     fun registerFireBaseUser(t:String,n:String):DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
-
-            Users.insert {
-                it[id] = t
-                it[groupid] = null
-                it[global_permissions] = "user"
-                it[displayname] = n
-
+            val query:Query = Users.select {Users.id eq t}
+            if (query.count() == 0){
+                Users.insert {
+                    it[id] = t
+                    it[groupid] = null
+                    it[global_permissions] = "user"
+                    it[displayname] = n
+                }
             }
 
         }
@@ -206,6 +207,24 @@ class DatabaseHelper(url:String){
         return out;
     }
 
+    fun getTallyforGroupByName(gid:Int):HashMap<String,Int>{
+        var temp = HashMap<String,Int>()
+        var out = HashMap<String,Int>()
+        transaction(db){
+            BeerTallies.select {(BeerTallies.groupid eq gid)}.forEach {
+                temp[it[userid]] = it[count]
+            }
+            temp.forEach {
+                k,v ->
+                Users.select {(Users.id eq k)}.forEach {
+                    out[it[Users.displayname]] = v
+                }
+            }
+
+        }
+        return out;
+    }
+
     fun createBeerEntry(gid:Int, uid:String):DatabaseHelper {
         transaction(db){
 
@@ -242,8 +261,10 @@ class DatabaseHelper(url:String){
         var uname = ""
         var out = HashMap<String, String>()
         transaction(db) {
+            var i = 0
             Users.select { (Users.groupid eq gid) }.forEach {
-                out[it[Users.displayname]] = it[Users.id]
+                out["UserId${i}"] = it[Users.id]
+                i++
             }
         }
         return out

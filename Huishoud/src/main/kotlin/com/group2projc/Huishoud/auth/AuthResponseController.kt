@@ -14,11 +14,10 @@ class AuthResponseController {
 
     @RequestMapping("/authRegister")
     fun authRegister(@RequestParam(value = "uid", defaultValue = "TokenNotSet") uid: String,
-                     @RequestParam(value= "name", defaultValue = "EmptyName") name:String): AuthResponse {
+                     @RequestParam(value= "name", defaultValue = "EmptyName") name:String): HashMap<String,Any?> {
         val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
                 .registerFireBaseUser(uid,name)
-        return AuthResponse(counter.incrementAndGet().toInt(),
-                template + uid)
+        return dbHelper.getUser(uid)
     }
 
     @RequestMapping("/authCurrent")
@@ -57,5 +56,23 @@ class AuthResponseController {
                 .getTallyforGroup(gid)
         return map
 
+    }
+
+    @RequestMapping("/getTallyByName")
+    fun getTallyByName(@RequestParam(value= "gid",defaultValue = "") gid: Int): HashMap<String, Int> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .getTallyforGroupByName(gid)
+        return map
+
+    }
+
+    @RequestMapping("/updateTally")
+    fun updateTally(@RequestParam(value="gid",defaultValue = "")gid:Int,
+                    @RequestParam(value="uid",defaultValue = "")uid:String,
+                    @RequestParam(value="count",defaultValue = "")count:Int):HashMap<String,Int> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .updateBeerEntry(gid,uid,count)
+                .getTallyforGroupByName(gid)
+        return map
     }
 }

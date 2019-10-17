@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:huishoudappfrontend/home_page.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart' as auth;
 import 'package:huishoudappfrontend/setup/validators.dart';
 import 'package:flutter_signin_button/button_list.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:flutter_import 'package:http/http.dart';
+
 import 'package:toast/toast.dart';
+
 
 import 'login_page.dart';
 
@@ -60,6 +63,13 @@ class _CreateAccountState extends State<CreateAccount> {
             _email,
             _password,
           );
+          final response = await get("http://10.0.2.2:8080/authRegister?uid=$userId");
+          if (response.statusCode == 200){
+            print("Succesfully Registered");
+          }else{
+            print("Connection Failed");
+          }
+
           print('Registered in $userId');
           Toast.show("account aangemaakt", context);
           //Navigator.of(context).pushNamed(LoginPage.tag);
@@ -132,7 +142,9 @@ class _CreateAccountState extends State<CreateAccount> {
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: RaisedButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+
         onPressed: submit,
+
         padding: EdgeInsets.all(12),
         color: Colors.lightBlueAccent,
         child: Text('Account aanmaken', style: TextStyle(color: Colors.white)),
