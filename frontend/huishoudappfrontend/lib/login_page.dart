@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:huishoudappfrontend/home_page.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/validators.dart';
@@ -9,6 +10,7 @@ import 'package:huishoudappfrontend/createaccount_page.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
+
   @override
   _LoginPageState createState() {
      _LoginPageState s = _LoginPageState();
@@ -38,7 +40,8 @@ class _LoginPageState extends State<LoginPage> {
     if (validate()) {
       try {
         final auth = Provider.of(context).auth;
-        if (_formType == FormType.login) {
+        print(_formType);
+        if (_formType == FormType.login){
           String userId = await auth.signInWithEmailAndPassword(
             _email,
             _password,
@@ -49,14 +52,8 @@ class _LoginPageState extends State<LoginPage> {
           }else{
             print("Connection Failed");
           }
-          print('Signed in $userId');
-        } else {
-          String userId = await auth.createUserWithEmailAndPassword(
-            _email,
-            _password,
-          );
 
-          print('Registered in $userId');
+          print('Signed in $userId');
         }
       } catch (e) {
         print(e);
@@ -122,6 +119,7 @@ class _LoginPageState extends State<LoginPage> {
 
     final googleLogIn = SignInButton(
       Buttons.Google,
+      text: 'Log in met je Google account',
       onPressed: () async {
         try {
           final _auth = Provider.of(context).auth;

@@ -38,9 +38,12 @@ class MyHomePage extends StatelessWidget {
       builder: (context, AsyncSnapshot<String> snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
           final bool loggedIn = snapshot.hasData;
+          
           if (loggedIn == true) {
+            print('to the homepage');
             return HomePage();
           } else {
+            print('to the loginpage');
             return LoginPage();
           }
         }

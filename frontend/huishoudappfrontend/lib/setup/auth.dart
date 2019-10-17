@@ -12,7 +12,7 @@ abstract class BaseAuth {
  );
 
 Future<String> currentUser();
-Future<String> signOut();
+Future<void> signOut();
 Future<String> signInWithGoogle();
 }
 
@@ -55,7 +55,7 @@ class Auth implements BaseAuth{
   }
 
   @override
-  Future<String> signOut() {
+  Future<void> signOut() {
     return _firebaseAuth.signOut();
   }
   
