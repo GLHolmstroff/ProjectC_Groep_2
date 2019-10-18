@@ -1,5 +1,6 @@
 package com.group2projc.Huishoud.auth
 
+import com.group2projc.Huishoud.HuishoudApplication
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -85,6 +86,6 @@ class AuthResponseController {
 
     @RequestMapping("/stopRunning")
     fun stopRunning() {
-
+        HuishoudApplication.shutDown()
     }
 }

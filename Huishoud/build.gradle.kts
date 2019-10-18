@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.group2projc"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.2"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -23,6 +23,8 @@ dependencies {
 	implementation("org.jetbrains.exposed:exposed:0.17.4")
 	implementation("org.jetbrains.exposed:spring-transaction:0.17.4")
 	implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    //implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework:spring-web:5.2.0.RELEASE")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-tomcat")
