@@ -5,11 +5,8 @@ import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart' as auth;
 import 'package:huishoudappfrontend/setup/validators.dart';
 import 'package:flutter_signin_button/button_list.dart';
-import 'package:flutter_import 'package:http/http.dart';
-
+import 'package:http/http.dart';
 import 'package:toast/toast.dart';
-
-
 import 'login_page.dart';
 
 class CreateAccount extends StatefulWidget {
