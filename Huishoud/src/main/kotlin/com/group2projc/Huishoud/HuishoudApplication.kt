@@ -32,7 +32,7 @@ class HuishoudApplication: ExitCodeGenerator {
         @JvmStatic
         fun main(args: Array<String>) {
             ctx = runApplication<HuishoudApplication>(*args)
-//            val serviceAccount = FileInputStream("pathgoeshere")
+//            val serviceAccount = FileInputStream("pathgoeshere"
 //
 //            val options = FirebaseOptions.Builder()
 //                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
@@ -42,7 +42,7 @@ class HuishoudApplication: ExitCodeGenerator {
 //            FirebaseApp.initializeApp(options)
 
 
-            val dbHelper:DatabaseHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+            val dbHelper:DatabaseHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").initDataBase()
         }
 
         fun shutDown() {

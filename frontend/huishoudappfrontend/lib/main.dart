@@ -6,6 +6,7 @@ import 'createaccount_page.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/validators.dart';
+import 'profile.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,6 +15,7 @@ class MyApp extends StatelessWidget {
     LoginPage.tag: (context) => LoginPage(),
     HomePage.tag: (context) => HomePage(),
     CreateAccount.tag: (context) => CreateAccount(),
+    Profilepage.tag: (context) => Profilepage(),
   };
   @override
   Widget build(BuildContext context) {

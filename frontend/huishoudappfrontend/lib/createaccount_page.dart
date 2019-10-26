@@ -60,7 +60,7 @@ class _CreateAccountState extends State<CreateAccount> {
             _email,
             _password,
           );
-          final response = await get("http://seprojects.nl:8080/authRegister?uid=$userId");
+          final response = await get("http://10.0.2.2:8080/authRegister?uid=$userId");
           if (response.statusCode == 200){
             print("Succesfully Registered");
           }else{
@@ -69,7 +69,6 @@ class _CreateAccountState extends State<CreateAccount> {
 
           print('Registered in $userId');
           Toast.show("account aangemaakt", context);
-          //Navigator.of(context).pushNamed(LoginPage.tag);
           Navigator.pop(context);
         } else {
           Toast.show('Wachtwoorden komen niet overeen', context);

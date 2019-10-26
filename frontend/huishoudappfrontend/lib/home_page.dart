@@ -10,6 +10,7 @@ import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/validators.dart';
 import 'package:http/http.dart';
 import 'Objects.dart';
+import 'profile.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -60,14 +61,9 @@ class HomePageState extends State<HomePage> {
         title: Text('Welcome Page'),
         actions: <Widget>[
           FlatButton(
-            child: Text("Sign Out"),
-            onPressed: () async {
-              try {
-                Auth auth = Provider.of(context).auth;
-                await auth.signOut();
-              } catch (e) {
-                print(e);
-              }
+            child: Text("Jouw profiel"),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Profilepage()));
             },
           )
         ],
