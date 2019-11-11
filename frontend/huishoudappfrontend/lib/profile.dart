@@ -1,10 +1,10 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'package:huishoudappfrontend/login_page.dart';
+import 'package:huishoudappfrontend/login_widget.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
-import 'package:huishoudappfrontend/home_page.dart';
+import 'package:huishoudappfrontend/page_container.dart';
 import 'package:huishoudappfrontend/setup/validators.dart';
 import 'Objects.dart';
 import 'package:http/http.dart';

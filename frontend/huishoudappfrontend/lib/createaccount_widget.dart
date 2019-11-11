@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:huishoudappfrontend/home_page.dart';
+import 'package:huishoudappfrontend/page_container.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart' as auth;
 import 'package:huishoudappfrontend/setup/validators.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:http/http.dart';
 import 'package:toast/toast.dart';
-import 'login_page.dart';
+import 'login_widget.dart';
 
 class CreateAccount extends StatefulWidget {
   static String tag = 'createaccount-page';

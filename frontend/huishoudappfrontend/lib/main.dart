@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:huishoudappfrontend/createaccount_page.dart';
-import 'login_page.dart';
-import 'home_page.dart';
-import 'createaccount_page.dart';
+import 'package:huishoudappfrontend/createaccount_widget.dart';
+import 'login_widget.dart';
+import 'page_container.dart';
+import 'createaccount_widget.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/validators.dart';
