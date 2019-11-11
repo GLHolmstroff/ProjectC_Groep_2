@@ -1,4 +1,4 @@
-enum FormType { login, register }
+enum FormType { login, register, editprofile }
 
 class EmailValidator {
   static String validate(String value) {
@@ -7,6 +7,12 @@ class EmailValidator {
 }
 
 class PasswordValidator {
+  static String validate(String value) {
+    return value.isEmpty ? "Dit veld mag niet leeg zijn" : null;
+  }
+}
+
+class NameValidator {
   static String validate(String value) {
     return value.isEmpty ? "Dit veld mag niet leeg zijn" : null;
   }
