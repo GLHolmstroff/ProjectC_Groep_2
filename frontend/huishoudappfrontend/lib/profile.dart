@@ -84,8 +84,7 @@ class _Profilepage extends State<Profilepage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: new Stack(
+    return new Stack(
         children: <Widget>[
           ClipPath(
             child: Container(
@@ -203,8 +202,7 @@ class _Profilepage extends State<Profilepage> {
             ),
           )
         ],
-      ),
-    );
+      );
   }
 }
 

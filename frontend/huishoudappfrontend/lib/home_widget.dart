@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'Objects.dart';
-
+import 'page_container.dart';
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/beer_widget.dart';
 
@@ -13,7 +13,10 @@ import 'package:http/http.dart';
 
 class Home_widget extends StatefulWidget{
   static User currentUser;
-  Home_widget({Key key, User currentUser = null}) : super(key: key);
+
+  final ValueChanged<Widget> changeToWidget;
+
+  Home_widget({Key key, User currentUser = null, this.changeToWidget}) : super(key: key);
   
 
   @override
@@ -71,24 +74,19 @@ class Home_widget_state extends State<Home_widget>{
             ),
             (FlatButton(
                 child: Text("Go to Beer"),
-                onPressed: () async {
-                  Auth auth = Provider.of(context).auth;
-                  String uid = await auth.currentUser();
-                  print(uid);
-                  final Response res = await get(
-                      "http://10.0.2.2:8080/authCurrent?uid=$uid",
-                      headers: {'Content-Type': 'application/json'});
-                  print(res.statusCode);
-                  if (res.statusCode == 200) {
-                    // If server returns an OK response, parse the JSON.
-                    User currentUser = User.fromJson(json.decode(res.body));
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              BeerPage(currentUser: currentUser),
-                        ));
-                  }
+                onPressed: () {
+                    User currentUser = User();
+                    
+                    Widget beerPage = BeerPage(currentUser: currentUser);
+                    widget.changeToWidget(beerPage);
+                   
+                  //   Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (context) =>
+                  //             BeerPage(currentUser: currentUser),
+                  //       ));
+                  
                 })),
           ],
         ),

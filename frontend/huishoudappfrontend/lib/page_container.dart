@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/home_widget.dart';
 import 'package:huishoudappfrontend/beer_widget.dart';
@@ -17,8 +18,7 @@ import 'placeholder_widget.dart';
 
 class HomePage extends StatefulWidget {
   static String tag = 'home-page';
-  
- 
+
   static Future<HomePage> _init() async {
     return HomePage();
   }
@@ -30,25 +30,37 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  
   int _currentIndex = 0;
-  final List<Widget> _children = [
-    Home_widget(),
-    PlaceholderWidget(Colors.deepOrange),
-    PlaceholderWidget(Colors.green),
-    PlaceholderWidget(Colors.green)
-  ];
-
- 
+  Widget _currentWidget = Home_widget();
+  List<Widget> _children;
 
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
+      _currentWidget = _children[index];
+    });
+  }
+
+  void _setChildren() {
+    setState(() {
+      _children = [
+        Home_widget(changeToWidget: _setNewBody),
+        PlaceholderWidget(Colors.deepOrange),
+        PlaceholderWidget(Colors.green),
+        Profilepage()
+      ];
+    });
+  }
+
+  void _setNewBody(Widget widget) {
+    setState(() {
+      _currentWidget = widget;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    _setChildren();
     return Scaffold(
       appBar: AppBar(
         title: Text('Welcome Page'),
@@ -56,12 +68,13 @@ class HomePageState extends State<HomePage> {
           FlatButton(
             child: Text("Jouw profiel"),
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Profilepage()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Profilepage()));
             },
           )
         ],
       ),
-      body: _children[_currentIndex],
+      body: _currentWidget,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         onTap: onTabTapped,
@@ -73,13 +86,13 @@ class HomePageState extends State<HomePage> {
             title: new Text('Huis'),
           ),
           BottomNavigationBarItem(
-            icon: new Icon(Icons.list),
+            icon: new Icon(Icons.check),
             title: new Text('Rooster'),
           ),
           BottomNavigationBarItem(
               icon: new Icon(Icons.list), title: new Text("Turven")),
           BottomNavigationBarItem(
-              icon: new Icon(Icons.people), title: new Text("Profile"))
+              icon: new Icon(Icons.person), title: new Text("Profile"))
         ],
       ),
     );
