@@ -3,15 +3,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/home_widget.dart';
-import 'package:huishoudappfrontend/beer_page.dart';
-import 'package:huishoudappfrontend/createaccount_page.dart';
+import 'package:huishoudappfrontend/beer_widget.dart';
+import 'package:huishoudappfrontend/createaccount_widget.dart';
 import 'package:huishoudappfrontend/main.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/validators.dart';
 import 'package:http/http.dart';
 import 'Objects.dart';
-import 'profile.dart'
+import 'profile.dart';
 
 import 'placeholder_widget.dart';
 

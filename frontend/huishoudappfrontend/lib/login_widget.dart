@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:huishoudappfrontend/home_page.dart';
+import 'package:huishoudappfrontend/page_container.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/validators.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:http/http.dart';
-import 'package:huishoudappfrontend/createaccount_page.dart';
+import 'package:huishoudappfrontend/createaccount_widget.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
