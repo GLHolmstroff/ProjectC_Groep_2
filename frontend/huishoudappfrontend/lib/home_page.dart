@@ -73,16 +73,16 @@ class HomePageState extends State<HomePage> {
         items: [
           BottomNavigationBarItem(
             icon: new Icon(Icons.home),
-            title: new Text('Home'),
+            title: new Text('Huis'),
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.list),
-            title: new Text('Message'),
+            title: new Text('Rooster'),
           ),
           BottomNavigationBarItem(
-              icon: new Icon(Icons.accessible), title: new Text("Iets")),
+              icon: new Icon(Icons.list), title: new Text("Turven")),
           BottomNavigationBarItem(
-              icon: new Icon(Icons.adjust), title: new Text("data"))
+              icon: new Icon(Icons.people), title: new Text("Profile"))
         ],
       ),
     );
