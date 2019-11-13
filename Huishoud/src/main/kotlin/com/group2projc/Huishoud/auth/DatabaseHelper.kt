@@ -144,6 +144,19 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+
+    fun getGroupName(gid: Int): HashMap<String, Any?> {
+        var out = HashMap<String, Any?>()
+        transaction(db) {
+            Groups.select({ Groups.id eq gid }).forEach {
+                out["groupid"] = it[Groups.id]
+                out["created_at"] = it[Groups.created_at]
+                out["name"] = it[Groups.name]
+            }
+        }
+        return out
+    }
+
     fun addUserToGroup(uid: String, gid: Int, makeUserAdmin: Boolean = false): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)

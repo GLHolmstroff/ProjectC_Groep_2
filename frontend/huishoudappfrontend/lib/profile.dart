@@ -36,6 +36,23 @@ class _Profilepage extends State<Profilepage> {
     return currentUser;
   }
 
+  Future<House> getHouse() async {
+
+    User currentUser = await getUser();
+    String groupID = currentUser.groupId.toString();
+    House currentGroup;
+    final Response res = await get("http://10.0.2.2:8080/getGroupName?gid=$groupID",
+        headers: {'Content-Type': 'application/json'});
+    print(res.statusCode);
+    if (res.statusCode == 200) {
+      // If server returns an OK response, parse the JSON.
+      currentGroup = House.fromJson(json.decode(res.body));
+    } else {
+      print("Could not find group");
+    }
+    return currentGroup;
+  }
+
   void _showDialog(String type) {
     // flutter defined function
     showDialog(
@@ -123,7 +140,7 @@ class _Profilepage extends State<Profilepage> {
                         onTap: () {
                           _showDialog("Verander je naam");
                         },
-                        child: Text("Welkome, " + snapshot.data.displayName),
+                        child: Text("Welkom, " + snapshot.data.displayName),
                       );
                       //return Text("Welcome, " + snapshot.data.displayName);
                     } else if (snapshot.hasError) {
@@ -155,12 +172,25 @@ class _Profilepage extends State<Profilepage> {
                             fontStyle: FontStyle.italic,
                           ),
                         ),
-                        Text(
-                          'placeholderhuisnaam',
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.normal,
-                          ),
+                        FutureBuilder<House>(
+                          future: getHouse(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return new GestureDetector(
+                                onTap: () {
+                                  _showDialog("Verander je naam");
+                                },
+                                child: Text(
+                                    snapshot.data.houseName),
+                              );
+                              //return Text("Welcome, " + snapshot.data.displayName);
+                            } else if (snapshot.hasError) {
+                              return Text("${snapshot.error}");
+                            }
+
+                            // By default, show a loading spinner.
+                            return CircularProgressIndicator();
+                          },
                         ),
                       ],
                     ),

@@ -28,6 +28,8 @@ class Group {
   //TODO: Add groupid, etc. and ways to query them
   final List<String> users;
 
+  
+
   Group({this.users});
 
   factory Group.fromJson(Map<String,dynamic> json) {
@@ -44,11 +46,31 @@ class Group {
     );
   }
 
+
+
   String toString() {
     String out = "";
     this.users.forEach((el) => out += el + "\n");
     return out;
   }
+}
+
+class House {
+    final int groupId;
+    final String createdAt;
+    final String houseName;
+
+    House({this.groupId, this.createdAt, this.houseName});
+
+
+    factory House.fromJson(Map<String,dynamic> json) {
+    return House(
+      groupId: json['groupid'],
+      createdAt: json['created_at'],
+      houseName: json['name']
+    );
+  }
+    
 }
 
 class BeerTally {

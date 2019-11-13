@@ -36,7 +36,7 @@ class HomePageState extends State<HomePage> {
     Home_widget(),
     PlaceholderWidget(Colors.deepOrange),
     PlaceholderWidget(Colors.green),
-    PlaceholderWidget(Colors.green)
+    Profilepage()
   ];
 
  
