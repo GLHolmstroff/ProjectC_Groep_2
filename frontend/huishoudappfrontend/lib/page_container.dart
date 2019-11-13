@@ -34,6 +34,7 @@ class HomePageState extends State<HomePage> {
   Widget _currentWidget = Home_widget();
   List<Widget> _children;
 
+  // change the currentwidget with the corresponding child widget
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -41,17 +42,19 @@ class HomePageState extends State<HomePage> {
     });
   }
 
+// set all the child widgets for the scaffold body
   void _setChildren() {
-    setState(() {
-      _children = [
+    // replace the placeholder widget with your widget
+    // give _steNewBody as argument if you want to change the currentwidget from inside your widget
+    setState(() => _children = [
         Home_widget(changeToWidget: _setNewBody),
         PlaceholderWidget(Colors.deepOrange),
         PlaceholderWidget(Colors.green),
         Profilepage()
-      ];
-    });
+      ]);
   }
 
+// Get new widget and replace the current widget
   void _setNewBody(Widget widget) {
     setState(() {
       _currentWidget = widget;
@@ -60,6 +63,7 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // initialize all the children, cant be done in the constructor because we are parsing a function
     _setChildren();
     return Scaffold(
       appBar: AppBar(
@@ -74,9 +78,12 @@ class HomePageState extends State<HomePage> {
           )
         ],
       ),
+      // The body of the scaffold is the currentwidget
       body: _currentWidget,
       bottomNavigationBar: BottomNavigationBar(
+        // type needs to be fixed otherwise the color of the navigationBariItems will be white, (weird bug)
         type: BottomNavigationBarType.fixed,
+        // set function for when an navigationbaritem is tapped 
         onTap: onTabTapped,
         currentIndex:
             _currentIndex, // this will be set when a new tab is tapped
