@@ -228,6 +228,8 @@ class _Profilepage extends State<Profilepage> {
                             child: FutureBuilder<bool>(
                               future: _loggedinWithEmail(),
                               builder: (context, snapshot) {
+                                print(snapshot.data);
+                                if(snapshot.hasData){
                                 return Visibility(
                                     visible: snapshot.data,
                                     child: Material(
@@ -249,6 +251,9 @@ class _Profilepage extends State<Profilepage> {
                                         ),
                                       ),
                                     ));
+                                } else {
+                                  return CircularProgressIndicator();
+                                }
                               },
                             )),
                       ],
