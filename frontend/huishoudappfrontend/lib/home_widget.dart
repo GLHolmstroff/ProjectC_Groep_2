@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:huishoudappfrontend/group_widget.dart';
+
 import 'Objects.dart';
 import 'page_container.dart';
 import 'package:flutter/material.dart';
@@ -86,6 +88,17 @@ class Home_widget_state extends State<Home_widget>{
                   //         builder: (context) =>
                   //             BeerPage(currentUser: currentUser),
                   //       ));
+                  
+                })),(FlatButton(
+                child: Text("Go to group"),
+                onPressed: () {
+                   
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              GroupWidget(),
+                        ));
                   
                 })),
           ],
