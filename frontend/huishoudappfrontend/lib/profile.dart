@@ -20,6 +20,7 @@ class _Profilepage extends State<Profilepage> {
   final fromkey = GlobalKey<FormState>();
   FormType _formType = FormType.editprofile;
   String _name;
+  bool loginWithEmail;
 
   Future<User> getUser() async {
     String uid = await Auth().currentUser();
@@ -37,11 +38,11 @@ class _Profilepage extends State<Profilepage> {
   }
 
   Future<House> getHouse() async {
-
     User currentUser = await getUser();
     String groupID = currentUser.groupId.toString();
     House currentGroup;
-    final Response res = await get("http://10.0.2.2:8080/getGroupName?gid=$groupID",
+    final Response res = await get(
+        "http://10.0.2.2:8080/getGroupName?gid=$groupID",
         headers: {'Content-Type': 'application/json'});
     print(res.statusCode);
     if (res.statusCode == 200) {
@@ -53,22 +54,32 @@ class _Profilepage extends State<Profilepage> {
     return currentGroup;
   }
 
-  void _sendChangePasswordEmail() async {
+  Future<bool> _loggedinWithEmail() async {
     final auth = Provider.of(context).auth;
     try {
-        await auth.sendResetPasswordEmail(await auth.getEmailUser());
-        print("ResetEmail send");
-        try {
-          await auth.signOut();
-          print("loged out");
-          Navigator.pop(context);
-        } catch(a) {
-          print(a);
-        }
-    } catch(e){
+      String loginMethode = (await auth.getUserIdToken());
+      return (loginMethode == "password");
+    } catch (e) {
+      return false;
+    }
+  }
+
+  void _sendChangePasswordEmail() async {
+    final auth = Provider.of(context).auth;
+    print(await auth.getUserIdToken());
+    try {
+      await auth.sendResetPasswordEmail(await auth.getEmailUser());
+      print("ResetEmail send");
+      try {
+        await auth.signOut();
+        print("loged out");
+        Navigator.pop(context);
+      } catch (a) {
+        print(a);
+      }
+    } catch (e) {
       print(e);
     }
-    
   }
 
   void _showDialog(String type) {
@@ -113,8 +124,9 @@ class _Profilepage extends State<Profilepage> {
       Navigator.pop(context);
       print(_name);
       String uid = await Auth().currentUser();
-      final Response res = await get("http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
-        headers: {'Content-Type': 'application/json'});
+      final Response res = await get(
+          "http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
+          headers: {'Content-Type': 'application/json'});
     }
   }
 
@@ -197,10 +209,9 @@ class _Profilepage extends State<Profilepage> {
                             if (snapshot.hasData) {
                               return new GestureDetector(
                                 onTap: () {
-                                  _sendChangePasswordEmail();
+                                  print('hallo');
                                 },
-                                child: Text(
-                                    snapshot.data.houseName),
+                                child: Text(snapshot.data.houseName),
                               );
                               //return Text("Welcome, " + snapshot.data.displayName);
                             } else if (snapshot.hasError) {
@@ -211,6 +222,35 @@ class _Profilepage extends State<Profilepage> {
                             return CircularProgressIndicator();
                           },
                         ),
+                        Container(
+                            height: 30.0,
+                            width: 200.0,
+                            child: FutureBuilder<bool>(
+                              future: _loggedinWithEmail(),
+                              builder: (context, snapshot) {
+                                return Visibility(
+                                    visible: snapshot.data,
+                                    child: Material(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                      shadowColor: Colors.redAccent,
+                                      color: Colors.red,
+                                      elevation: 10.0,
+                                      child: GestureDetector(
+                                        onTap: () async {
+                                          _sendChangePasswordEmail();
+                                        },
+                                        child: Center(
+                                          child: Text(
+                                            'Reset je wachtwoord',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ));
+                              },
+                            )),
                       ],
                     ),
                   ],
@@ -220,7 +260,7 @@ class _Profilepage extends State<Profilepage> {
                 ),
                 Container(
                   height: 30.0,
-                  width: 95.0,
+                  width: 200.0,
                   child: Material(
                     borderRadius: BorderRadius.circular(20.0),
                     shadowColor: Colors.redAccent,
@@ -231,7 +271,6 @@ class _Profilepage extends State<Profilepage> {
                         try {
                           Auth auth = Provider.of(context).auth;
                           await auth.signOut();
-                          //Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
                           Navigator.pop(context);
                         } catch (e) {
                           print(e);
