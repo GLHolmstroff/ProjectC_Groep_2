@@ -53,6 +53,24 @@ class _Profilepage extends State<Profilepage> {
     return currentGroup;
   }
 
+  void _sendChangePasswordEmail() async {
+    final auth = Provider.of(context).auth;
+    try {
+        await auth.sendResetPasswordEmail(await auth.getEmailUser());
+        print("ResetEmail send");
+        try {
+          await auth.signOut();
+          print("loged out");
+          Navigator.pop(context);
+        } catch(a) {
+          print(a);
+        }
+    } catch(e){
+      print(e);
+    }
+    
+  }
+
   void _showDialog(String type) {
     // flutter defined function
     showDialog(
@@ -179,7 +197,7 @@ class _Profilepage extends State<Profilepage> {
                             if (snapshot.hasData) {
                               return new GestureDetector(
                                 onTap: () {
-                                  _showDialog("Verander je naam");
+                                  _sendChangePasswordEmail();
                                 },
                                 child: Text(
                                     snapshot.data.houseName),
