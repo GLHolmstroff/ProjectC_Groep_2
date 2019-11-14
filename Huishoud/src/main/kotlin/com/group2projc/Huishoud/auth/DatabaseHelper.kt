@@ -144,6 +144,15 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+    fun userUpdateDisplayName(uid: String, displayname1: String) : DatabaseHelper {
+        transaction(db) {
+            Users.update({Users.id eq uid}){
+                it[displayname] = displayname1
+            }
+        }
+        return this@DatabaseHelper
+    }
+
 
     fun getGroupName(gid: Int): HashMap<String, Any?> {
         var out = HashMap<String, Any?>()

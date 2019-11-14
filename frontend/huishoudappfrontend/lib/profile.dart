@@ -89,13 +89,14 @@ class _Profilepage extends State<Profilepage> {
     );
   }
 
-  void _submitnewname() {
+  void _submitnewname() async {
     if (fromkey.currentState.validate()) {
       fromkey.currentState.save();
       Navigator.pop(context);
       print(_name);
-      //TODO:
-      //CHANGE NAME IN DATABASE.
+      String uid = await Auth().currentUser();
+      final Response res = await get("http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
+        headers: {'Content-Type': 'application/json'});
     }
   }
 

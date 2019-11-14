@@ -28,6 +28,14 @@ class AuthResponseController {
         return map
     }
 
+    @RequestMapping("/userUpdateDisplayName")
+    fun userUpdateDisplayName(@RequestParam(value = "uid") uid: String,
+                                @RequestParam(value = "displayname") displayname: String): HashMap<String, Any?> {
+        val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .userUpdateDisplayName(uid, displayname)
+        return dbHelper.getUser(uid)
+    }
+
     @RequestMapping("/createGroup")
     fun authcreateGroup(@RequestParam(value = "name", defaultValue = "World") name: String,
                       @RequestParam(value= "uid", defaultValue = "")uid: String): AuthResponse {
