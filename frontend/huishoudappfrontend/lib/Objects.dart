@@ -1,27 +1,40 @@
-class User {
-  final String userId;
-  final int groupId;
-  final String globalPermissions;
-  final String displayName;
 
-  User({this.userId,this.groupId,this.globalPermissions,this.displayName});
-
-  factory User.fromJson(Map<String,dynamic> json) {
-    return User(
-      userId: json['uid'],
-      groupId: json['groupid'],
-      globalPermissions: json['global_permissions'],
-      displayName: json['display_name'],
-    );
-  }
+class BaseUser  {
+  String userId;
+  int groupId;
+  String globalPermissions;
+  String displayName;
 
   @override
   String toString() {
-    return "userID: " + this.userId + "\n" +
+    return "userID: " + User._instance.userId + "\n" +
              "groupID: " + this.groupId.toString() + "\n" +
             "permission: " + this.globalPermissions + "\n" +
             "Name: " + this.displayName + "\n";
   }
+}
+
+class User extends BaseUser{
+  static final User _instance =  User._internal(); 
+  
+  factory User(){
+    return _instance;
+  }
+
+  factory User.fromJson(Map<String,dynamic> json) {
+      _instance.userId = json['uid'];
+      _instance.groupId = json['groupid'];
+      _instance.globalPermissions = json['global_permissions'];
+      _instance.displayName = json['display_name'];
+      return _instance;
+  }
+
+  User._internal(){
+    userId = null;
+    groupId = null;
+    globalPermissions = null;
+    displayName = null;
+  } 
 }
 
 class Group {
