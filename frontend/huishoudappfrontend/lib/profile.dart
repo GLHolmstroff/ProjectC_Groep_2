@@ -132,63 +132,164 @@ class _Profilepage extends State<Profilepage> {
 
   @override
   Widget build(BuildContext context) {
+    //widgets variables
+    final clipper = ClipPath(
+      child: Container(
+        color: Colors.black.withOpacity(0.9),
+      ),
+      clipper: getClipper(),
+    );
+
+     FutureBuilder<User> userDisplayname = FutureBuilder<User>(
+      future: getUser(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return new GestureDetector(
+            onTap: () {
+              _showDialog("Verander je naam");
+            },
+            child: Text("Welkom, " + snapshot.data.displayName),
+          );
+          //return Text("Welcome, " + snapshot.data.displayName);
+        } else if (snapshot.hasError) {
+          return Text("${snapshot.error}");
+        }
+
+        // By default, show a loading spinner.
+        return CircularProgressIndicator();
+      },
+    );
+
+    final userImage = Container(
+      width: 150.0,
+      height: 150.0,
+      decoration: BoxDecoration(
+          color: Colors.red,
+          image: DecorationImage(
+              image: NetworkImage('https://placeimg.com/640/480/people'),
+              fit: BoxFit.cover),
+          borderRadius: BorderRadius.circular(75.0),
+          boxShadow: [BoxShadow(blurRadius: 7.0, color: Colors.black)]),
+    );
+
+    final userNickname = Text(
+      'placeholder bijnaam',
+      style: TextStyle(
+        fontSize: 17.0,
+        fontStyle: FontStyle.italic,
+      ),
+    );
+
+    final userHouseText = Text(
+      'Jouw huis',
+      style: TextStyle(
+        fontSize: 20.0,
+        fontStyle: FontStyle.italic,
+      ),
+    );
+
+    FutureBuilder<House> userHouseName = FutureBuilder<House>(
+      future: getHouse(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return new GestureDetector(
+            onTap: () {
+              print('hallo');
+            },
+            child: Text(snapshot.data.houseName),
+          );
+          //return Text("Welcome, " + snapshot.data.displayName);
+        } else if (snapshot.hasError) {
+          return Text("${snapshot.error}");
+        }
+
+        // By default, show a loading spinner.
+        return CircularProgressIndicator();
+      },
+    );
+
+    final resetPasswordButton = Container(
+      height: 30.0,
+      width: 200.0,
+      child: FutureBuilder<bool>(
+        future: _loggedinWithEmail(),
+        builder: (context, snapshot) {
+          print(snapshot.data);
+          if (snapshot.hasData) {
+            return Visibility(
+                visible: snapshot.data,
+                child: Material(
+                  borderRadius: BorderRadius.circular(20.0),
+                  shadowColor: Colors.redAccent,
+                  color: Colors.red,
+                  elevation: 10.0,
+                  child: GestureDetector(
+                    onTap: () async {
+                      _sendChangePasswordEmail();
+                    },
+                    child: Center(
+                      child: Text(
+                        'Reset je wachtwoord',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ));
+          } else {
+            return CircularProgressIndicator();
+          }
+        },
+      ),
+    );
+
+    final signOutButton = Container(
+      height: 30.0,
+      width: 200.0,
+      child: Material(
+        borderRadius: BorderRadius.circular(20.0),
+        shadowColor: Colors.redAccent,
+        color: Colors.red,
+        elevation: 10.0,
+        child: GestureDetector(
+          onTap: () async {
+            try {
+              Auth auth = Provider.of(context).auth;
+              await auth.signOut();
+              Navigator.pop(context);
+            } catch (e) {
+              print(e);
+              print('logt niet uit');
+            }
+          },
+          child: Center(
+            child: Text(
+              'Log uit',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
     return new Scaffold(
       body: new Stack(
         children: <Widget>[
-          ClipPath(
-            child: Container(
-              color: Colors.black.withOpacity(0.9),
-            ),
-            clipper: getClipper(),
-          ),
+          clipper,
           Positioned(
             width: 400.0,
             top: MediaQuery.of(context).size.height / 8,
             child: Column(
               children: <Widget>[
-                Container(
-                  width: 150.0,
-                  height: 150.0,
-                  decoration: BoxDecoration(
-                      color: Colors.red,
-                      image: DecorationImage(
-                          image: NetworkImage(
-                              'https://placeimg.com/640/480/people'),
-                          fit: BoxFit.cover),
-                      borderRadius: BorderRadius.circular(75.0),
-                      boxShadow: [
-                        BoxShadow(blurRadius: 7.0, color: Colors.black)
-                      ]),
-                ),
+                userImage,
                 SizedBox(
                   height: 50.0,
                 ),
-                FutureBuilder<User>(
-                  future: getUser(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return new GestureDetector(
-                        onTap: () {
-                          _showDialog("Verander je naam");
-                        },
-                        child: Text("Welkom, " + snapshot.data.displayName),
-                      );
-                      //return Text("Welcome, " + snapshot.data.displayName);
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
-                    }
-
-                    // By default, show a loading spinner.
-                    return CircularProgressIndicator();
-                  },
-                ),
-                Text(
-                  'placeholder bijnaam',
-                  style: TextStyle(
-                    fontSize: 17.0,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
+                userDisplayname,
+                userNickname,
                 SizedBox(
                   height: 30.0,
                 ),
@@ -196,66 +297,9 @@ class _Profilepage extends State<Profilepage> {
                   children: <Widget>[
                     Column(
                       children: <Widget>[
-                        Text(
-                          'Jouw huis',
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                        FutureBuilder<House>(
-                          future: getHouse(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return new GestureDetector(
-                                onTap: () {
-                                  print('hallo');
-                                },
-                                child: Text(snapshot.data.houseName),
-                              );
-                              //return Text("Welcome, " + snapshot.data.displayName);
-                            } else if (snapshot.hasError) {
-                              return Text("${snapshot.error}");
-                            }
-
-                            // By default, show a loading spinner.
-                            return CircularProgressIndicator();
-                          },
-                        ),
-                        Container(
-                            height: 30.0,
-                            width: 200.0,
-                            child: FutureBuilder<bool>(
-                              future: _loggedinWithEmail(),
-                              builder: (context, snapshot) {
-                                print(snapshot.data);
-                                if(snapshot.hasData){
-                                return Visibility(
-                                    visible: snapshot.data,
-                                    child: Material(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                      shadowColor: Colors.redAccent,
-                                      color: Colors.red,
-                                      elevation: 10.0,
-                                      child: GestureDetector(
-                                        onTap: () async {
-                                          _sendChangePasswordEmail();
-                                        },
-                                        child: Center(
-                                          child: Text(
-                                            'Reset je wachtwoord',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ));
-                                } else {
-                                  return CircularProgressIndicator();
-                                }
-                              },
-                            )),
+                        userHouseText,
+                        userHouseName,
+                        resetPasswordButton,
                       ],
                     ),
                   ],
@@ -263,35 +307,7 @@ class _Profilepage extends State<Profilepage> {
                 SizedBox(
                   height: 30.0,
                 ),
-                Container(
-                  height: 30.0,
-                  width: 200.0,
-                  child: Material(
-                    borderRadius: BorderRadius.circular(20.0),
-                    shadowColor: Colors.redAccent,
-                    color: Colors.red,
-                    elevation: 10.0,
-                    child: GestureDetector(
-                      onTap: () async {
-                        try {
-                          Auth auth = Provider.of(context).auth;
-                          await auth.signOut();
-                          Navigator.pop(context);
-                        } catch (e) {
-                          print(e);
-                        }
-                      },
-                      child: Center(
-                        child: Text(
-                          'Log uit',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                signOutButton,
               ],
             ),
           )
