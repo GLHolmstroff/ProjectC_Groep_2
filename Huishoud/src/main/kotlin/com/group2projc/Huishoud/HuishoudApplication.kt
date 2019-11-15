@@ -6,6 +6,7 @@ import org.springframework.boot.runApplication
 import com.google.firebase.FirebaseApp
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseOptions
+import com.group2projc.Huishoud.filetransfer.storage.FileSystemStorageService
 
 import java.io.FileInputStream
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder.applicationContext
@@ -46,6 +47,9 @@ class HuishoudApplication: ExitCodeGenerator {
 
 
             val dbHelper:DatabaseHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").initDataBase()
+            val fsss:FileSystemStorageService = FileSystemStorageService(StorageProperties())
+            fsss.deleteAll()
+            fsss.init()
         }
 
         fun shutDown() {
