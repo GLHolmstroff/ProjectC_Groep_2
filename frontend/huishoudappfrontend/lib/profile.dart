@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/login_widget.dart';
+import 'package:huishoudappfrontend/profileconstants.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/page_container.dart';
@@ -21,6 +22,14 @@ class _Profilepage extends State<Profilepage> {
   FormType _formType = FormType.editprofile;
   String _name;
   bool loginWithEmail;
+  ProfileConstants profCons;
+
+  Future<ProfileConstants> _makeProfileConstants () async {
+    loginWithEmail = await _loggedinWithEmail();
+    print('login met email =' + loginWithEmail.toString());
+    profCons =ProfileConstants(loginWithEmail);
+    return profCons;
+  }
 
   Future<User> getUser() async {
     String uid = await Auth().currentUser();
@@ -73,7 +82,7 @@ class _Profilepage extends State<Profilepage> {
       try {
         await auth.signOut();
         print("loged out");
-        Navigator.pop(context);
+        //Navigator.pop(context);
       } catch (a) {
         print(a);
       }
@@ -122,11 +131,31 @@ class _Profilepage extends State<Profilepage> {
     if (fromkey.currentState.validate()) {
       fromkey.currentState.save();
       Navigator.pop(context);
+      setState(() {
+        
+      });
       print(_name);
       String uid = await Auth().currentUser();
       final Response res = await get(
           "http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
           headers: {'Content-Type': 'application/json'});
+    }
+  }
+
+  void _choiceAction(String choice) async {
+    if (choice == profCons.editUserName) {
+      _showDialog("Verander je naam");
+    } else if (choice == profCons.signOut) {
+      try {
+        Auth auth = Provider.of(context).auth;
+        await auth.signOut();
+        //Navigator.pop(context);
+      } catch (e) {
+        print(e);
+        print('logt niet uit');
+      }
+    } else if (choice == "Verander wachtwoord") {
+      _sendChangePasswordEmail();
     }
   }
 
@@ -140,17 +169,17 @@ class _Profilepage extends State<Profilepage> {
       clipper: getClipper(),
     );
 
-     FutureBuilder<User> userDisplayname = FutureBuilder<User>(
+    FutureBuilder<User> userDisplayname = FutureBuilder<User>(
       future: getUser(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return new GestureDetector(
+          /*return new GestureDetector(
             onTap: () {
               _showDialog("Verander je naam");
             },
             child: Text("Welkom, " + snapshot.data.displayName),
-          );
-          //return Text("Welcome, " + snapshot.data.displayName);
+          );*/
+          return Text("Welcome, " + snapshot.data.displayName);
         } else if (snapshot.hasError) {
           return Text("${snapshot.error}");
         }
@@ -299,7 +328,7 @@ class _Profilepage extends State<Profilepage> {
                       children: <Widget>[
                         userHouseText,
                         userHouseName,
-                        resetPasswordButton,
+                        //resetPasswordButton,
                       ],
                     ),
                   ],
@@ -307,11 +336,37 @@ class _Profilepage extends State<Profilepage> {
                 SizedBox(
                   height: 30.0,
                 ),
-                signOutButton,
+                //signOutButton,
               ],
             ),
           )
         ],
+      ),
+      
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){},
+        child: FutureBuilder<ProfileConstants>(
+          future: _makeProfileConstants(),
+          builder: (context, snapshot) {
+            if(snapshot.hasData){
+              return PopupMenuButton<String>(
+                onSelected: _choiceAction,
+                itemBuilder: (BuildContext context) {
+                  return snapshot.data.choices.map((String choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(choice),
+                    );
+                  }).toList();
+                },
+                icon: Icon(Icons.settings),
+              );  
+            } else {
+              return Icon(Icons.settings);
+            }
+          },
+        ),
+        backgroundColor: Colors.red,
       ),
     );
   }
@@ -333,3 +388,4 @@ class getClipper extends CustomClipper<Path> {
     return true;
   }
 }
+
