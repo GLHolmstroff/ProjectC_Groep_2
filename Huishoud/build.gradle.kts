@@ -24,6 +24,7 @@ dependencies {
 	implementation("org.jetbrains.exposed:spring-transaction:0.17.4")
 	implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     //implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework:spring-web:5.2.0.RELEASE")
 	implementation("org.springframework.boot:spring-boot-starter-web")
