@@ -143,7 +143,7 @@ class _Profilepage extends State<Profilepage> {
           ),
           Positioned(
             width: 400.0,
-            top: MediaQuery.of(context).size.height / 5,
+            top: MediaQuery.of(context).size.height / 8,
             child: Column(
               children: <Widget>[
                 Container(
@@ -306,8 +306,8 @@ class getClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     var path = new Path();
 
-    path.lineTo(0.0, size.height / 1.9);
-    path.lineTo(size.width + 125, 0.0);
+    path.lineTo(0.0, size.height / 2.5);
+    path.lineTo(size.width * 1.9, 0.0);
     path.close();
     return path;
   }
