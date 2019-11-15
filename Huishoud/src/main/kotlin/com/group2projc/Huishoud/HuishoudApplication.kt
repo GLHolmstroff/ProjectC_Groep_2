@@ -12,7 +12,6 @@ import org.springframework.web.server.adapter.WebHttpHandlerBuilder.applicationC
 import org.springframework.boot.SpringApplication
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.ExitCodeGenerator
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ConfigurableApplicationContext
@@ -49,14 +48,6 @@ class HuishoudApplication: ExitCodeGenerator {
             val dbHelper:DatabaseHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").initDataBase()
         }
 
-        @Bean
-        fun init(storageService: StorageService): (Array<String>) -> Unit {
-            return { args:Array<String> ->
-                storageService.deleteAll()
-                storageService.init()
-            }
-        }
-
         fun shutDown() {
             val exitCode = SpringApplication.exit(ctx, ExitCodeGenerator {
                 // no errors
@@ -65,5 +56,13 @@ class HuishoudApplication: ExitCodeGenerator {
             exitProcess(exitCode);
         }
         fun doSomeThing():String = "Hello, I am the output"
+    }
+
+    @Bean
+    fun init(storageService: StorageService): (Array<String>) -> Unit {
+        return { args ->
+            storageService.deleteAll()
+            storageService.init()
+        }
     }
 }

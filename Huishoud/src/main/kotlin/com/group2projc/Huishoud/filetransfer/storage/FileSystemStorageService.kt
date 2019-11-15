@@ -1,6 +1,7 @@
 package com.group2projc.Huishoud.filetransfer.storage
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
@@ -17,7 +18,7 @@ import java.util.stream.Stream
 
 @Service
 class FileSystemStorageService @Autowired
-constructor(properties: StorageProperties) : StorageService {
+constructor(@Qualifier("storageProperties") properties: StorageProperties) : StorageService {
 
     private val rootLocation: Path
 
