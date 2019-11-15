@@ -15,8 +15,9 @@ class _Creategroup_widget extends State {
     String groupname = _groupnameController.text;
     if (groupname.length > 4) {
       String uid = await Auth().currentUser();
-      
-      final response = await get("http://10.0.2.2:8080/createGroup?name=$groupname&uid=$uid");
+
+      final response = await get(
+          "http://10.0.2.2:8080/createGroup?name=$groupname&uid=$uid");
       if (response.statusCode == 200) {
         print("Succesfully Registered");
       } else {
@@ -28,9 +29,19 @@ class _Creategroup_widget extends State {
   @override
   Widget build(BuildContext context) {
     final titleText = Text(
-      "Groep aanmaken",
+      "Maak een groep",
       textAlign: TextAlign.left,
-      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold));
+      style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w400),
+    );
+
+    final explanationText1 = Text(
+      "Verzin een groepsnaam",
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: 20.0,
+        // fontWeight: FontWeight.w400
+      ),
+    );
 
     final groupName = TextFormField(
       keyboardType: TextInputType.text,
@@ -49,28 +60,34 @@ class _Creategroup_widget extends State {
 
     final makeGroupButton = RaisedButton(
       onPressed: _makeGroup,
-      child: Text('Uitnodigen en verder', style: TextStyle(fontSize: 20)),
+      child: Text('Aanmaken', style: TextStyle(fontSize: 20)),
     );
 
     return Scaffold(
-        body: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      body: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.only(top:40.0, left: 8.0),
+          padding: const EdgeInsets.only(top: 50.0),
           child: Container(
-            height: 80.0,
-            child: titleText,
+            height: 100,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: titleText,
+            ),
           ),
         ),
-        Container(child: groupName),
-        Container(
-          child: groepsledenText,
+        Center(
+          child:
+              Container(width: 250.0, height: 50.0, child: explanationText1),
         ),
-        Container(
+        Center(child: Container(width: 250.0, height: 100.0,child: groupName)),
+        Center(
+        child:Container(
+          
           child: makeGroupButton,
-        )
+        ))
       ],
     ));
   }

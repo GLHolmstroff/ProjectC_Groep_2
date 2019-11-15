@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:huishoudappfrontend/group_widget.dart';
+import 'package:huishoudappfrontend/groupsetup_widget.dart';
 
 import 'Objects.dart';
 import 'page_container.dart';
