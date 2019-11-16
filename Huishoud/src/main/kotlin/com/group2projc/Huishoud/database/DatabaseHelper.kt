@@ -1,7 +1,7 @@
-package com.group2projc.Huishoud.auth
+package com.group2projc.Huishoud.database
 
-import com.group2projc.Huishoud.auth.DatabaseHelper.BeerTallies.count
-import com.group2projc.Huishoud.auth.DatabaseHelper.BeerTallies.userid
+import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.count
+import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.userid
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDate
@@ -146,7 +146,7 @@ class DatabaseHelper(url: String) {
 
     fun userUpdateDisplayName(uid: String, displayname1: String) : DatabaseHelper {
         transaction(db) {
-            Users.update({Users.id eq uid}){
+            Users.update({ Users.id eq uid}){
                 it[displayname] = displayname1
             }
         }

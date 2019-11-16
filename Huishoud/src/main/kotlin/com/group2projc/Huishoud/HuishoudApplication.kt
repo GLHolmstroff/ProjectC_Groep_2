@@ -1,26 +1,16 @@
 package com.group2projc.Huishoud
 
-import com.group2projc.Huishoud.auth.DatabaseHelper
+import com.group2projc.Huishoud.database.DatabaseHelper
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import com.google.firebase.FirebaseApp
-import com.google.auth.oauth2.GoogleCredentials
-import com.google.firebase.FirebaseOptions
 import com.group2projc.Huishoud.filetransfer.storage.FileSystemStorageService
 
-import java.io.FileInputStream
-import org.springframework.web.server.adapter.WebHttpHandlerBuilder.applicationContext
 import org.springframework.boot.SpringApplication
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.ExitCodeGenerator
-import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.context.ApplicationContext
 import org.springframework.context.ConfigurableApplicationContext
-import org.springframework.context.annotation.Configuration
 import kotlin.system.exitProcess
 import com.group2projc.Huishoud.filetransfer.storage.StorageService
 import com.group2projc.Huishoud.filetransfer.storage.StorageProperties
-import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 
 
@@ -46,7 +36,7 @@ class HuishoudApplication: ExitCodeGenerator {
 //            FirebaseApp.initializeApp(options)
 
 
-            val dbHelper:DatabaseHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").initDataBase()
+            val dbHelper: DatabaseHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").initDataBase()
             val fsss:FileSystemStorageService = FileSystemStorageService(StorageProperties())
             fsss.deleteAll()
             fsss.init()

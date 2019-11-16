@@ -1,6 +1,8 @@
-package com.group2projc.Huishoud.auth
+package com.group2projc.Huishoud.http
 
 import com.group2projc.Huishoud.HuishoudApplication
+import com.group2projc.Huishoud.database.DatabaseHelper
+import com.group2projc.Huishoud.database.createGroup
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
