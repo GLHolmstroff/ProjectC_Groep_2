@@ -38,20 +38,20 @@ class FileSystemStorageServiceTests {
     @Test
     fun saveAndLoad() {
         service!!.store(MockMultipartFile("foo", "foo.txt", MediaType.TEXT_PLAIN_VALUE,
-                "Hello World".toByteArray()))
+                "Hello World".toByteArray()),"001")
         assertThat(service!!.load("foo.txt")).exists()
     }
 
     @Test(expected = StorageException::class)
     fun saveNotPermitted() {
         service!!.store(MockMultipartFile("foo", "../foo.txt",
-                MediaType.TEXT_PLAIN_VALUE, "Hello World".toByteArray()))
+                MediaType.TEXT_PLAIN_VALUE, "Hello World".toByteArray()),"001")
     }
 
     @Test
     fun savePermitted() {
         service!!.store(MockMultipartFile("foo", "bar/../foo.txt",
-                MediaType.TEXT_PLAIN_VALUE, "Hello World".toByteArray()))
+                MediaType.TEXT_PLAIN_VALUE, "Hello World".toByteArray()),"001")
     }
 
 }
