@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-class AuthResponseController {
+class HttpResponseController {
     //TODO: Move corresponding functions to separate Restcontrollers
     //TODO: Update response structures
     private val counter = AtomicLong()
@@ -40,18 +40,18 @@ class AuthResponseController {
 
     @RequestMapping("/createGroup")
     fun authcreateGroup(@RequestParam(value = "name", defaultValue = "World") name: String,
-                      @RequestParam(value= "uid", defaultValue = "")uid: String): AuthResponse {
+                      @RequestParam(value= "uid", defaultValue = "")uid: String): HttpResponse {
         val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
                 .createGroup(name,uid)
-        return AuthResponse(counter.incrementAndGet().toInt(),
+        return HttpResponse(counter.incrementAndGet().toInt(),
                 template + name)
     }
     @RequestMapping("/addUserToGroup")
     fun authUserGroup(@RequestParam(value = "gid", defaultValue = "") gid: Int,
-                      @RequestParam(value= "uid", defaultValue = "")uid: String): AuthResponse {
+                      @RequestParam(value= "uid", defaultValue = "")uid: String): HttpResponse {
         val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
                 .addUserToGroup(uid,gid)
-        return AuthResponse(counter.incrementAndGet().toInt(),
+        return HttpResponse(counter.incrementAndGet().toInt(),
                 template + gid)
     }
 
