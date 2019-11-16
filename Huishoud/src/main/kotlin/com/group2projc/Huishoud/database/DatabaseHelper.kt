@@ -23,12 +23,13 @@ class DatabaseHelper(url: String) {
         val name = varchar("name", 50)
     }
 
-    //SQL : CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, "token" VARCHAR(50) NOT NULL, "group" INT)
+    //SQL : CREATE TABLE IF NOT EXISTS users (COLUMNS)
     object Users : Table() {
         val id = varchar("userid", 50).primaryKey()
         val groupid = reference("groupid", Groups.id).nullable()
         val global_permissions = varchar("global_permissions", 10)
         val displayname = varchar("displayname", 20)
+        val picturelink = varchar("picturelink", 50)
     }
 
     object GroupPermissions : Table() {
@@ -124,6 +125,7 @@ class DatabaseHelper(url: String) {
                     it[groupid] = null
                     it[global_permissions] = "user"
                     it[displayname] = n
+                    it[picturelink] = ""
                 }
             }
 
@@ -139,6 +141,7 @@ class DatabaseHelper(url: String) {
                 out["groupid"] = it[Users.groupid]
                 out["global_permissions"] = it[Users.global_permissions]
                 out["display_name"] = it[Users.displayname]
+                out["picture_link"] = it[Users.picturelink]
             }
         }
         return out

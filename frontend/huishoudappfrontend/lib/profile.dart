@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/login_widget.dart';
@@ -10,6 +11,9 @@ import 'Objects.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:toast/toast.dart';
+import 'package:image_picker/image_picker.dart';
+
+import 'services/permission_serivce.dart';
 
 class Profilepage extends StatefulWidget {
   static String tag = 'profile_page';
@@ -20,6 +24,68 @@ class _Profilepage extends State<Profilepage> {
   final fromkey = GlobalKey<FormState>();
   FormType _formType = FormType.editprofile;
   String _name;
+  File _image;
+
+  Future<File> openGallery() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = image;
+    });
+  }
+
+  Future<File> openCamera() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      _image = image;
+    });
+  }
+
+  Future<void> _imageOptionsDialogBox() {
+  return showDialog(context: context,
+    builder: (BuildContext context) {
+        return AlertDialog(
+          content: new SingleChildScrollView(
+            child: new ListBody(
+              children: <Widget>[
+                GestureDetector(
+                  child: new Text('Take a picture'),
+                  onTap: () async {
+                    var perm = PermissionsService();
+                    if(!await perm.hasCameraPermission()){
+                      perm.requestCameraPermission(
+                        onPermissionDenied: () {
+                          print('Permission has been denied');
+                        }
+                      );
+                    }
+                    openCamera();
+                  },
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                ),
+                GestureDetector(
+                  child: new Text('Select from gallery'),
+                  onTap: () async {
+                    var perm = PermissionsService();
+                    if(!await perm.hasStoragePermission()){
+                      perm.requestStoragePermission(
+                        onPermissionDenied: () {
+                          print('Permission has been denied');
+                        }
+                      );
+                    }
+                    openGallery();
+                    },
+                ),
+              ],
+            ),
+          ),
+        );
+      });
+}
 
   Future<User> getUser() async {
     String uid = await Auth().currentUser();
@@ -116,19 +182,23 @@ class _Profilepage extends State<Profilepage> {
             top: MediaQuery.of(context).size.height / 5,
             child: Column(
               children: <Widget>[
-                Container(
-                  width: 150.0,
-                  height: 150.0,
-                  decoration: BoxDecoration(
-                      color: Colors.red,
-                      image: DecorationImage(
-                          image: NetworkImage(
-                              'https://placeimg.com/640/480/people'),
-                          fit: BoxFit.cover),
-                      borderRadius: BorderRadius.circular(75.0),
-                      boxShadow: [
-                        BoxShadow(blurRadius: 7.0, color: Colors.black)
-                      ]),
+                GestureDetector(
+                  onTap: _imageOptionsDialogBox,
+                  child: Container(
+                    width: 150.0,
+                    height: 150.0,
+                    decoration: BoxDecoration(
+                        color: Colors.red,
+                        image: DecorationImage(
+                            image: _image == null
+                            ? NetworkImage('https://placeimg.com/640/480/people')
+                            : FileImage(_image),
+                            fit: BoxFit.cover,),
+                        borderRadius: BorderRadius.circular(75.0),
+                        boxShadow: [
+                          BoxShadow(blurRadius: 7.0, color: Colors.black)
+                        ]),
+                  ),
                 ),
                 SizedBox(
                   height: 50.0,
