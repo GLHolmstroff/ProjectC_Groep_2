@@ -10,7 +10,7 @@ interface StorageService {
 
     fun init()
 
-    fun store(file: MultipartFile)
+    fun store(file: MultipartFile, uid:String)
 
     fun loadAll(): Stream<Path>
 

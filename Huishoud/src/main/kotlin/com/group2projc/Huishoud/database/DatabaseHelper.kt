@@ -156,6 +156,15 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
+    fun userUpdatePicture(uid:String, picturePath: String) : DatabaseHelper {
+        transaction(db) {
+            Users.update({ Users.id eq uid}){
+                it[picturelink] = picturePath
+            }
+        }
+        return this@DatabaseHelper
+    }
+
 
     fun getGroupName(gid: Int): HashMap<String, Any?> {
         var out = HashMap<String, Any?>()

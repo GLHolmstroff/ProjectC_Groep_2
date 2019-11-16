@@ -60,7 +60,7 @@ class FileUploadTests {
                 .andExpect(status().isFound)
                 .andExpect(header().string("Location", "/"))
 
-        then<StorageService>(this.storageService).should().store(multipartFile)
+        then<StorageService>(this.storageService).should().store(multipartFile, "001")
     }
 
     @Test

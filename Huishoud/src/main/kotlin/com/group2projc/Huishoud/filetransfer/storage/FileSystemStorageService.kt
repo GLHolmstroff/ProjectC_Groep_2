@@ -1,5 +1,6 @@
 package com.group2projc.Huishoud.filetransfer.storage
 
+import com.group2projc.Huishoud.database.DatabaseHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -26,12 +27,14 @@ constructor(@Qualifier("storageProperties") properties: StorageProperties) : Sto
         this.rootLocation = Paths.get(properties.location)
     }
 
-    override fun store(file: MultipartFile) {
+    override fun store(file: MultipartFile, uid:String) {
         try {
             if (file.isEmpty) {
                 throw StorageException("Failed to store empty file " + file.originalFilename!!)
             }
             Files.copy(file.inputStream, this.rootLocation.resolve(file.originalFilename!!))
+            val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                    .userUpdatePicture(uid,(file.originalFilename!!).toString())
         } catch (e: IOException) {
             throw StorageException("Failed to store file " + file.originalFilename!!, e)
         }

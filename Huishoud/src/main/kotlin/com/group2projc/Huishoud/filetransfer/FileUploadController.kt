@@ -1,4 +1,5 @@
 package com.group2projc.Huishoud.filetransfer
+import com.group2projc.Huishoud.database.DatabaseHelper
 import java.io.IOException
 import java.util.stream.Collectors
 
@@ -27,7 +28,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 class FileUploadController @Autowired
 constructor(private val storageService: StorageService) {
 
-    @GetMapping("/")
+    @GetMapping("/files/readall")
     @Throws(IOException::class)
     fun listUploadedFiles(model: Model): String {
 
@@ -50,15 +51,26 @@ constructor(private val storageService: StorageService) {
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file)
     }
 
-    @PostMapping("/")
+    @GetMapping("/files/users")
+    @ResponseBody
+    fun serveFileByUser(@RequestParam("uid",defaultValue= "TokenNotSet") uid: String): ResponseEntity<Resource> {
+
+        val filename:String = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").getUser(uid)["picture_link"].toString()
+        val file = storageService.loadAsResource(filename)
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + file.getFilename() + "\"").body(file)
+    }
+
+    @PostMapping("/files/upload")
     fun handleFileUpload(@RequestParam("file") file: MultipartFile,
+                         @RequestParam("uid" ,defaultValue = "TokenNotSet") uid: String,
                          redirectAttributes: RedirectAttributes): String {
 
-        storageService.store(file)
+        storageService.store(file,uid)
         redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.originalFilename + "!")
 
-        return "redirect:/"
+        return "redirect:/files/readall"
     }
 
     @ExceptionHandler(StorageFileNotFoundException::class)
