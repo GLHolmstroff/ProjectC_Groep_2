@@ -2,6 +2,7 @@ import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:huishoudappfrontend/login_widget.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
@@ -25,6 +26,10 @@ class _Profilepage extends State<Profilepage> {
   FormType _formType = FormType.editprofile;
   String _name;
   File _image;
+
+  Future<String> getUid() async{
+    return await Auth().currentUser();
+  }
 
   Future<File> openGallery() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -187,17 +192,26 @@ class _Profilepage extends State<Profilepage> {
                   child: Container(
                     width: 150.0,
                     height: 150.0,
-                    decoration: BoxDecoration(
-                        color: Colors.red,
-                        image: DecorationImage(
-                            image: _image == null
-                            ? NetworkImage('https://placeimg.com/640/480/people')
-                            : FileImage(_image),
-                            fit: BoxFit.cover,),
-                        borderRadius: BorderRadius.circular(75.0),
-                        boxShadow: [
-                          BoxShadow(blurRadius: 7.0, color: Colors.black)
-                        ]),
+                    child: FutureBuilder<String>(
+                      future: getUid(),
+                      builder: (context, snapshot) {
+                        if(snapshot.hasData){
+                          var uid = snapshot.data;
+                          print(uid);
+                          return Container(decoration: BoxDecoration(
+                            color:Colors.black, 
+                            image: DecorationImage(
+                              image: NetworkImage('http://10.0.2.2:8080/files/users?uid=$uid')
+                            ),
+                            borderRadius: BorderRadius.circular(75.0),
+                          )
+                          );
+                        }else if (snapshot.hasError) {
+                          return Text("${snapshot.error}");
+                        }
+                        return CircularProgressIndicator();
+                      }
+                    ),
                   ),
                 ),
                 SizedBox(
