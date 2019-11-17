@@ -13,14 +13,15 @@ class LoginPage extends StatefulWidget {
 
   @override
   _LoginPageState createState() {
-     _LoginPageState s = _LoginPageState();
+    _LoginPageState s = _LoginPageState();
     //  s.switchFormState("login");
-     return s;
+    return s;
   }
 }
 
 class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
+  final formKey1 = GlobalKey<FormState>();
 
   String _email, _password;
   FormType _formType = FormType.login;
@@ -36,20 +37,32 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  bool validateE() {
+    final form = formKey1.currentState;
+    form.save();
+    if (form.validate()) {
+      form.save();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   void submit() async {
     if (validate()) {
       try {
         final auth = Provider.of(context).auth;
         print(_formType);
-        if (_formType == FormType.login){
+        if (_formType == FormType.login) {
           String userId = await auth.signInWithEmailAndPassword(
             _email,
             _password,
           );
-          final response = await get("http://10.0.2.2:8080/authRegister?uid=$userId");
-          if (response.statusCode == 200){
+          final response =
+              await get("http://10.0.2.2:8080/authRegister?uid=$userId");
+          if (response.statusCode == 200) {
             print("Succesfully Registered");
-          }else{
+          } else {
             print("Connection Failed");
           }
           print('Signed in $userId');
@@ -80,6 +93,57 @@ class _LoginPageState extends State<LoginPage> {
         _formType = FormType.login;
       });
     }
+  }
+
+  void _sendChangePasswordEmail() async {
+    final auth = Provider.of(context).auth;
+    if (validateE()) {
+      try {
+        await auth.sendResetPasswordEmail(_email);
+        print("ResetEmail send");
+        Navigator.pop(context);
+      } catch (a) {
+        print(a);
+      }
+    }
+  }
+
+  void _showDialog(String type) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(type),
+          content: SingleChildScrollView(
+            child: Form(
+              key: formKey1,
+              child: new TextFormField(
+                keyboardType: TextInputType.text,
+                validator: EmailValidator.validate,
+                onSaved: (value) => _email = value,
+                decoration: InputDecoration(
+                  hintText: 'Jouw email',
+                  contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(32.0)),
+                ),
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Verstuur"),
+              onPressed: () {
+                _sendChangePasswordEmail();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -131,10 +195,11 @@ class _LoginPageState extends State<LoginPage> {
         try {
           final _auth = Provider.of(context).auth;
           final id = await _auth.signInWithGoogle();
-          final response = await get("http://10.0.2.2:8080/authRegister?uid=$id");
-          if (response.statusCode == 200){
+          final response =
+              await get("http://10.0.2.2:8080/authRegister?uid=$id");
+          if (response.statusCode == 200) {
             print("Succesfully Registered");
-          }else{
+          } else {
             print("Connection Failed");
           }
         } catch (e) {
@@ -149,6 +214,20 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Text(
         'Account aanmaken',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 17,
+        ),
+      ),
+    );
+
+    final forgotPassword = FlatButton(
+      onPressed: () {
+        _showDialog("Stuur reset email");
+      },
+      child: Text(
+        'Wachtwoord vergeten',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontWeight: FontWeight.bold,
@@ -173,7 +252,8 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 10),
               loginButton,
               googleLogIn,
-              SizedBox(height: 8),
+              SizedBox(height: 10),
+              forgotPassword,
               SizedBox(height: 40),
               signIn,
             ],

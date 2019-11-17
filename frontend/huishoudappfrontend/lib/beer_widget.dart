@@ -52,11 +52,7 @@ class BeerPageState extends State<BeerPage> {
   @override
   Widget build(BuildContext context) {
     // Use the Todo to create the UI.
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Beer Page"),
-      ),
-      body: Center(
+    return  Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -98,7 +94,6 @@ class BeerPageState extends State<BeerPage> {
             ),
             ],
           ),
-        ),
-    );
+      );
   }
 }
