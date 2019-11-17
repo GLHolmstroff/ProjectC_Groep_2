@@ -1,8 +1,6 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'package:huishoudappfrontend/login_widget.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
@@ -27,93 +25,86 @@ class _Profilepage extends State<Profilepage> {
   String _name;
   File _image;
 
-  Future<String> getImgUrl() async{
+  Future<String> getImgUrl() async {
     String uid = await Auth().currentUser();
-    String timeStamp = DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
+    String timeStamp =
+        DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
     return "http://10.0.2.2:8080/files/users?uid=$uid&t=$timeStamp";
   }
 
   Future<File> openGallery() async {
-    var uid = await Auth().currentUser();
     File image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    String timeStamp = DateTime.now().toString()
-    .replaceAllMapped(" ", (Match m) => "")
-    .replaceAllMapped(r':', (Match m)=>",")
-    .replaceAllMapped(r'.', (Match m)=>",");
-    MultipartFile mf = MultipartFile.fromBytes('file', await image.readAsBytes(), filename: timeStamp + 'testfile.png');
-    
+    _updateImage(image);
+  }
+
+  Future<File> openCamera() async {
+    File image = await ImagePicker.pickImage(source: ImageSource.camera);
+    _updateImage(image);
+  }
+
+  Future<void> _updateImage(File image) async {
+    var uid = await Auth().currentUser();
+    String timeStamp = DateTime.now()
+        .toString()
+        .replaceAllMapped(" ", (Match m) => "")
+        .replaceAllMapped(r':', (Match m) => ",")
+        .replaceAllMapped(r'.', (Match m) => ",");
+    MultipartFile mf = MultipartFile.fromBytes(
+        'file', await image.readAsBytes(),
+        filename: timeStamp + 'testfile.png');
+
     var uri = Uri.parse("http://10.0.2.2:8080/files/upload");
     var request = new MultipartRequest("POST", uri);
     request.fields['uid'] = uid;
     request.files.add(mf);
-    print(request.fields);
+
     var response = await request.send();
-    print(response.statusCode);
     if (response.statusCode == 302) setState(() {});
   }
 
-  Future<File> openCamera() async {
-    var uid = await Auth().currentUser();
-    File image = await ImagePicker.pickImage(source: ImageSource.camera);
-    String timeStamp = DateTime.now().toString()
-    .replaceAllMapped(" ", (Match m) => "")
-    .replaceAllMapped(r':', (Match m)=>",")
-    .replaceAllMapped(r'.', (Match m)=>",");
-    MultipartFile mf = MultipartFile.fromBytes('file', await image.readAsBytes(), filename: timeStamp + 'testfile.png');
-
-    var uri = Uri.parse("http://10.0.2.2:8080/files/upload");
-    var request = new MultipartRequest("POST", uri); 
-    request.fields['uid'] = uid; 
-    request.files.add(mf);
-
-    var response = await request.send();
-    if (response.statusCode == 200) print('Uploaded!');
-  }
-
   Future<void> _imageOptionsDialogBox() {
-  return showDialog(context: context,
-    builder: (BuildContext context) {
-        return AlertDialog(
-          content: new SingleChildScrollView(
-            child: new ListBody(
-              children: <Widget>[
-                GestureDetector(
-                  child: new Text('Take a picture'),
-                  onTap: () async {
-                    var perm = PermissionsService();
-                    if(!await perm.hasCameraPermission()){
-                      perm.requestCameraPermission(
-                        onPermissionDenied: () {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: new SingleChildScrollView(
+              child: new ListBody(
+                children: <Widget>[
+                  GestureDetector(
+                    child: new Text('Take a picture'),
+                    onTap: () async {
+                      var perm = PermissionsService();
+                      if (!await perm.hasCameraPermission()) {
+                        perm.requestCameraPermission(onPermissionDenied: () {
                           print('Permission has been denied');
-                        }
-                      );
-                    }
-                    openCamera();
-                  },
-                ),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-                GestureDetector(
-                  child: new Text('Select from gallery'),
-                  onTap: () async {
-                    var perm = PermissionsService();
-                    if(!await perm.hasStoragePermission()){
-                      perm.requestStoragePermission(
-                        onPermissionDenied: () {
-                          print('Permission has been denied');
-                        }
-                      );
-                    }
-                    openGallery();
+                        });
+                      }
+                      openCamera();
+                      Navigator.pop(context);
                     },
-                ),
-              ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                  ),
+                  GestureDetector(
+                    child: new Text('Select from gallery'),
+                    onTap: () async {
+                      var perm = PermissionsService();
+                      if (!await perm.hasStoragePermission()) {
+                        perm.requestStoragePermission(onPermissionDenied: () {
+                          print('Permission has been denied');
+                        });
+                      }
+                      openGallery();
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      });
-}
+          );
+        });
+  }
 
   Future<User> getUser() async {
     String uid = await Auth().currentUser();
@@ -131,11 +122,11 @@ class _Profilepage extends State<Profilepage> {
   }
 
   Future<House> getHouse() async {
-
     User currentUser = await getUser();
     String groupID = currentUser.groupId.toString();
     House currentGroup;
-    final Response res = await get("http://10.0.2.2:8080/getGroupName?gid=$groupID",
+    final Response res = await get(
+        "http://10.0.2.2:8080/getGroupName?gid=$groupID",
         headers: {'Content-Type': 'application/json'});
     print(res.statusCode);
     if (res.statusCode == 200) {
@@ -189,8 +180,9 @@ class _Profilepage extends State<Profilepage> {
       Navigator.pop(context);
       print(_name);
       String uid = await Auth().currentUser();
-      final Response res = await get("http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
-        headers: {'Content-Type': 'application/json'});
+      final Response res = await get(
+          "http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
+          headers: {'Content-Type': 'application/json'});
     }
   }
 
@@ -216,25 +208,23 @@ class _Profilepage extends State<Profilepage> {
                     width: 150.0,
                     height: 150.0,
                     child: FutureBuilder<String>(
-                      future: getImgUrl(),
-                      builder: (context, snapshot) {
-                        if(snapshot.hasData){
-                          var imgUrl = snapshot.data;
-                          print(imgUrl);
-                          return Container(decoration: BoxDecoration(
-                            color:Colors.black, 
-                            image: DecorationImage(
-                              image: NetworkImage(imgUrl)
-                            ),
-                            borderRadius: BorderRadius.circular(75.0),
-                          )
-                          );
-                        }else if (snapshot.hasError) {
-                          return Text("${snapshot.error}");
-                        }
-                        return CircularProgressIndicator();
-                      }
-                    ),
+                        future: getImgUrl(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            var imgUrl = snapshot.data;
+                            print(imgUrl);
+                            return Container(
+                                decoration: BoxDecoration(
+                              color: Colors.black,
+                              image:
+                                  DecorationImage(image: NetworkImage(imgUrl)),
+                              borderRadius: BorderRadius.circular(75.0),
+                            ));
+                          } else if (snapshot.hasError) {
+                            return Text("${snapshot.error}");
+                          }
+                          return CircularProgressIndicator();
+                        }),
                   ),
                 ),
                 SizedBox(
@@ -288,8 +278,7 @@ class _Profilepage extends State<Profilepage> {
                                 onTap: () {
                                   _showDialog("Verander je naam");
                                 },
-                                child: Text(
-                                    snapshot.data.houseName),
+                                child: Text(snapshot.data.houseName),
                               );
                               //return Text("Welcome, " + snapshot.data.displayName);
                             } else if (snapshot.hasError) {
