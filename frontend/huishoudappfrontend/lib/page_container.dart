@@ -42,7 +42,6 @@ class HomePageState extends State<HomePage> {
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
-      _currentWidget = _children[index];
     });
   }
 
@@ -50,20 +49,14 @@ class HomePageState extends State<HomePage> {
   void _setChildren() {
     // replace the placeholder widget with your widget
     // give _steNewBody as argument if you want to change the currentwidget from inside your widget
-    setState(() => _children = [
-        Home_widget(changeToWidget: _setNewBody),
+    setState(() => [
+        Home_widget(),
         PlaceholderWidget(Colors.deepOrange),
         PlaceholderWidget(Colors.green),
         Profilepage()
       ]);
   }
 
-// Get new widget and replace the current widget
-  void _setNewBody(Widget widget) {
-    setState(() {
-      _currentWidget = widget;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,8 +100,6 @@ class HomePageState extends State<HomePage> {
               icon: new Icon(Icons.list), title: new Text("Turven")),
           BottomNavigationBarItem(
               icon: new Icon(Icons.person), title: new Text("Profile"))
-              icon: new Icon(Icons.person), title: new Text("Profiel"))
-
         ],
       ),
     );

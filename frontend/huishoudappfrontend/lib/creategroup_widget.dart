@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
-
+import 'package:huishoudappfrontend/page_container.dart';
 import 'Objects.dart';
 
 class Creategroup_widget extends StatefulWidget {
@@ -23,6 +23,7 @@ class _Creategroup_widget extends State {
       } else {
         print("Connection Failed");
       }
+      Navigator.popAndPushNamed(context, HomePage.tag);
     }
   }
 
