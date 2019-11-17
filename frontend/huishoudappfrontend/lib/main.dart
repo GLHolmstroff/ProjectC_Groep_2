@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/createaccount_widget.dart';
+import 'package:huishoudappfrontend/services/permission_serivce.dart';
 import 'login_widget.dart';
 import 'page_container.dart';
 import 'createaccount_widget.dart';
@@ -17,10 +18,12 @@ class MyApp extends StatelessWidget {
     CreateAccount.tag: (context) => CreateAccount(),
     Profilepage.tag: (context) => Profilepage(),
   };
+
   @override
   Widget build(BuildContext context) {
     return Provider(
       auth: Auth(),
+      perm: PermissionsService(),
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(primarySwatch: Colors.blue),
