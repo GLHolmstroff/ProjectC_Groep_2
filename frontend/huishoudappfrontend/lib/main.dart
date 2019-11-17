@@ -53,39 +53,31 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final Auth auth = Provider.of(context).auth;
     return StreamBuilder<String>(
-      stream: auth.onAuthStateChanged,
-      builder: (context, AsyncSnapshot<String> snapshot) {
-        if (snapshot.connectionState == ConnectionState.active) {
-          final bool loggedIn = snapshot.hasData;
-          if (loggedIn == true) {
-            print("Waiting");
-           
-             FutureBuilder<bool>(
-              future: _checkGroup(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  if(snapshot.data ){
-                    return(HomePage());
-                  }
-                  else{
-                    return(GroupWidget());
-                  }
-                } else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
-                }
-
-                // By default, show a loading spinner.
-                
-                return CircularProgressIndicator();
-              });
+        stream: auth.onAuthStateChanged,
+        builder: (context, AsyncSnapshot<String> snapshot) {
+          if (snapshot.connectionState == ConnectionState.active || snapshot.connectionState == ConnectionState.waiting) {
+            if (snapshot.hasData) {
+              print("Waiting");
+              return FutureBuilder<bool>(
+                  future: _checkGroup(),
+                  builder: (context, innersnapshot) {
+                    if (innersnapshot.hasData) {
+                      if (innersnapshot.data) {
+                        return (HomePage());
+                      } else {
+                        return (GroupWidget());
+                      }
+                    } else if (innersnapshot.hasError) {
+                      return Text("${innersnapshot.error}");
+                    }
+                    // By default, show a loading spinner.
+                    return CircularProgressIndicator();
+                  });
+            } else {
+              print('to the loginpage');
+              return LoginPage();
+            }
           }
-         else {
-          print('to the loginpage');
-          return LoginPage();
-        }
-
-        return CircularProgressIndicator();
-      }
-      });
+        });
   }
 }
