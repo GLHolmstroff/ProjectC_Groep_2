@@ -1,13 +1,15 @@
-package com.group2projc.Huishoud.auth
+package com.group2projc.Huishoud.http
 
 import com.group2projc.Huishoud.HuishoudApplication
+import com.group2projc.Huishoud.database.DatabaseHelper
+import com.group2projc.Huishoud.database.createGroup
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-class AuthResponseController {
+class HttpResponseController {
     //TODO: Move corresponding functions to separate Restcontrollers
     //TODO: Update response structures
     private val counter = AtomicLong()
@@ -28,20 +30,28 @@ class AuthResponseController {
         return map
     }
 
+    @RequestMapping("/userUpdateDisplayName")
+    fun userUpdateDisplayName(@RequestParam(value = "uid") uid: String,
+                                @RequestParam(value = "displayname") displayname: String): HashMap<String, Any?> {
+        val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .userUpdateDisplayName(uid, displayname)
+        return dbHelper.getUser(uid)
+    }
+
     @RequestMapping("/createGroup")
     fun authcreateGroup(@RequestParam(value = "name", defaultValue = "World") name: String,
-                      @RequestParam(value= "uid", defaultValue = "")uid: String): AuthResponse {
+                      @RequestParam(value= "uid", defaultValue = "")uid: String): HttpResponse {
         val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
                 .createGroup(name,uid)
-        return AuthResponse(counter.incrementAndGet().toInt(),
+        return HttpResponse(counter.incrementAndGet().toInt(),
                 template + name)
     }
     @RequestMapping("/addUserToGroup")
     fun authUserGroup(@RequestParam(value = "gid", defaultValue = "") gid: Int,
-                      @RequestParam(value= "uid", defaultValue = "")uid: String): AuthResponse {
+                      @RequestParam(value= "uid", defaultValue = "")uid: String): HttpResponse {
         val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
                 .addUserToGroup(uid,gid)
-        return AuthResponse(counter.incrementAndGet().toInt(),
+        return HttpResponse(counter.incrementAndGet().toInt(),
                 template + gid)
     }
 
@@ -51,6 +61,14 @@ class AuthResponseController {
                 .getAllInGroup(gid)
         return map
     }
+
+    @RequestMapping("/getGroupName")
+    fun getGroupname(@RequestParam(value = "gid", defaultValue = "TokenNotSet") gid: Int ): HashMap<String,Any?> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .getGroupName(gid)
+        return map
+    }
+
     @RequestMapping("/getTally")
     fun getTally(@RequestParam(value= "gid",defaultValue = "") gid: Int): HashMap<String, Int> {
         val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")

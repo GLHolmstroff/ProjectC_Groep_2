@@ -13,6 +13,7 @@ import 'package:huishoudappfrontend/setup/validators.dart';
 import 'package:http/http.dart';
 import 'Objects.dart';
 import 'profile.dart';
+import 'package:huishoudappfrontend/schoonmaakrooster_widget.dart';
 
 import 'placeholder_widget.dart';
 
@@ -31,10 +32,13 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  Widget _currentWidget = Home_widget();
-  List<Widget> _children;
+  final List<Widget> _children = [
+    Home_widget(),
+    SchoonmaakPage(),
+    PlaceholderWidget(Colors.green),
+    Profilepage()
+  ];
 
-  // change the currentwidget with the corresponding child widget
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -66,7 +70,7 @@ class HomePageState extends State<HomePage> {
     // initialize all the children, cant be done in the constructor because we are parsing a function
     _setChildren();
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         title: Text('Welcome Page'),
         actions: <Widget>[
           FlatButton(
@@ -80,6 +84,9 @@ class HomePageState extends State<HomePage> {
       ),
       // The body of the scaffold is the currentwidget
       body: _currentWidget,
+      ),*/
+      body: _children[_currentIndex],
+
       bottomNavigationBar: BottomNavigationBar(
         // type needs to be fixed otherwise the color of the navigationBariItems will be white, (weird bug)
         type: BottomNavigationBarType.fixed,
@@ -100,6 +107,8 @@ class HomePageState extends State<HomePage> {
               icon: new Icon(Icons.list), title: new Text("Turven")),
           BottomNavigationBarItem(
               icon: new Icon(Icons.person), title: new Text("Profile"))
+              icon: new Icon(Icons.person), title: new Text("Profiel"))
+
         ],
       ),
     );

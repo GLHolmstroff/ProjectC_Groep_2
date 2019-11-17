@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/Objects.dart';
 import 'package:huishoudappfrontend/createaccount_widget.dart';
+
 import 'package:huishoudappfrontend/creategroup_widget.dart';
 import 'groupsetup_widget.dart';
+import 'package:huishoudappfrontend/services/permission_serivce.dart';
 import 'login_widget.dart';
 import 'page_container.dart';
 import 'createaccount_widget.dart';
@@ -24,10 +26,12 @@ class MyApp extends StatelessWidget {
     Profilepage.tag: (context) => Profilepage(),
     GroupWidget.tag: (context) => GroupWidget(),
   };
+
   @override
   Widget build(BuildContext context) {
     return Provider(
       auth: Auth(),
+      perm: PermissionsService(),
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(primarySwatch: Colors.blue),

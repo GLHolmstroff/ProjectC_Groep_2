@@ -6,6 +6,7 @@ build/
 !**/src/test/**
 upload-dir
 Key.json
+upload-dir
 
 ### STS ###
 .apt_generated
