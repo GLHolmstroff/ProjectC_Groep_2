@@ -27,24 +27,47 @@ class _Profilepage extends State<Profilepage> {
   String _name;
   File _image;
 
-  Future<String> getUid() async{
-    return await Auth().currentUser();
+  Future<String> getImgUrl() async{
+    String uid = await Auth().currentUser();
+    String timeStamp = DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
+    return "http://10.0.2.2:8080/files/users?uid=$uid&t=$timeStamp";
   }
 
   Future<File> openGallery() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      _image = image;
-    });
+    var uid = await Auth().currentUser();
+    File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    String timeStamp = DateTime.now().toString()
+    .replaceAllMapped(" ", (Match m) => "")
+    .replaceAllMapped(r':', (Match m)=>",")
+    .replaceAllMapped(r'.', (Match m)=>",");
+    MultipartFile mf = MultipartFile.fromBytes('file', await image.readAsBytes(), filename: timeStamp + 'testfile.png');
+    
+    var uri = Uri.parse("http://10.0.2.2:8080/files/upload");
+    var request = new MultipartRequest("POST", uri);
+    request.fields['uid'] = uid;
+    request.files.add(mf);
+    print(request.fields);
+    var response = await request.send();
+    print(response.statusCode);
+    if (response.statusCode == 302) setState(() {});
   }
 
   Future<File> openCamera() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    var uid = await Auth().currentUser();
+    File image = await ImagePicker.pickImage(source: ImageSource.camera);
+    String timeStamp = DateTime.now().toString()
+    .replaceAllMapped(" ", (Match m) => "")
+    .replaceAllMapped(r':', (Match m)=>",")
+    .replaceAllMapped(r'.', (Match m)=>",");
+    MultipartFile mf = MultipartFile.fromBytes('file', await image.readAsBytes(), filename: timeStamp + 'testfile.png');
 
-    setState(() {
-      _image = image;
-    });
+    var uri = Uri.parse("http://10.0.2.2:8080/files/upload");
+    var request = new MultipartRequest("POST", uri); 
+    request.fields['uid'] = uid; 
+    request.files.add(mf);
+
+    var response = await request.send();
+    if (response.statusCode == 200) print('Uploaded!');
   }
 
   Future<void> _imageOptionsDialogBox() {
@@ -193,15 +216,15 @@ class _Profilepage extends State<Profilepage> {
                     width: 150.0,
                     height: 150.0,
                     child: FutureBuilder<String>(
-                      future: getUid(),
+                      future: getImgUrl(),
                       builder: (context, snapshot) {
                         if(snapshot.hasData){
-                          var uid = snapshot.data;
-                          print(uid);
+                          var imgUrl = snapshot.data;
+                          print(imgUrl);
                           return Container(decoration: BoxDecoration(
                             color:Colors.black, 
                             image: DecorationImage(
-                              image: NetworkImage('http://10.0.2.2:8080/files/users?uid=$uid')
+                              image: NetworkImage(imgUrl)
                             ),
                             borderRadius: BorderRadius.circular(75.0),
                           )
