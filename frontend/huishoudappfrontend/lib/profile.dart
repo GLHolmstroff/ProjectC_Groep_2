@@ -304,6 +304,7 @@ class _Profilepage extends State<Profilepage> {
 
     return new Scaffold(
       body: new Stack(
+
         children: <Widget>[
           clipper,
           Positioned(
