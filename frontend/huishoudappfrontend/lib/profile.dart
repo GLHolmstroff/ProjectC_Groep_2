@@ -1,8 +1,6 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'package:huishoudappfrontend/login_widget.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
@@ -34,27 +32,17 @@ class _Profilepage extends State<Profilepage> {
   }
 
   Future<File> openGallery() async {
-    var uid = await Auth().currentUser();
     File image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    String timeStamp = DateTime.now().toString()
-    .replaceAllMapped(" ", (Match m) => "")
-    .replaceAllMapped(r':', (Match m)=>",")
-    .replaceAllMapped(r'.', (Match m)=>",");
-    MultipartFile mf = MultipartFile.fromBytes('file', await image.readAsBytes(), filename: timeStamp + 'testfile.png');
-    
-    var uri = Uri.parse("http://10.0.2.2:8080/files/upload");
-    var request = new MultipartRequest("POST", uri);
-    request.fields['uid'] = uid;
-    request.files.add(mf);
-    print(request.fields);
-    var response = await request.send();
-    print(response.statusCode);
-    if (response.statusCode == 302) setState(() {});
+    _updateImage(image);
   }
 
   Future<File> openCamera() async {
-    var uid = await Auth().currentUser();
     File image = await ImagePicker.pickImage(source: ImageSource.camera);
+    _updateImage(image);
+  }
+
+  Future<void> _updateImage(File image) async {
+    var uid = await Auth().currentUser();
     String timeStamp = DateTime.now().toString()
     .replaceAllMapped(" ", (Match m) => "")
     .replaceAllMapped(r':', (Match m)=>",")
@@ -67,7 +55,7 @@ class _Profilepage extends State<Profilepage> {
     request.files.add(mf);
 
     var response = await request.send();
-    if (response.statusCode == 200) print('Uploaded!');
+    if (response.statusCode == 302) setState(() {});
   }
 
   Future<void> _imageOptionsDialogBox() {
@@ -89,6 +77,7 @@ class _Profilepage extends State<Profilepage> {
                       );
                     }
                     openCamera();
+                    Navigator.pop(context);
                   },
                 ),
                 Padding(
@@ -106,6 +95,7 @@ class _Profilepage extends State<Profilepage> {
                       );
                     }
                     openGallery();
+                    Navigator.pop(context);
                     },
                 ),
               ],
