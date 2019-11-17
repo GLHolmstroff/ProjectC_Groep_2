@@ -11,9 +11,12 @@ abstract class BaseAuth {
    String password
  );
 
+Future<void> sendResetPasswordEmail(String email);
 Future<String> currentUser();
+Future<String> getEmailUser();
 Future<void> signOut();
 Future<String> signInWithGoogle();
+Future<String> getUserIdToken();
 }
 
 class Auth implements BaseAuth{
@@ -39,6 +42,20 @@ class Auth implements BaseAuth{
     return (await _firebaseAuth.currentUser()).uid;
   }
 
+  @override
+  Future<void> sendResetPasswordEmail(String email) async {
+    return (await _firebaseAuth.sendPasswordResetEmail(email: email));
+  }
+
+  @override
+  Future<String> getEmailUser() async {
+    return (await _firebaseAuth.currentUser()).email;
+  }
+
+  @override
+  Future<String> getUserIdToken() async {
+    return (await _firebaseAuth.currentUser()).providerData[1].providerId;
+  }
 
 
   @override

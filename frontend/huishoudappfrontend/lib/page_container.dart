@@ -50,7 +50,7 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         title: Text('Welcome Page'),
         actions: <Widget>[
           FlatButton(
@@ -60,7 +60,7 @@ class HomePageState extends State<HomePage> {
             },
           )
         ],
-      ),
+      ),*/
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -79,7 +79,7 @@ class HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
               icon: new Icon(Icons.list), title: new Text("Turven")),
           BottomNavigationBarItem(
-              icon: new Icon(Icons.people), title: new Text("Profile"))
+              icon: new Icon(Icons.person), title: new Text("Profiel"))
         ],
       ),
     );
