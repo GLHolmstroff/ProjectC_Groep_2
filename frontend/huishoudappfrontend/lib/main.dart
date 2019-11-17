@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
     HomePage.tag: (context) => HomePage(),
     CreateAccount.tag: (context) => CreateAccount(),
     Profilepage.tag: (context) => Profilepage(),
+    GroupWidget.tag: (context) => GroupWidget(),
   };
   @override
   Widget build(BuildContext context) {
