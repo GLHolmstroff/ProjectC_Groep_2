@@ -77,26 +77,29 @@ class _Profilepage extends State<Profilepage> {
                       if (!await perm.hasCameraPermission()) {
                         perm.requestCameraPermission(onPermissionDenied: () {
                           print('Permission has been denied');
-                        });
-                      }
-                      openCamera();
-                      Navigator.pop(context);
-                    },
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                  ),
-                  GestureDetector(
-                    child: new Text('Select from gallery'),
-                    onTap: () async {
-                      var perm = PermissionsService();
-                      if (!await perm.hasStoragePermission()) {
-                        perm.requestStoragePermission(onPermissionDenied: () {
+                        }
+                      );
+                    }
+                    openCamera();
+                    Navigator.pop(context);
+                  },
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                ),
+                GestureDetector(
+                  child: new Text('Select from gallery'),
+                  onTap: () async {
+                    var perm = PermissionsService();
+                    if(!await perm.hasStoragePermission()){
+                      perm.requestStoragePermission(
+                        onPermissionDenied: () {
                           print('Permission has been denied');
-                        });
-                      }
-                      openGallery();
-                      Navigator.pop(context);
+                        }
+                      );
+                    }
+                    openGallery();
+                    Navigator.pop(context);
                     },
                   ),
                 ],
