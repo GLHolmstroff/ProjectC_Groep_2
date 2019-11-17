@@ -12,13 +12,13 @@ import 'package:huishoudappfrontend/setup/validators.dart';
 import 'package:http/http.dart';
 import 'Objects.dart';
 import 'profile.dart';
+import 'package:huishoudappfrontend/schoonmaakrooster_widget.dart';
 
 import 'placeholder_widget.dart';
 
 class HomePage extends StatefulWidget {
   static String tag = 'home-page';
-  
- 
+
   static Future<HomePage> _init() async {
     return HomePage();
   }
@@ -30,16 +30,13 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  
   int _currentIndex = 0;
   final List<Widget> _children = [
     Home_widget(),
-    PlaceholderWidget(Colors.deepOrange),
+    SchoonmaakPage(),
     PlaceholderWidget(Colors.green),
     Profilepage()
   ];
-
- 
 
   void onTabTapped(int index) {
     setState(() {
@@ -56,7 +53,8 @@ class HomePageState extends State<HomePage> {
           FlatButton(
             child: Text("Jouw profiel"),
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Profilepage()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Profilepage()));
             },
           )
         ],
