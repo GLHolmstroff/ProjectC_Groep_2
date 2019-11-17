@@ -91,7 +91,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
           )),
       SizedBox(height: 10),
       Container(
-          height: 400,
+          height: 300,
           child: ListView.builder(
               padding: const EdgeInsets.all(8),
               itemCount: testList.length,
