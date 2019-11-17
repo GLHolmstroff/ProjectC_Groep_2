@@ -4,7 +4,9 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**
 !**/src/test/**
+upload-dir
 Key.json
+upload-dir
 
 ### STS ###
 .apt_generated

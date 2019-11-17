@@ -1,7 +1,7 @@
-package com.group2projc.Huishoud.auth
+package com.group2projc.Huishoud.database
 
-import com.group2projc.Huishoud.auth.DatabaseHelper.BeerTallies.count
-import com.group2projc.Huishoud.auth.DatabaseHelper.BeerTallies.userid
+import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.count
+import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.userid
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDate
@@ -23,12 +23,13 @@ class DatabaseHelper(url: String) {
         val name = varchar("name", 50)
     }
 
-    //SQL : CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, "token" VARCHAR(50) NOT NULL, "group" INT)
+    //SQL : CREATE TABLE IF NOT EXISTS users (COLUMNS)
     object Users : Table() {
         val id = varchar("userid", 50).primaryKey()
         val groupid = reference("groupid", Groups.id).nullable()
         val global_permissions = varchar("global_permissions", 10)
         val displayname = varchar("displayname", 20)
+        val picturelink = varchar("picturelink", 50)
     }
 
     object GroupPermissions : Table() {
@@ -124,6 +125,7 @@ class DatabaseHelper(url: String) {
                     it[groupid] = null
                     it[global_permissions] = "user"
                     it[displayname] = n
+                    it[picturelink] = ""
                 }
             }
 
@@ -139,6 +141,38 @@ class DatabaseHelper(url: String) {
                 out["groupid"] = it[Users.groupid]
                 out["global_permissions"] = it[Users.global_permissions]
                 out["display_name"] = it[Users.displayname]
+                out["picture_link"] = it[Users.picturelink]
+            }
+        }
+        return out
+    }
+
+    fun userUpdateDisplayName(uid: String, displayname1: String) : DatabaseHelper {
+        transaction(db) {
+            Users.update({ Users.id eq uid}){
+                it[displayname] = displayname1
+            }
+        }
+        return this@DatabaseHelper
+    }
+
+    fun userUpdatePicture(uid:String, picturePath: String) : DatabaseHelper {
+        transaction(db) {
+            Users.update({ Users.id eq uid}){
+                it[picturelink] = picturePath
+            }
+        }
+        return this@DatabaseHelper
+    }
+
+
+    fun getGroupName(gid: Int): HashMap<String, Any?> {
+        var out = HashMap<String, Any?>()
+        transaction(db) {
+            Groups.select({ Groups.id eq gid }).forEach {
+                out["groupid"] = it[Groups.id]
+                out["created_at"] = it[Groups.created_at]
+                out["name"] = it[Groups.name]
             }
         }
         return out
