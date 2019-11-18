@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'Objects.dart';
 
 
 class Turf_Widget extends StatefulWidget{
@@ -6,6 +8,30 @@ class Turf_Widget extends StatefulWidget{
   State<StatefulWidget> createState() => _Turf_Widget();
     
 }
+
+
+Future<Group> getGroup() async{
+  String groupID = User.getCurrentUser.groupId.toString();
+  Group currentGroup;
+  final Response res = await get(
+    'http;//10.0.2.2:8080/getAllInGroup?gid=$groupID',
+    headers: {'Content-Type': 'application/json'});
+    print(res.statusCode);
+    if (res.statusCode == 200){
+      // If server returns an OK response, parse the JSON.
+      currentGroup = Group.fromJson(json.decode(res.body));
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 class _Turf_Widget extends State<Turf_Widget>{
   @override
