@@ -65,6 +65,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
   Widget cleaningCard(BuildContext context, int index) {
     return new Container(
         child: Card(
+      elevation: 3,
       child: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Row(
@@ -78,25 +79,59 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
     ));
   }
 
+  Widget checkHousemateCard(BuildContext context, int index) {
+    return new Container(
+      child: Card(
+        elevation: 3,
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Row(
+            children: <Widget>[
+              Text("Profielfoto"), // Profielfoto
+              Text("Username"), // Username
+              Spacer(),
+              Text("Taak")
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
         child: Column(children: <Widget>[
-      SizedBox(height: 25),
-      Text("Jouw klusjes",
-          textAlign: TextAlign.center,
+      SizedBox(height: 40),
+      Text("Jouw taken",
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 23,
+            fontSize: 25,
           )),
       SizedBox(height: 10),
       Container(
-          height: 300,
+          height: 200,
           child: ListView.builder(
               padding: const EdgeInsets.all(8),
               itemCount: testList.length,
               itemBuilder: (BuildContext context, int index) =>
                   cleaningCard(context, index))),
+      SizedBox(height: 30),
+      Text(
+        "Goedkeuren huisgenoten",
+        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+      ),
+      SizedBox(height: 10),
+      Container(
+        height: 200,
+        child: ListView.builder(
+          padding: const EdgeInsets.all(8),
+          itemCount: 10,
+          itemBuilder: (BuildContext context, int index) =>
+              checkHousemateCard(context, index),
+        ),
+      ),
+      SizedBox(height: 15),
       RaisedButton(
         onPressed: () {},
         child: Text(
