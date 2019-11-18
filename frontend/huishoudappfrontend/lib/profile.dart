@@ -129,7 +129,7 @@ class _Profilepage extends State<Profilepage> {
         });
   }
 
-  Future<User> getUser() async {
+  /*Future<User> getUser() async {
     String uid = await Auth().currentUser();
     User currentUser;
     final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
@@ -142,10 +142,10 @@ class _Profilepage extends State<Profilepage> {
       print("Could not find user");
     }
     return currentUser;
-  }
+  }*/
 
-  Future<House> getHouse() async {
-    User currentUser = await getUser();
+  /*Future<House> getHouse() async {
+    User currentUser = await User.getCurrentUser();
     String groupID = currentUser.groupId.toString();
     House currentGroup;
     final Response res = await get(
@@ -159,7 +159,7 @@ class _Profilepage extends State<Profilepage> {
       print("Could not find group");
     }
     return currentGroup;
-  }
+  }*/
 
 
   void _sendChangePasswordEmail() async {
@@ -260,7 +260,7 @@ class _Profilepage extends State<Profilepage> {
     );
 
     FutureBuilder<User> userDisplayname = FutureBuilder<User>(
-      future: getUser(),
+      future: User.getCurrentUser(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Text("Welcome, " + snapshot.data.displayName);
@@ -283,7 +283,7 @@ class _Profilepage extends State<Profilepage> {
     );
 
     FutureBuilder<House> userHouseName = FutureBuilder<House>(
-      future: getHouse(),
+      future: House.getCurrentHouse(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return new GestureDetector(
