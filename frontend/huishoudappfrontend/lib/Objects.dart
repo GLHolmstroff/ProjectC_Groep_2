@@ -4,37 +4,60 @@ class BaseUser  {
   int groupId;
   String globalPermissions;
   String displayName;
+  String picture_link;
 
   @override
   String toString() {
-    return "userID: " + User._instance.userId + "\n" +
+    return "userID: " + this.userId + "\n" +
              "groupID: " + this.groupId.toString() + "\n" +
             "permission: " + this.globalPermissions + "\n" +
             "Name: " + this.displayName + "\n";
   }
 }
 
-class User extends BaseUser{
-  static final User _instance =  User._internal(); 
+class CurrentUser extends BaseUser{
+  static final CurrentUser _instance =  CurrentUser._internal(); 
   
-  factory User(){
+  factory CurrentUser(){
     return _instance;
   }
 
-  factory User.fromJson(Map<String,dynamic> json) {
+  factory CurrentUser.fromJson(Map<String,dynamic> json) {
       _instance.userId = json['uid'];
       _instance.groupId = json['groupid'];
       _instance.globalPermissions = json['global_permissions'];
       _instance.displayName = json['display_name'];
+      _instance.picture_link = json['picture_link'];
       return _instance;
   }
 
-  User._internal(){
+  CurrentUser._internal(){
     userId = null;
     groupId = null;
     globalPermissions = null;
     displayName = null;
   } 
+}
+
+class User extends BaseUser{
+  User(userId,groupId,globalPermissions,displayName,picture_link){
+    this.userId = userId;
+    this.userId = groupId;
+    this.globalPermissions = globalPermissions;
+    this. displayName = displayName;
+    this.picture_link = picture_link;
+  }
+
+  factory User.fromJson(Map<String, dynamic> json){
+    return User(
+      json["uid"],
+      json["groupid"],
+      json["global_permissions"],
+      json["display_name"],
+      json["picture_link"]
+    );
+  }
+
 }
 
 class Group {
