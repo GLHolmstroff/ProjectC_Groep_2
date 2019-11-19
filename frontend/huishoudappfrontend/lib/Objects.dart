@@ -7,8 +7,9 @@ class User {
   final int groupId;
   final String globalPermissions;
   final String displayName;
+  final String pictureLink;
 
-  User({this.userId, this.groupId, this.globalPermissions, this.displayName});
+  User({this.userId,this.groupId,this.globalPermissions,this.displayName, this.pictureLink});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -16,6 +17,7 @@ class User {
       groupId: json['groupid'],
       globalPermissions: json['global_permissions'],
       displayName: json['display_name'],
+      pictureLink: json['picture_link']
     );
   }
 
