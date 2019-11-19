@@ -19,6 +19,7 @@ environment:
 
 dependencies:
   flutter_signin_button: ^0.2.8
+  liquid_progress_indicator: ^0.3.2
   flutter:
     sdk: flutter
   firebase_core: ^0.4.0+1

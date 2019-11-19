@@ -6,6 +6,7 @@ import 'package:huishoudappfrontend/Objects.dart';
 import 'package:huishoudappfrontend/createaccount_widget.dart';
 
 import 'package:huishoudappfrontend/creategroup_widget.dart';
+import 'package:huishoudappfrontend/loading_widget.dart';
 import 'groupsetup_widget.dart';
 import 'package:huishoudappfrontend/services/permission_serivce.dart';
 import 'login_widget.dart';
@@ -76,7 +77,7 @@ class MyHomePage extends StatelessWidget {
                       return Text("${innersnapshot.error}");
                     }
                     // By default, show a loading spinner.
-                    return CircularProgressIndicator();
+                    return Loading_Widget();
                   });
             } else {
               print('to the loginpage');
