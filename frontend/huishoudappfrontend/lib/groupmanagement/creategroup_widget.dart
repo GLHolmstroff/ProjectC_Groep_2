@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/page_container.dart';
-import 'Objects.dart';
+import '../Objects.dart';
 
 class Creategroup_widget extends StatefulWidget {
   static String tag = "Creategroup_widget";

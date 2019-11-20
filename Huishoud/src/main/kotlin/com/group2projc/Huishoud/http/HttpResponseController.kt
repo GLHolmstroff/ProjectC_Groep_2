@@ -3,10 +3,10 @@ package com.group2projc.Huishoud.http
 import com.group2projc.Huishoud.HuishoudApplication
 import com.group2projc.Huishoud.database.DatabaseHelper
 import com.group2projc.Huishoud.database.createGroup
-import java.util.concurrent.atomic.AtomicLong;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
+import java.util.concurrent.atomic.AtomicLong
 
 @RestController
 class HttpResponseController {
@@ -95,6 +95,13 @@ class HttpResponseController {
         return map
     }
 
+    @RequestMapping("/getInviteCode")
+    fun getInviteCode(@RequestParam(value="gid",defaultValue = "")gid:Int):HttpResponse{
+        val code = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").getInviteCode(gid)
+        return HttpResponse(counter.incrementAndGet().toInt(),
+                template + code)
+    }
+
     @RequestMapping("/initDatabase")
     fun initDB():HashMap<String,String> {
         val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
@@ -106,4 +113,7 @@ class HttpResponseController {
     fun stopRunning() {
         HuishoudApplication.shutDown()
     }
+
+
 }
+

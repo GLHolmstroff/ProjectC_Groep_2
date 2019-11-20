@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:huishoudappfrontend/creategroup_widget.dart';
+import 'package:huishoudappfrontend/groupmanagement/creategroup_widget.dart';
+
 
 class GroupWidget extends StatefulWidget {
   static String tag = "group_widget";

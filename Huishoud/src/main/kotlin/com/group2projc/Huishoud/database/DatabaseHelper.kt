@@ -5,6 +5,9 @@ import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.userid
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDate
+import java.util.Random
+
+
 
 class DatabaseHelper(url: String) {
     //Singleton pattern for Database connection, Multiple connect calls will cause memory leaks.
@@ -50,6 +53,11 @@ class DatabaseHelper(url: String) {
         val groupid = reference("groupid", Groups.id).primaryKey()
         val userid = reference("userid", Users.id).primaryKey()
         val count = integer("count")
+    }
+
+    object InviteCodes :Table() {
+        val groupid = reference("groupid", Groups.id);
+        val code = integer("code");
     }
 //TODO: Find out if it's Possible to use DAO, find way to pass EntityID to postgres
 
@@ -298,6 +306,47 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+    fun createInviteCode(): Int {
+
+        var random = Random();
+        var key = random.nextInt(999999 - 100000) + 100000
+        return key;
+
+
+
+    }
+
+    fun getInviteCode(gid : Int): HashMap<String, Int> {
+        var keyFound = false;
+        var finalKey  = 0;
+        var out = HashMap<String, Int>();
+        while (!keyFound) {
+            var key = createInviteCode();
+            var alreadyInUse = false;
+            transaction(db) {
+                InviteCodes.select { (InviteCodes.code eq key) }.forEach {
+                    alreadyInUse = true;
+                }
+            }
+            if(!alreadyInUse) {
+                keyFound = true
+                finalKey = key;
+                out["code"] = finalKey;
+            }
+        }
+
+        transaction(db) {
+            InviteCodes.insert {
+                it[groupid] = gid;
+                it[code] = finalKey;
+            }
+        }
+
+
+        return out;
+
+    }
+
 }
 
 fun DatabaseHelper.createGroup(n: String, uid: String): DatabaseHelper {
@@ -311,3 +360,7 @@ fun DatabaseHelper.createGroup(n: String, uid: String): DatabaseHelper {
     }
     return this
 }
+
+
+
+
