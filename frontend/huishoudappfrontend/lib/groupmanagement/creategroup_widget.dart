@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:huishoudappfrontend/groupmanagement/title_widget.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/page_container.dart';
 import '../Objects.dart';
@@ -29,14 +30,12 @@ class _Creategroup_widget extends State {
 
   @override
   Widget build(BuildContext context) {
-    final titleText = Text(
-      "Maak een groep",
-      textAlign: TextAlign.left,
-      style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w400),
-    );
 
+    
+
+    
     final explanationText1 = Text(
-      "Verzin een groepsnaam",
+      "Verzin een huisnaam",
       textAlign: TextAlign.center,
       style: TextStyle(
         fontSize: 20.0,
@@ -44,11 +43,13 @@ class _Creategroup_widget extends State {
       ),
     );
 
+    
+
     final groupName = TextFormField(
       keyboardType: TextInputType.text,
       controller: _groupnameController,
       decoration: InputDecoration(
-        hintText: 'Groepsnaam',
+        hintText: 'Huisnaam',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
       ),
@@ -69,16 +70,7 @@ class _Creategroup_widget extends State {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(top: 50.0),
-          child: Container(
-            height: 100,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: titleText,
-            ),
-          ),
-        ),
+        Title_Widget(text:"Huis aanmaken"),
         Center(
           child:
               Container(width: 250.0, height: 50.0, child: explanationText1),
