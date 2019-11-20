@@ -9,12 +9,22 @@ class Loading_Widget extends StatelessWidget {
       body: Container(
           decoration: BoxDecoration(color: Colors.white),
           child: Center(
-            child: Container(
-              width: 100,
-              height: 100,
-              child: Loading_Indicator(),
+            
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(width: 80, height:80,child: CircularProgressIndicator()),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text("Uw gegevens worden geladen..."),
+                  )
+                ],
+              )
+                ,
             ),
-          )),
-    ));
+         
+      ))
+      );
   }
 }
