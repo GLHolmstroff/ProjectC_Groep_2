@@ -7,7 +7,7 @@ class Title_Widget extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-   Container(
+   return Container(
         height: 200.0,
         decoration: BoxDecoration(
           color: Colors.blue,
