@@ -1,48 +1,61 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:core' as prefix0;
+import 'dart:core';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:huishoudappfrontend/setup/auth.dart';
 import 'Objects.dart';
 
 
-class Turf_Widget extends StatefulWidget{
+class Turfwidget extends StatefulWidget{
   @override
-  State<StatefulWidget> createState() => _Turf_Widget();
+  State<StatefulWidget> createState() => _Turfwidget();
     
 }
 
 
+
+class _Turfwidget extends State<Turfwidget>{
+  
+
+
+
+  Future<User> getUser() async {
+    String uid = await Auth().currentUser();
+    User currentUser;
+      final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
+          headers: {'Content-Type': 'application/json'});
+      if (res.statusCode == 200) {
+        // If server returns an OK response, parse the JSON.
+        currentUser = User.fromJson(json.decode(res.body));
+    } else {
+        print("Could not find user");
+    }
+    return currentUser;
+  }
+
+
 Future<Group> getGroup() async{
-  String groupID = User.getCurrentUser.groupId.toString();
+  String groupID = currentUser.UserId.toString();
   Group currentGroup;
   final Response res = await get(
     'http;//10.0.2.2:8080/getAllInGroup?gid=$groupID',
     headers: {'Content-Type': 'application/json'});
-    print(res.statusCode);
     if (res.statusCode == 200){
       // If server returns an OK response, parse the JSON.
       currentGroup = Group.fromJson(json.decode(res.body));
+    } else {
+      print('Could not find group');
     }
+    return currentGroup;  
+}
 
 
 
 
-
-
-
-
-
-
-
-
-class _Turf_Widget extends State<Turf_Widget>{
-  @override
   Widget build(BuildContext context) {
-
-
-
-
-
-
-
     return Scaffold(
 
       body: 
