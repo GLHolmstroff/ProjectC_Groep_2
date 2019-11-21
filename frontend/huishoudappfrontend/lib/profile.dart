@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'package:huishoudappfrontend/login_widget.dart';
 import 'package:huishoudappfrontend/profileconstants.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';

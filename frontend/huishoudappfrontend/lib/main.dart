@@ -66,7 +66,7 @@ class MyHomePage extends StatelessWidget {
                   future: CurrentUser.updateCurrentUser(),
                   builder: (context, innersnapshot) {
                     if (innersnapshot.hasData) {
-                      if (innersnapshot.data.groupId == null) {
+                      if (innersnapshot.data.groupId != null) {
                         return (HomePage());
                       } else {
                         return (GroupWidget());
