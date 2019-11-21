@@ -13,6 +13,7 @@ import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'services/permission_serivce.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
+import 'package:huishoudappfrontend/setup/widgets.dart';
 
 
 class Profilepage extends StatefulWidget {
@@ -271,7 +272,7 @@ class _Profilepage extends State<Profilepage> {
         }
 
         // By default, show a loading spinner.
-        return CircularProgressIndicator();
+        return AnimatedLiquidCustomProgressIndicator();
       },
     );
 
@@ -300,17 +301,10 @@ class _Profilepage extends State<Profilepage> {
         }
 
         // By default, show a loading spinner.
-        return CircularProgressIndicator();
+        return AnimatedLiquidCustomProgressIndicator();
       },
     );
 
-    LiquidCustomProgressIndicator indicator = LiquidCustomProgressIndicator(
-      value: 1,
-      valueColor: AlwaysStoppedAnimation(Colors.pink),
-      backgroundColor: Colors.white,
-      direction: Axis.vertical,
-      shapePath: _buildHeartPath(),
-    );
 
     return new Scaffold(
       body: new Stack(
@@ -343,7 +337,7 @@ class _Profilepage extends State<Profilepage> {
                           } else if (snapshot.hasError) {
                             return Text("${snapshot.error}");
                           }
-                          return CircularProgressIndicator();
+                          return AnimatedLiquidCustomProgressIndicator();
                         }),
                   ),
                 ),
@@ -367,7 +361,6 @@ class _Profilepage extends State<Profilepage> {
                 SizedBox(
                   height: 30.0,
                 ),
-                indicator
                 //signOutButton,
               ],
             ),
@@ -401,20 +394,6 @@ class _Profilepage extends State<Profilepage> {
         backgroundColor: Colors.red,
       ),
     );
-  }
-
-    Path _buildHeartPath() {
-    return Path()
-      ..moveTo(15, 120)
-      ..lineTo(0, 85)
-      ..lineTo(50, 85)
-      ..lineTo(50, 0)
-      ..lineTo(105, 80)
-      ..lineTo(60, 80)
-      ..lineTo(60, 85)
-      ..lineTo(120, 85)
-      ..lineTo(105, 120)
-      ..close();
   }
 }
 
