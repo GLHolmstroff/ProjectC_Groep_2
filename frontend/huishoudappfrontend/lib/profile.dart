@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:huishoudappfrontend/login_widget.dart';
 import 'package:huishoudappfrontend/profileconstants.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
@@ -15,10 +16,9 @@ import 'services/permission_serivce.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 
-
 class Profilepage extends StatefulWidget {
   static String tag = 'profile_page';
-  
+
   @override
   State<StatefulWidget> createState() => _Profilepage();
 }
@@ -40,12 +40,13 @@ class _Profilepage extends State<Profilepage> {
     }
   }
 
-  Future<ProfileConstants> _makeProfileConstants () async {
+  Future<ProfileConstants> _makeProfileConstants() async {
     loginWithEmail = await _loggedinWithEmail();
     print('login met email =' + loginWithEmail.toString());
-    profCons =ProfileConstants(loginWithEmail);
+    profCons = ProfileConstants(loginWithEmail);
     return profCons;
   }
+
   File _image;
 
   Future<String> getImgUrl() async {
@@ -100,29 +101,26 @@ class _Profilepage extends State<Profilepage> {
                       if (!await perm.hasCameraPermission()) {
                         perm.requestCameraPermission(onPermissionDenied: () {
                           print('Permission has been denied');
-                        }
-                      );
-                    }
-                    openCamera();
-                    Navigator.pop(context);
-                  },
-                ),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-                GestureDetector(
-                  child: new Text('Select from gallery'),
-                  onTap: () async {
-                    var perm = PermissionsService();
-                    if(!await perm.hasStoragePermission()){
-                      perm.requestStoragePermission(
-                        onPermissionDenied: () {
+                        });
+                      }
+                      openCamera();
+                      Navigator.pop(context);
+                    },
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                  ),
+                  GestureDetector(
+                    child: new Text('Select from gallery'),
+                    onTap: () async {
+                      var perm = PermissionsService();
+                      if (!await perm.hasStoragePermission()) {
+                        perm.requestStoragePermission(onPermissionDenied: () {
                           print('Permission has been denied');
-                        }
-                      );
-                    }
-                    openGallery();
-                    Navigator.pop(context);
+                        });
+                      }
+                      openGallery();
+                      Navigator.pop(context);
                     },
                   ),
                 ],
@@ -163,7 +161,6 @@ class _Profilepage extends State<Profilepage> {
     }
     return currentGroup;
   }*/
-
 
   void _sendChangePasswordEmail() async {
     final auth = Provider.of(context).auth;
@@ -223,9 +220,7 @@ class _Profilepage extends State<Profilepage> {
     if (fromkey.currentState.validate()) {
       fromkey.currentState.save();
       Navigator.pop(context);
-      setState(() {
-        
-      });
+      setState(() {});
       print(_name);
       String uid = await Auth().currentUser();
       final Response res = await get(
@@ -248,7 +243,6 @@ class _Profilepage extends State<Profilepage> {
       }
     } else if (choice == "Verander wachtwoord") {
       _sendChangePasswordEmail();
-
     }
   }
 
@@ -257,7 +251,7 @@ class _Profilepage extends State<Profilepage> {
     //widgets variables
     final clipper = ClipPath(
       child: Container(
-        color: Colors.black.withOpacity(0.9),
+        color: Colors.red,
       ),
       clipper: getClipper(),
     );
@@ -266,7 +260,13 @@ class _Profilepage extends State<Profilepage> {
       future: User.getCurrentUser(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return Text("Welcome, " + snapshot.data.displayName);
+          return Text(
+            snapshot.data.displayName,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          );
         } else if (snapshot.hasError) {
           return Text("${snapshot.error}");
         }
@@ -276,12 +276,12 @@ class _Profilepage extends State<Profilepage> {
       },
     );
 
-
     final userHouseText = Text(
       'Jouw huis',
       style: TextStyle(
         fontSize: 20.0,
         fontStyle: FontStyle.italic,
+        color: Colors.white
       ),
     );
 
@@ -293,7 +293,12 @@ class _Profilepage extends State<Profilepage> {
             onTap: () {
               print('hallo');
             },
-            child: Text(snapshot.data.houseName),
+            child: Text(snapshot.data.houseName,
+            style: TextStyle(
+              fontSize: 20,
+              fontStyle: FontStyle.italic,
+              color: Colors.white,
+            ),),
           );
           //return Text("Welcome, " + snapshot.data.displayName);
         } else if (snapshot.hasError) {
@@ -305,15 +310,138 @@ class _Profilepage extends State<Profilepage> {
       },
     );
 
+    final profielimage = GestureDetector(
+      onTap: _imageOptionsDialogBox,
+      child: Container(
+        width: 150.0,
+        height: 150.0,
+        child: FutureBuilder<String>(
+            future: getImgUrl(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                var imgUrl = snapshot.data;
+                print(imgUrl);
+                return Container(
+                    decoration: BoxDecoration(
+                        color: Colors.black,
+                        image: DecorationImage(
+                            image: NetworkImage(imgUrl), fit: BoxFit.cover),
+                        borderRadius: BorderRadius.circular(75.0),
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 4.0,
+                        )));
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+              return Icon(Icons.photo_camera);
+            }),
+      ),
+    );
+
+    FloatingActionButton settingsButton = FloatingActionButton(
+        onPressed: () {},
+        child: FutureBuilder<ProfileConstants>(
+          future: _makeProfileConstants(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return PopupMenuButton<String>(
+                onSelected: _choiceAction,
+                itemBuilder: (BuildContext context) {
+                  return snapshot.data.choices.map((String choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(choice),
+                    );
+                  }).toList();
+                },
+                icon: Icon(Icons.settings),
+              );
+            } else {
+              return Icon(Icons.settings);
+            }
+          },
+        ),
+        backgroundColor: Colors.red,
+      );
+
+    final upperpart = new Container(
+      color: Colors.red,
+      height: MediaQuery.of(context).size.height / 3,
+      width: MediaQuery.of(context).size.width,
+      child: Stack(
+        children: <Widget>[
+          Positioned(
+            width: 150,
+            top: 35,
+            left: MediaQuery.of(context).size.width/2 - 75,
+            child: profielimage,
+          ),
+          Positioned(
+            width: 40,
+            height: 40,
+            top: 20,
+            left: MediaQuery.of(context).size.width/2 - 75,
+            child: FloatingActionButton(
+                backgroundColor: Colors.white,
+                child: Icon(
+                  Icons.photo_camera,
+                  color: Colors.black,
+                ),
+                onPressed: () => {},
+              ),
+          )
+        ],
+      ),
+    );
+
+    final middelpart = new Container(
+      color: Colors.redAccent,
+      height: MediaQuery.of(context).size.height / 12,
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          userDisplayname,
+          VerticalDivider(color: Colors.white, thickness: 2,),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              userHouseText,
+              userHouseName,
+            ],
+          ),
+          VerticalDivider(color: Colors.white, thickness: 2,),
+          Text("Saldo"),
+        ],
+      ),
+    );
+
 
     return new Scaffold(
-      body: new Stack(
+      body: Container(
+          child: Column(
+        children: <Widget>[
+          upperpart,
+          middelpart,
+          Container(
+            color: Colors.pink,
+            height: 30,
+            width: 30,
+            
+          )
+        ],
+      )),
+      floatingActionButton: settingsButton,
+    );
 
+    /*return new Scaffold(
+      body: new Stack(
         children: <Widget>[
           clipper,
           Positioned(
             width: 400.0,
-            top: MediaQuery.of(context).size.height / 8,
+            top: MediaQuery.of(context).size.height / 13,
             child: Column(
               children: <Widget>[
                 GestureDetector(
@@ -329,51 +457,75 @@ class _Profilepage extends State<Profilepage> {
                             print(imgUrl);
                             return Container(
                                 decoration: BoxDecoration(
-                              color: Colors.black,
-                              image:
-                                  DecorationImage(image: NetworkImage(imgUrl)),
-                              borderRadius: BorderRadius.circular(75.0),
-                            ));
+                                    color: Colors.black,
+                                    image: DecorationImage(
+                                        image: NetworkImage(imgUrl),
+                                        fit: BoxFit.cover),
+                                    borderRadius: BorderRadius.circular(75.0),
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 4.0,
+                                    )));
                           } else if (snapshot.hasError) {
                             return Text("${snapshot.error}");
                           }
-                          return AnimatedLiquidCustomProgressIndicator();
+                          return Icon(Icons.photo_camera);
                         }),
                   ),
                 ),
                 SizedBox(
-                  height: 50.0,
+                  height: 20.0,
                 ),
-                userDisplayname,
                 SizedBox(
                   height: 30.0,
                 ),
-                Column(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
+                    userDisplayname,
                     Column(
                       children: <Widget>[
-                        userHouseText,
-                        userHouseName
+                        Column(
+                          children: <Widget>[userHouseText, userHouseName],
+                        ),
                       ],
                     ),
+                    Text('saldo')
                   ],
                 ),
                 SizedBox(
                   height: 30.0,
+                  child: Container(
+                    color: Colors.blue,
+                  ),
                 ),
-                //signOutButton,
               ],
             ),
-          )
+          ),
+          Positioned(
+            width: 260,
+            top: MediaQuery.of(context).size.height / 13,
+            child: Container(
+              width: 40,
+              height: 40,
+              child: FloatingActionButton(
+                backgroundColor: Colors.white,
+                child: Icon(
+                  Icons.photo_camera,
+                  color: Colors.black,
+                ),
+                onPressed: () => {},
+              ),
+            ),
+          ),
         ],
       ),
-      
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: () {},
         child: FutureBuilder<ProfileConstants>(
           future: _makeProfileConstants(),
           builder: (context, snapshot) {
-            if(snapshot.hasData){
+            if (snapshot.hasData) {
               return PopupMenuButton<String>(
                 onSelected: _choiceAction,
                 itemBuilder: (BuildContext context) {
@@ -385,7 +537,7 @@ class _Profilepage extends State<Profilepage> {
                   }).toList();
                 },
                 icon: Icon(Icons.settings),
-              );  
+              );
             } else {
               return Icon(Icons.settings);
             }
@@ -393,7 +545,7 @@ class _Profilepage extends State<Profilepage> {
         ),
         backgroundColor: Colors.red,
       ),
-    );
+    );*/
   }
 }
 
@@ -403,7 +555,8 @@ class getClipper extends CustomClipper<Path> {
     var path = new Path();
 
     path.lineTo(0.0, size.height / 2.5);
-    path.lineTo(size.width * 1.9, 0.0);
+    path.lineTo(size.width, size.height / 2.5);
+    path.lineTo(size.width, 0.0);
     path.close();
     return path;
   }
@@ -412,7 +565,4 @@ class getClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldclipper) {
     return true;
   }
-
-
 }
-
