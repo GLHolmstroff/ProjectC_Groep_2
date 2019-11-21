@@ -279,10 +279,7 @@ class _Profilepage extends State<Profilepage> {
     final userHouseText = Text(
       'Jouw huis',
       style: TextStyle(
-        fontSize: 20.0,
-        fontStyle: FontStyle.italic,
-        color: Colors.white
-      ),
+          fontSize: 20.0, fontStyle: FontStyle.italic, color: Colors.white),
     );
 
     FutureBuilder<House> userHouseName = FutureBuilder<House>(
@@ -293,12 +290,14 @@ class _Profilepage extends State<Profilepage> {
             onTap: () {
               print('hallo');
             },
-            child: Text(snapshot.data.houseName,
-            style: TextStyle(
-              fontSize: 20,
-              fontStyle: FontStyle.italic,
-              color: Colors.white,
-            ),),
+            child: Text(
+              snapshot.data.houseName,
+              style: TextStyle(
+                fontSize: 20,
+                fontStyle: FontStyle.italic,
+                color: Colors.white,
+              ),
+            ),
           );
           //return Text("Welcome, " + snapshot.data.displayName);
         } else if (snapshot.hasError) {
@@ -325,7 +324,11 @@ class _Profilepage extends State<Profilepage> {
                     decoration: BoxDecoration(
                         color: Colors.black,
                         image: DecorationImage(
-                            image: NetworkImage(imgUrl), fit: BoxFit.cover),
+                          image: NetworkImage(
+                            imgUrl,
+                          ),
+                          fit: BoxFit.cover,
+                        ),
                         borderRadius: BorderRadius.circular(75.0),
                         border: Border.all(
                           color: Colors.white,
@@ -334,36 +337,39 @@ class _Profilepage extends State<Profilepage> {
               } else if (snapshot.hasError) {
                 return Text("${snapshot.error}");
               }
-              return Icon(Icons.photo_camera);
+              return Icon(
+                Icons.photo_camera,
+                color: Colors.white,
+              );
             }),
       ),
     );
 
     FloatingActionButton settingsButton = FloatingActionButton(
-        onPressed: () {},
-        child: FutureBuilder<ProfileConstants>(
-          future: _makeProfileConstants(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return PopupMenuButton<String>(
-                onSelected: _choiceAction,
-                itemBuilder: (BuildContext context) {
-                  return snapshot.data.choices.map((String choice) {
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(choice),
-                    );
-                  }).toList();
-                },
-                icon: Icon(Icons.settings),
-              );
-            } else {
-              return Icon(Icons.settings);
-            }
-          },
-        ),
-        backgroundColor: Colors.red,
-      );
+      onPressed: () {},
+      child: FutureBuilder<ProfileConstants>(
+        future: _makeProfileConstants(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return PopupMenuButton<String>(
+              onSelected: _choiceAction,
+              itemBuilder: (BuildContext context) {
+                return snapshot.data.choices.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+              icon: Icon(Icons.settings),
+            );
+          } else {
+            return Icon(Icons.settings);
+          }
+        },
+      ),
+      backgroundColor: Colors.red,
+    );
 
     final upperpart = new Container(
       color: Colors.red,
@@ -374,22 +380,22 @@ class _Profilepage extends State<Profilepage> {
           Positioned(
             width: 150,
             top: 35,
-            left: MediaQuery.of(context).size.width/2 - 75,
+            left: MediaQuery.of(context).size.width / 2 - 75,
             child: profielimage,
           ),
           Positioned(
             width: 40,
             height: 40,
             top: 20,
-            left: MediaQuery.of(context).size.width/2 - 75,
+            left: MediaQuery.of(context).size.width / 2 - 75,
             child: FloatingActionButton(
-                backgroundColor: Colors.white,
-                child: Icon(
-                  Icons.photo_camera,
-                  color: Colors.black,
-                ),
-                onPressed: () => {},
+              backgroundColor: Colors.white,
+              child: Icon(
+                Icons.photo_camera,
+                color: Colors.black,
               ),
+              onPressed: () => _imageOptionsDialogBox(),
+            ),
           )
         ],
       ),
@@ -403,7 +409,10 @@ class _Profilepage extends State<Profilepage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           userDisplayname,
-          VerticalDivider(color: Colors.white, thickness: 2,),
+          VerticalDivider(
+            color: Colors.white,
+            thickness: 2,
+          ),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
@@ -411,12 +420,14 @@ class _Profilepage extends State<Profilepage> {
               userHouseName,
             ],
           ),
-          VerticalDivider(color: Colors.white, thickness: 2,),
+          VerticalDivider(
+            color: Colors.white,
+            thickness: 2,
+          ),
           Text("Saldo"),
         ],
       ),
     );
-
 
     return new Scaffold(
       body: Container(
@@ -428,7 +439,6 @@ class _Profilepage extends State<Profilepage> {
             color: Colors.pink,
             height: 30,
             width: 30,
-            
           )
         ],
       )),
