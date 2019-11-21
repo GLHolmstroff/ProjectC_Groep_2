@@ -1,25 +1,15 @@
+import 'dart:ffi';
+
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'dart:convert';
 
-class User {
-  final String userId;
-  final int groupId;
-  final String globalPermissions;
-  final String displayName;
-  final String pictureLink;
-
-  User({this.userId,this.groupId,this.globalPermissions,this.displayName, this.pictureLink});
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      userId: json['uid'],
-      groupId: json['groupid'],
-      globalPermissions: json['global_permissions'],
-      displayName: json['display_name'],
-      pictureLink: json['picture_link']
-    );
-  }
+class BaseUser {
+  String userId;
+  int groupId;
+  String globalPermissions;
+  String displayName;
+  String picture_link;
 
   @override
   String toString() {
@@ -36,23 +26,70 @@ class User {
         this.displayName +
         "\n";
   }
+}
 
-  static Future<User> getCurrentUser() async {
+class CurrentUser extends BaseUser {
+  static final CurrentUser _instance = CurrentUser._internal();
+
+  factory CurrentUser() {
+    return _instance;
+  }
+
+  factory CurrentUser.fromJson(Map<String, dynamic> json) {
+    _instance.userId = json['uid'];
+    _instance.groupId = json['groupid'];
+    _instance.globalPermissions = json['global_permissions'];
+    _instance.displayName = json['display_name'];
+    _instance.picture_link = json['picture_link'];
+    return _instance;
+  }
+
+  CurrentUser._internal() {
+    userId = null;
+    groupId = null;
+    globalPermissions = null;
+    displayName = null;
+  }
+
+  static Future<CurrentUser> updateCurrentUser() async {
     String uid = await Auth().currentUser();
-    return getUser(uid);
+    CurrentUser placehoderCurrentUser;
+    final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
+        headers: {'Content-Type': 'application/json'});
+    if (res.statusCode == 200) {
+      placehoderCurrentUser = CurrentUser.fromJson(json.decode(res.body));
+    } else {
+      print("Could not find user");
+    }
+    return placehoderCurrentUser;
+  }
+}
+
+class User extends BaseUser {
+  User(userId, groupId, globalPermissions, displayName, picture_link) {
+    this.userId = userId;
+    this.userId = groupId;
+    this.globalPermissions = globalPermissions;
+    this.displayName = displayName;
+    this.picture_link = picture_link;
+  }
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(json["uid"], json["groupid"], json["global_permissions"],
+        json["display_name"], json["picture_link"]);
   }
 
   static Future<User> getUser(String cuid) async {
     String uid = cuid;
-    User currentUser;
+    User placeholdesUser;
     final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
-      currentUser = User.fromJson(json.decode(res.body));
+      placeholdesUser = User.fromJson(json.decode(res.body));
     } else {
       print("Could not find user");
     }
-    return currentUser;
+    return placeholdesUser;
   }
 }
 
@@ -95,7 +132,7 @@ class House {
         houseName: json['name']);
   }
   static Future<House> getCurrentHouse() async {
-    User currentUser = await User.getCurrentUser();
+    CurrentUser currentUser = await CurrentUser.updateCurrentUser();
     String groupID = currentUser.groupId.toString();
     House currentGroup;
     final Response res = await get(

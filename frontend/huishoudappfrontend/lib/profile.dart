@@ -256,8 +256,8 @@ class _Profilepage extends State<Profilepage> {
       clipper: getClipper(),
     );
 
-    FutureBuilder<User> userDisplayname = FutureBuilder<User>(
-      future: User.getCurrentUser(),
+    FutureBuilder<CurrentUser> userDisplayname = FutureBuilder<CurrentUser>(
+      future: CurrentUser.updateCurrentUser(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Text(

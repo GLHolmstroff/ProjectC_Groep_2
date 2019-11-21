@@ -44,11 +44,10 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatelessWidget {
   Future<bool> _checkGroup() async {
-    String uid = await Auth().currentUser();
-    final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid");
-    User user = User.fromJson(json.decode(res.body));
-    print("user loaded" + user.toString());
-    if (user.groupId == null) {
+    CurrentUser currentUser = await CurrentUser.updateCurrentUser();
+
+    print("user loaded" + currentUser.toString());
+    if (currentUser.groupId == null) {
       return false;
     }
     return true;
@@ -63,11 +62,11 @@ class MyHomePage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.active || snapshot.connectionState == ConnectionState.waiting) {
             if (snapshot.hasData) {
               print("Waiting");
-              return FutureBuilder<bool>(
-                  future: _checkGroup(),
+              return FutureBuilder<CurrentUser>(
+                  future: CurrentUser.updateCurrentUser(),
                   builder: (context, innersnapshot) {
                     if (innersnapshot.hasData) {
-                      if (innersnapshot.data) {
+                      if (innersnapshot.data.groupId == null) {
                         return (HomePage());
                       } else {
                         return (GroupWidget());
