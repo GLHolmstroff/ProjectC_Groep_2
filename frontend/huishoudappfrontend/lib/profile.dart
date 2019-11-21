@@ -129,37 +129,6 @@ class _Profilepage extends State<Profilepage> {
         });
   }
 
-  /*Future<User> getUser() async {
-    String uid = await Auth().currentUser();
-    User currentUser;
-    final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
-        headers: {'Content-Type': 'application/json'});
-    print(res.statusCode);
-    if (res.statusCode == 200) {
-      // If server returns an OK response, parse the JSON.
-      currentUser = User.fromJson(json.decode(res.body));
-    } else {
-      print("Could not find user");
-    }
-    return currentUser;
-  }*/
-
-  /*Future<House> getHouse() async {
-    User currentUser = await User.getCurrentUser();
-    String groupID = currentUser.groupId.toString();
-    House currentGroup;
-    final Response res = await get(
-        "http://10.0.2.2:8080/getGroupName?gid=$groupID",
-        headers: {'Content-Type': 'application/json'});
-    print(res.statusCode);
-    if (res.statusCode == 200) {
-      // If server returns an OK response, parse the JSON.
-      currentGroup = House.fromJson(json.decode(res.body));
-    } else {
-      print("Could not find group");
-    }
-    return currentGroup;
-  }*/
 
   void _sendChangePasswordEmail() async {
     final auth = Provider.of(context).auth;
@@ -219,13 +188,14 @@ class _Profilepage extends State<Profilepage> {
     if (fromkey.currentState.validate()) {
       fromkey.currentState.save();
       Navigator.pop(context);
-      setState(() {});
+      
       print(_name);
       String uid = await Auth().currentUser();
       final Response res = await get(
           "http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
           headers: {'Content-Type': 'application/json'});
     }
+    CurrentUser.updateCurrentUser();
   }
 
   void _choiceAction(String choice) async {
@@ -407,7 +377,8 @@ class _Profilepage extends State<Profilepage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          userDisplayname,
+          //userDisplayname,
+          Text(CurrentUser().displayName),
           VerticalDivider(
             color: Colors.white,
             thickness: 2,
@@ -444,117 +415,6 @@ class _Profilepage extends State<Profilepage> {
       floatingActionButton: settingsButton,
     );
 
-    /*return new Scaffold(
-      body: new Stack(
-        children: <Widget>[
-          clipper,
-          Positioned(
-            width: 400.0,
-            top: MediaQuery.of(context).size.height / 13,
-            child: Column(
-              children: <Widget>[
-                GestureDetector(
-                  onTap: _imageOptionsDialogBox,
-                  child: Container(
-                    width: 150.0,
-                    height: 150.0,
-                    child: FutureBuilder<String>(
-                        future: getImgUrl(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            var imgUrl = snapshot.data;
-                            print(imgUrl);
-                            return Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.black,
-                                    image: DecorationImage(
-                                        image: NetworkImage(imgUrl),
-                                        fit: BoxFit.cover),
-                                    borderRadius: BorderRadius.circular(75.0),
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 4.0,
-                                    )));
-                          } else if (snapshot.hasError) {
-                            return Text("${snapshot.error}");
-                          }
-                          return Icon(Icons.photo_camera);
-                        }),
-                  ),
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                SizedBox(
-                  height: 30.0,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    userDisplayname,
-                    Column(
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[userHouseText, userHouseName],
-                        ),
-                      ],
-                    ),
-                    Text('saldo')
-                  ],
-                ),
-                SizedBox(
-                  height: 30.0,
-                  child: Container(
-                    color: Colors.blue,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            width: 260,
-            top: MediaQuery.of(context).size.height / 13,
-            child: Container(
-              width: 40,
-              height: 40,
-              child: FloatingActionButton(
-                backgroundColor: Colors.white,
-                child: Icon(
-                  Icons.photo_camera,
-                  color: Colors.black,
-                ),
-                onPressed: () => {},
-              ),
-            ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: FutureBuilder<ProfileConstants>(
-          future: _makeProfileConstants(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return PopupMenuButton<String>(
-                onSelected: _choiceAction,
-                itemBuilder: (BuildContext context) {
-                  return snapshot.data.choices.map((String choice) {
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(choice),
-                    );
-                  }).toList();
-                },
-                icon: Icon(Icons.settings),
-              );
-            } else {
-              return Icon(Icons.settings);
-            }
-          },
-        ),
-        backgroundColor: Colors.red,
-      ),
-    );*/
   }
 }
 
