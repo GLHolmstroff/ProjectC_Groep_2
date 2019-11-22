@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:core' as prefix0;
-import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -26,7 +24,6 @@ class Turfwidget extends StatefulWidget{
   State<StatefulWidget> createState() => _Turfwidget();
     
 }
-
 
 
 class _Turfwidget extends State<Turfwidget>{
@@ -94,18 +91,6 @@ class _Turfwidget extends State<Turfwidget>{
         return AnimatedLiquidCustomProgressIndicator();
       },
     );
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     return Scaffold(
