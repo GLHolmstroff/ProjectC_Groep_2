@@ -33,21 +33,6 @@ class Home_widget_state extends State<Home_widget>{
   String _userinfo = Home_widget.currentUser.toString();
   
 
-   Future<User> getUser() async {
-    String uid = await Auth().currentUser();
-    User currentUser;
-    final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
-        headers: {'Content-Type': 'application/json'});
-    print(res.statusCode);
-    if (res.statusCode == 200) {
-      // If server returns an OK response, parse the JSON.
-      currentUser = User.fromJson(json.decode(res.body));
-    } else {
-      print("Could not find user");
-    }
-    return currentUser;
-  }
-
   void _changeUserInfo(String newinfo) {
     setState(() {
       _userinfo = newinfo;
@@ -61,8 +46,8 @@ class Home_widget_state extends State<Home_widget>{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FutureBuilder<User>(
-              future: getUser(),
+            FutureBuilder<CurrentUser>(
+              future: CurrentUser.updateCurrentUser(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Text("Welcome, " + snapshot.data.displayName);
@@ -77,9 +62,9 @@ class Home_widget_state extends State<Home_widget>{
             (FlatButton(
                 child: Text("Go to Beer"),
                 onPressed: () {
-                    User currentUser = User();
+                    CurrentUser currentUser = CurrentUser();
                     
-                    Widget beerPage = BeerPage(currentUser: currentUser);
+                    Widget beerPage = BeerPage();
                     widget.changeToWidget(beerPage);
                    
                   //   Navigator.push(
