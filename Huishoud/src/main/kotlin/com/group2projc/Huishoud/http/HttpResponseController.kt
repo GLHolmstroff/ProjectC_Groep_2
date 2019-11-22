@@ -96,10 +96,9 @@ class HttpResponseController {
     }
 
     @RequestMapping("/getInviteCode")
-    fun getInviteCode(@RequestParam(value="gid",defaultValue = "")gid:Int):HttpResponse{
-        val code = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").getInviteCode(gid)
-        return HttpResponse(counter.incrementAndGet().toInt(),
-                template + code)
+        fun getInviteCode(@RequestParam(value="gid",defaultValue = "")gid:Int): HashMap<String, Int>{
+            val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").getInviteCode(gid)
+            return map;
     }
 
     @RequestMapping("/initDatabase")

@@ -27,7 +27,7 @@ class Joingroup_Widget extends StatelessWidget {
       keyboardType: TextInputType.text,
       controller: _inviteCodeController,
       decoration: InputDecoration(
-        hintText: 'Huisnaam',
+        hintText: 'Code',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
       ),
