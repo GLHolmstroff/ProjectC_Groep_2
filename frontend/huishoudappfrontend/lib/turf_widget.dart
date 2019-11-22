@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:core' as prefix0;
-import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -16,12 +14,8 @@ class Turfwidget extends StatefulWidget{
 }
 
 
-
 class _Turfwidget extends State<Turfwidget>{
   
-
-
-
   Future<User> getUser() async {
     String uid = await Auth().currentUser();
     User currentUser;
@@ -38,7 +32,7 @@ class _Turfwidget extends State<Turfwidget>{
 
 
 Future<Group> getGroup() async{
-  String groupID = currentUser.UserId.toString();
+  String groupID = (await getUser()).groupId.toString();
   Group currentGroup;
   final Response res = await get(
     'http;//10.0.2.2:8080/getAllInGroup?gid=$groupID',
