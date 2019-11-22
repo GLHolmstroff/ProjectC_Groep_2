@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
+import 'package:huishoudappfrontend/groupmanagement/invitecode_widget.dart';
 
 
 import 'Objects.dart';
@@ -87,6 +88,17 @@ class Home_widget_state extends State<Home_widget>{
                         ));
                   
                 })),
+                FlatButton(
+                child: Text("Get invite code"),
+                onPressed: () {
+                   
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              InviteCode_widget(),
+                        ));
+                })
           ],
         ),
       );

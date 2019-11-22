@@ -1,10 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:huishoudappfrontend/Objects.dart';
 import 'package:huishoudappfrontend/groupmanagement/title_widget.dart';
 
-class Joingroup_Widget extends StatelessWidget {
+import '../page_container.dart';
+
+class Joingroup_Widget extends StatefulWidget {
+  static String tag = "Creategroup_widget";
+  Joingroup_WidgetState createState() => Joingroup_WidgetState();
+}
+
+class Joingroup_WidgetState extends State {
   final _inviteCodeController = TextEditingController();
 
-  void _joinGroup() {}
+  Future<void> _joinGroup() async {
+      var currentUser = CurrentUser();
+      var code = int.parse(_inviteCodeController.text);
+      var uid = currentUser.userId;
+      final response = await get(
+          "http://10.0.2.2:8080/joinGroupByCode?uid=$uid&ic=$code");
+      if (response.statusCode == 200) {
+        print("Succesfully Registered");
+      } else {
+        print("Connection Failed");
+        print(response.body);
+      }
+      Navigator.popAndPushNamed(context, HomePage.tag);
+  }
 
   @override
   Widget build(BuildContext context) {

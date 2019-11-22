@@ -55,10 +55,13 @@ class DatabaseHelper(url: String) {
         val count = integer("count")
     }
 
-    object InviteCodes :Table() {
+    object InviteCodes : Table() {
+        val id = integer("id").primaryKey().autoIncrement()
         val groupid = reference("groupid", Groups.id);
         val code = integer("code");
     }
+
+
 //TODO: Find out if it's Possible to use DAO, find way to pass EntityID to postgres
 
 //    //Entity (Row) objects for main tables.
@@ -105,7 +108,7 @@ class DatabaseHelper(url: String) {
     fun initDataBase(): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
-            SchemaUtils.create(Groups, Users, GroupPermissions, Schedules, BeerTallies)
+            SchemaUtils.create(Groups, Users, GroupPermissions, Schedules, BeerTallies, InviteCodes)
         }
 
         return this@DatabaseHelper
@@ -341,10 +344,29 @@ class DatabaseHelper(url: String) {
                 it[code] = finalKey;
             }
         }
+        return out;
+    }
 
+    fun joinGroubByCode(ic : Int, uid: String): HashMap<String, String>{
+        var groupid : Int? = null;
+        var out = HashMap<String, String>()
+        transaction(db) {
+            InviteCodes.select {(InviteCodes.code eq ic)}.forEach{
+                groupid = it[InviteCodes.groupid];
+            }
+        }
+        if(groupid != null) {
+            transaction(db) {
+                InviteCodes.deleteWhere {(InviteCodes.code eq ic)}
+            }
+            addUserToGroup(uid, groupid!!);
+            out["result"] = "Succes";
+        }
+        else{
+            out["result"] = "Code not found";
+        }
 
         return out;
-
     }
 
 }

@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:huishoudappfrontend/groupmanagement/creategroup_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/title_widget.dart';
 
+import 'joingroup_widget.dart';
+
 class GroupWidget extends StatefulWidget {
   static String tag = "group_widget";
   _GroupWidget createState() => _GroupWidget();
@@ -21,7 +23,7 @@ class _GroupWidget extends State<GroupWidget> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => new Creategroup_widget(),
+          builder: (context) =>  Joingroup_Widget(),
         ));
   }
 

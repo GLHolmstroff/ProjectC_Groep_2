@@ -101,6 +101,14 @@ class HttpResponseController {
             return map;
     }
 
+    @RequestMapping("/joinGroupByCode")
+        fun joinGroupByCode(@RequestParam(value="ic", defaultValue = "")ic:Int,
+                            @RequestParam(value="uid", defaultValue = "")uid:String):HashMap<String,String> {
+            val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").joinGroubByCode(ic,uid);
+            return map;
+
+    }
+
     @RequestMapping("/initDatabase")
     fun initDB():HashMap<String,String> {
         val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
