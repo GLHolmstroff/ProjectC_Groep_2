@@ -116,6 +116,20 @@ class Group {
     this.users.forEach((el) => out += el + "\n");
     return out;
   }
+
+  static Future<Group> getGroup() async {
+    CurrentUser currentUser = CurrentUser();
+    String groupId = currentUser.groupId.toString();
+    Group currentGroup;
+    final Response res = await get("http://10.0.2.2:8080/getAllInGroup?gid=$groupId",
+        headers: {'Content-Type': 'application/json'});
+        if(res.statusCode == 200){
+          currentGroup = Group.fromJson(json.decode(res.body));
+        } else {
+          print('Could not find group');
+        }
+    return currentGroup;
+  }
 }
 
 class House {
