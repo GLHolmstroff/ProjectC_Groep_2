@@ -6,6 +6,7 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
+import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'Objects.dart';
 
 
@@ -19,43 +20,46 @@ class Turfwidget extends StatefulWidget{
 
 class _Turfwidget extends State<Turfwidget>{
   
-
-
-
-  Future<User> getUser() async {
-    String uid = await Auth().currentUser();
-    User currentUser;
-      final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
-          headers: {'Content-Type': 'application/json'});
-      if (res.statusCode == 200) {
-        // If server returns an OK response, parse the JSON.
-        currentUser = User.fromJson(json.decode(res.body));
-    } else {
-        print("Could not find user");
-    }
-    return currentUser;
+  void _printusers() async {
+    Group group = await Group.getGroup();
+    print(group.toString());
   }
-
-
-Future<Group> getGroup() async{
-  String groupID = currentUser.UserId.toString();
-  Group currentGroup;
-  final Response res = await get(
-    'http;//10.0.2.2:8080/getAllInGroup?gid=$groupID',
-    headers: {'Content-Type': 'application/json'});
-    if (res.statusCode == 200){
-      // If server returns an OK response, parse the JSON.
-      currentGroup = Group.fromJson(json.decode(res.body));
-    } else {
-      print('Could not find group');
-    }
-    return currentGroup;  
-}
 
 
 
 
   Widget build(BuildContext context) {
+
+    FutureBuilder<House> houseDisplayname = FutureBuilder<House>(
+      future: House.getCurrentHouse(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Text(
+            snapshot.data.houseName,
+            style: TextStyle(
+              fontWeight: FontWeight.bold
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return Text('${snapshot.error}');
+        }
+        return AnimatedLiquidCustomProgressIndicator();
+      },
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     return Scaffold(
 
       body: 
@@ -64,8 +68,8 @@ Future<Group> getGroup() async{
         padding: const EdgeInsets.only(top: 30),
         child: ListTile(
           leading: Icon(Icons.person),
-          title: Text('Username'),
-          subtitle: Text('groupname'),
+          title: Text(CurrentUser().displayName),
+          subtitle: houseDisplayname,
           trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
@@ -75,7 +79,7 @@ Future<Group> getGroup() async{
                         color: Colors.green,
                         ),
                       onPressed: (){
-                        print('pressed button');
+                        _printusers();
                       }
                       
                       ),
@@ -86,7 +90,7 @@ Future<Group> getGroup() async{
                         
                         ),
                       onPressed: (){
-                        print('pressed button');
+                        print('You pressed - button');
                       },
                       
                       ),

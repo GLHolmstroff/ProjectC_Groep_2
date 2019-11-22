@@ -36,7 +36,7 @@ class HomePageState extends State<HomePage> {
   final List<Widget> _children = [
     Home_widget(),
     SchoonmaakPage(),
-    Turf_Widget(),
+    Turfwidget(),
     Profilepage()
   ];
 

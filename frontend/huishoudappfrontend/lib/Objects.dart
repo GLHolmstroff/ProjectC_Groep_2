@@ -68,7 +68,7 @@ class CurrentUser extends BaseUser {
 class User extends BaseUser {
   User(userId, groupId, globalPermissions, displayName, picture_link) {
     this.userId = userId;
-    this.userId = groupId;
+    this.groupId = groupId;
     this.globalPermissions = globalPermissions;
     this.displayName = displayName;
     this.picture_link = picture_link;
@@ -121,11 +121,12 @@ class Group {
     CurrentUser currentUser = CurrentUser();
     String groupId = currentUser.groupId.toString();
     Group currentGroup;
-    final Response res = await get("http://10.0.2.2:8080/getAllInGroup?gid=$groupId",
+    final Response res = await get("http://10.0.2.2:8080/getGroup?gid=$groupId",
         headers: {'Content-Type': 'application/json'});
         if(res.statusCode == 200){
           currentGroup = Group.fromJson(json.decode(res.body));
         } else {
+          print(res.statusCode.toString());
           print('Could not find group');
         }
     return currentGroup;
