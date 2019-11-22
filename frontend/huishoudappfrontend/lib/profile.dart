@@ -12,12 +12,10 @@ import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'services/permission_serivce.dart';
-import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
-import 'package:huishoudappfrontend/setup/widgets.dart';
 
 class Profilepage extends StatefulWidget {
   static String tag = 'profile_page';
-
+  
   @override
   State<StatefulWidget> createState() => _Profilepage();
 }
@@ -39,13 +37,12 @@ class _Profilepage extends State<Profilepage> {
     }
   }
 
-  Future<ProfileConstants> _makeProfileConstants() async {
+  Future<ProfileConstants> _makeProfileConstants () async {
     loginWithEmail = await _loggedinWithEmail();
     print('login met email =' + loginWithEmail.toString());
-    profCons = ProfileConstants(loginWithEmail);
+    profCons =ProfileConstants(loginWithEmail);
     return profCons;
   }
-
   File _image;
 
   Future<String> getImgUrl() async {
@@ -100,26 +97,29 @@ class _Profilepage extends State<Profilepage> {
                       if (!await perm.hasCameraPermission()) {
                         perm.requestCameraPermission(onPermissionDenied: () {
                           print('Permission has been denied');
-                        });
-                      }
-                      openCamera();
-                      Navigator.pop(context);
-                    },
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                  ),
-                  GestureDetector(
-                    child: new Text('Select from gallery'),
-                    onTap: () async {
-                      var perm = PermissionsService();
-                      if (!await perm.hasStoragePermission()) {
-                        perm.requestStoragePermission(onPermissionDenied: () {
+                        }
+                      );
+                    }
+                    openCamera();
+                    Navigator.pop(context);
+                  },
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                ),
+                GestureDetector(
+                  child: new Text('Select from gallery'),
+                  onTap: () async {
+                    var perm = PermissionsService();
+                    if(!await perm.hasStoragePermission()){
+                      perm.requestStoragePermission(
+                        onPermissionDenied: () {
                           print('Permission has been denied');
-                        });
-                      }
-                      openGallery();
-                      Navigator.pop(context);
+                        }
+                      );
+                    }
+                    openGallery();
+                    Navigator.pop(context);
                     },
                   ),
                 ],
@@ -127,6 +127,38 @@ class _Profilepage extends State<Profilepage> {
             ),
           );
         });
+  }
+
+  Future<User> getUser() async {
+    String uid = await Auth().currentUser();
+    User currentUser;
+    final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
+        headers: {'Content-Type': 'application/json'});
+    print(res.statusCode);
+    if (res.statusCode == 200) {
+      // If server returns an OK response, parse the JSON.
+      currentUser = User.fromJson(json.decode(res.body));
+    } else {
+      print("Could not find user");
+    }
+    return currentUser;
+  }
+
+  Future<House> getHouse() async {
+    User currentUser = await getUser();
+    String groupID = currentUser.groupId.toString();
+    House currentGroup;
+    final Response res = await get(
+        "http://10.0.2.2:8080/getGroupName?gid=$groupID",
+        headers: {'Content-Type': 'application/json'});
+    print(res.statusCode);
+    if (res.statusCode == 200) {
+      // If server returns an OK response, parse the JSON.
+      currentGroup = House.fromJson(json.decode(res.body));
+    } else {
+      print("Could not find group");
+    }
+    return currentGroup;
   }
 
 
@@ -188,14 +220,15 @@ class _Profilepage extends State<Profilepage> {
     if (fromkey.currentState.validate()) {
       fromkey.currentState.save();
       Navigator.pop(context);
-      
+      setState(() {
+        
+      });
       print(_name);
       String uid = await Auth().currentUser();
       final Response res = await get(
           "http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
           headers: {'Content-Type': 'application/json'});
     }
-    CurrentUser.updateCurrentUser();
   }
 
   void _choiceAction(String choice) async {
@@ -212,6 +245,7 @@ class _Profilepage extends State<Profilepage> {
       }
     } else if (choice == "Verander wachtwoord") {
       _sendChangePasswordEmail();
+
     }
   }
 
@@ -220,53 +254,43 @@ class _Profilepage extends State<Profilepage> {
     //widgets variables
     final clipper = ClipPath(
       child: Container(
-        color: Colors.red,
+        color: Colors.black.withOpacity(0.9),
       ),
       clipper: getClipper(),
     );
 
-    FutureBuilder<CurrentUser> userDisplayname = FutureBuilder<CurrentUser>(
-      future: CurrentUser.updateCurrentUser(),
+    FutureBuilder<User> userDisplayname = FutureBuilder<User>(
+      future: getUser(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return Text(
-            snapshot.data.displayName,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          );
+          return Text("Welcome, " + snapshot.data.displayName);
         } else if (snapshot.hasError) {
           return Text("${snapshot.error}");
         }
 
         // By default, show a loading spinner.
-        return AnimatedLiquidCustomProgressIndicator();
+        return CircularProgressIndicator();
       },
     );
+
 
     final userHouseText = Text(
       'Jouw huis',
       style: TextStyle(
-          fontSize: 20.0, fontStyle: FontStyle.italic, color: Colors.white),
+        fontSize: 20.0,
+        fontStyle: FontStyle.italic,
+      ),
     );
 
     FutureBuilder<House> userHouseName = FutureBuilder<House>(
-      future: House.getCurrentHouse(),
+      future: getHouse(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return new GestureDetector(
             onTap: () {
               print('hallo');
             },
-            child: Text(
-              snapshot.data.houseName,
-              style: TextStyle(
-                fontSize: 20,
-                fontStyle: FontStyle.italic,
-                color: Colors.white,
-              ),
-            ),
+            child: Text(snapshot.data.houseName),
           );
           //return Text("Welcome, " + snapshot.data.displayName);
         } else if (snapshot.hasError) {
@@ -274,147 +298,98 @@ class _Profilepage extends State<Profilepage> {
         }
 
         // By default, show a loading spinner.
-        return AnimatedLiquidCustomProgressIndicator();
+        return CircularProgressIndicator();
       },
     );
 
-    final profielimage = GestureDetector(
-      onTap: _imageOptionsDialogBox,
-      child: Container(
-        width: 150.0,
-        height: 150.0,
-        child: FutureBuilder<String>(
-            future: getImgUrl(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                var imgUrl = snapshot.data;
-                print(imgUrl);
-                return Container(
-                    decoration: BoxDecoration(
-                        color: Colors.black,
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            imgUrl,
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.circular(75.0),
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 4.0,
-                        )));
-              } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
-              }
-              return Icon(
-                Icons.photo_camera,
-                color: Colors.white,
-              );
-            }),
-      ),
-    );
+    return new Scaffold(
+      body: new Stack(
 
-    FloatingActionButton settingsButton = FloatingActionButton(
-      onPressed: () {},
-      child: FutureBuilder<ProfileConstants>(
-        future: _makeProfileConstants(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return PopupMenuButton<String>(
-              onSelected: _choiceAction,
-              itemBuilder: (BuildContext context) {
-                return snapshot.data.choices.map((String choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(choice),
-                  );
-                }).toList();
-              },
-              icon: Icon(Icons.settings),
-            );
-          } else {
-            return Icon(Icons.settings);
-          }
-        },
-      ),
-      backgroundColor: Colors.red,
-    );
-
-    final upperpart = new Container(
-      color: Colors.red,
-      height: MediaQuery.of(context).size.height / 3,
-      width: MediaQuery.of(context).size.width,
-      child: Stack(
         children: <Widget>[
+          clipper,
           Positioned(
-            width: 150,
-            top: 35,
-            left: MediaQuery.of(context).size.width / 2 - 75,
-            child: profielimage,
-          ),
-          Positioned(
-            width: 40,
-            height: 40,
-            top: 20,
-            left: MediaQuery.of(context).size.width / 2 - 75,
-            child: FloatingActionButton(
-              backgroundColor: Colors.white,
-              child: Icon(
-                Icons.photo_camera,
-                color: Colors.black,
-              ),
-              onPressed: () => _imageOptionsDialogBox(),
+            width: 400.0,
+            top: MediaQuery.of(context).size.height / 8,
+            child: Column(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: _imageOptionsDialogBox,
+                  child: Container(
+                    width: 150.0,
+                    height: 150.0,
+                    child: FutureBuilder<String>(
+                        future: getImgUrl(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            var imgUrl = snapshot.data;
+                            print(imgUrl);
+                            return Container(
+                                decoration: BoxDecoration(
+                              color: Colors.black,
+                              image:
+                                  DecorationImage(image: NetworkImage(imgUrl)),
+                              borderRadius: BorderRadius.circular(75.0),
+                            ));
+                          } else if (snapshot.hasError) {
+                            return Text("${snapshot.error}");
+                          }
+                          return CircularProgressIndicator();
+                        }),
+                  ),
+                ),
+                SizedBox(
+                  height: 50.0,
+                ),
+                userDisplayname,
+                SizedBox(
+                  height: 30.0,
+                ),
+                Column(
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        userHouseText,
+                        userHouseName
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 30.0,
+                ),
+                //signOutButton,
+              ],
             ),
           )
         ],
       ),
-    );
-
-    final middelpart = new Container(
-      color: Colors.redAccent,
-      height: MediaQuery.of(context).size.height / 12,
-      width: MediaQuery.of(context).size.width,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          //userDisplayname,
-          Text(CurrentUser().displayName),
-          VerticalDivider(
-            color: Colors.white,
-            thickness: 2,
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              userHouseText,
-              userHouseName,
-            ],
-          ),
-          VerticalDivider(
-            color: Colors.white,
-            thickness: 2,
-          ),
-          Text("Saldo"),
-        ],
+      
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){},
+        child: FutureBuilder<ProfileConstants>(
+          future: _makeProfileConstants(),
+          builder: (context, snapshot) {
+            if(snapshot.hasData){
+              return PopupMenuButton<String>(
+                onSelected: _choiceAction,
+                itemBuilder: (BuildContext context) {
+                  return snapshot.data.choices.map((String choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(choice),
+                    );
+                  }).toList();
+                },
+                icon: Icon(Icons.settings),
+              );  
+            } else {
+              return Icon(Icons.settings);
+            }
+          },
+        ),
+        backgroundColor: Colors.red,
       ),
     );
-
-    return new Scaffold(
-      body: Container(
-          child: Column(
-        children: <Widget>[
-          upperpart,
-          middelpart,
-          Container(
-            color: Colors.pink,
-            height: 30,
-            width: 30,
-          )
-        ],
-      )),
-      floatingActionButton: settingsButton,
-    );
-
   }
 }
 
@@ -424,8 +399,7 @@ class getClipper extends CustomClipper<Path> {
     var path = new Path();
 
     path.lineTo(0.0, size.height / 2.5);
-    path.lineTo(size.width, size.height / 2.5);
-    path.lineTo(size.width, 0.0);
+    path.lineTo(size.width * 1.9, 0.0);
     path.close();
     return path;
   }
@@ -435,3 +409,4 @@ class getClipper extends CustomClipper<Path> {
     return true;
   }
 }
+
