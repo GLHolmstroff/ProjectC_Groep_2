@@ -15,75 +15,67 @@ class TurfInfo {
 }
 
 List<TurfInfo> receivedData = [
-  TurfInfo(displayname: CurrentUser().displayName, numberofbeers: '0', profilepicture: Icons.person ),
+  TurfInfo(
+      displayname: CurrentUser().displayName,
+      numberofbeers: '0',
+      profilepicture: Icons.person),
 ];
 
-
-class Turfwidget extends StatefulWidget{
+class Turfwidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _Turfwidget();
-    
 }
 
-
-class _Turfwidget extends State<Turfwidget>{
-  
+class _Turfwidget extends State<Turfwidget> {
   void _printusers() async {
     Group group = await Group.getGroup();
     print(group.toString());
   }
 
-  ListTile createListTile() {
-    ListView.builder(
-      itemCount: 3,
+  ListView createListTile() {
+    return ListView.builder(
+      itemCount: 1,
       itemBuilder: (context, index) {
         TurfInfo turfInfo = receivedData[index];
         return ListTile(
           leading: Icon(Icons.person),
           title: Text(turfInfo.displayname),
           trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(
-                        Icons.add,
-                        color: Colors.green,
-                        ),
-                      onPressed: (){
-                        _printusers();
-                      }
-                      
-                      ),
-                      IconButton(
-                      icon: Icon(
-                        Icons.remove,
-                        color: Colors.red,
-                        
-                        ),
-                      onPressed: (){
-                        print('You pressed - button');
-                      },
-                      
-                      ),
-                      Text('0')
-                      ]
-      )
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              IconButton(
+                  icon: Icon(
+                    Icons.add,
+                    color: Colors.green,
+                  ),
+                  onPressed: () {
+                    _printusers();
+                  }),
+              IconButton(
+                icon: Icon(
+                  Icons.remove,
+                  color: Colors.red,
+                ),
+                onPressed: () {
+                  print('You pressed - button');
+                },
+              ),
+              Text('0')
+            ],
+          ),
+        );
+      },
     );
-  });
-                    
-
+  }
 
   Widget build(BuildContext context) {
-
     FutureBuilder<House> houseDisplayname = FutureBuilder<House>(
       future: House.getCurrentHouse(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Text(
             snapshot.data.houseName,
-            style: TextStyle(
-              fontWeight: FontWeight.bold
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold),
           );
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
@@ -92,51 +84,14 @@ class _Turfwidget extends State<Turfwidget>{
       },
     );
 
-
     return Scaffold(
       appBar: AppBar(
         title: houseDisplayname,
-
       ),
-
-      body:
-      Padding(
+      body: Padding(
         padding: const EdgeInsets.only(top: 20),
-        child: ListTile(
-          leading: Icon(Icons.person),
-          title: Text(CurrentUser().displayName),
-          trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(
-                        Icons.add,
-                        color: Colors.green,
-                        ),
-                      onPressed: (){
-                        _printusers();
-                      }
-                      
-                      ),
-                      IconButton(
-                      icon: Icon(
-                        Icons.remove,
-                        color: Colors.red,
-                        
-                        ),
-                      onPressed: (){
-                        print('You pressed - button');
-                      },
-                      
-                      ),
-                      Text('0')
-                      ]
-
-        )
-    ),
-      ));
+        child: createListTile(),
+      ),
+    );
+  }
 }
-
-}
-
-
