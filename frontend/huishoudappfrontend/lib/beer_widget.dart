@@ -12,10 +12,10 @@ import 'Objects.dart';
 
 class BeerPage extends StatefulWidget {
   // Declare a field that holds the Todo.
-  final User currentUser;
+  final CurrentUser currentUser = CurrentUser();
 
   // In the constructor, require a Todo.
-  BeerPage({Key key, @required this.currentUser}) : super(key: key);
+  BeerPage({Key key}) : super(key: key);
   
 
   @override
@@ -73,7 +73,7 @@ class BeerPageState extends State<BeerPage> {
               child: Text("Drink a beer"),
               onPressed: () async {
                 Auth auth = Provider.of(context).auth;
-                User currentUser = widget.currentUser;
+                CurrentUser currentUser = widget.currentUser;
                 String uid = currentUser.userId;
                 int gid = currentUser.groupId;
                 final Response res2 = await get("http://10.0.2.2:8080/getTally?gid=$gid",
