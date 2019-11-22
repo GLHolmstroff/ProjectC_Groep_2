@@ -126,6 +126,7 @@ class Group {
         if(res.statusCode == 200){
           currentGroup = Group.fromJson(json.decode(res.body));
         } else {
+        
           print('Could not find group');
         }
     return currentGroup;
