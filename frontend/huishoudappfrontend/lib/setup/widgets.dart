@@ -39,7 +39,7 @@ class AnimatedLiquidCustomProgressIndicatorState
         direction: Axis.vertical,
         backgroundColor: Colors.white,
         valueColor: AlwaysStoppedAnimation(Colors.yellow),
-        shapePath: _buildGlass(),
+        shapePath: _buildGlass(context),
         center: Text(
           "${percentage.toStringAsFixed(0)}%",
           style: TextStyle(
@@ -64,13 +64,15 @@ class AnimatedLiquidCustomProgressIndicatorState
       ..close();
   }
 
-  Path _buildGlass() {
+  Path _buildGlass(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Path()
-    ..moveTo(20, 100)
+    ..moveTo(0.2*width, height)
     ..lineTo(0, 0)
-    ..lineTo(80, 0)
-    ..lineTo(60, 100)
-    ..lineTo(20, 100)
+    ..lineTo(0.8*width, 0)
+    ..lineTo(0.6*width, height)
+    ..lineTo(0.2*width, height)
     ..close();
   }
 }
