@@ -129,7 +129,6 @@ class _Profilepage extends State<Profilepage> {
         });
   }
 
-
   void _sendChangePasswordEmail() async {
     final auth = Provider.of(context).auth;
     print(await auth.getUserIdToken());
@@ -188,7 +187,7 @@ class _Profilepage extends State<Profilepage> {
     if (fromkey.currentState.validate()) {
       fromkey.currentState.save();
       Navigator.pop(context);
-      
+
       print(_name);
       String uid = await Auth().currentUser();
       final Response res = await get(
@@ -304,7 +303,7 @@ class _Profilepage extends State<Profilepage> {
                           width: 4.0,
                         )));
               } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
+                return Icon(Icons.person);
               }
               return Icon(
                 Icons.photo_camera,
@@ -378,7 +377,14 @@ class _Profilepage extends State<Profilepage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           //userDisplayname,
-          Text(CurrentUser().displayName),
+          Text(
+            CurrentUser().displayName,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
           VerticalDivider(
             color: Colors.white,
             thickness: 2,
@@ -386,7 +392,6 @@ class _Profilepage extends State<Profilepage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              userHouseText,
               userHouseName,
             ],
           ),
@@ -404,6 +409,10 @@ class _Profilepage extends State<Profilepage> {
           child: Column(
         children: <Widget>[
           upperpart,
+          Divider(
+            color: Colors.white,
+            height: 1,
+          ),
           middelpart,
           Container(
             color: Colors.pink,
@@ -414,7 +423,6 @@ class _Profilepage extends State<Profilepage> {
       )),
       floatingActionButton: settingsButton,
     );
-
   }
 }
 
