@@ -31,67 +31,81 @@ class _Turfwidget extends State<Turfwidget> {
     Group group = await Group.getGroup();
     print(group.toString());
   }
+  
+  Future<String> getImgUrl(String uid) async {
+    String timeStamp =
+        DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
+    return "http://10.0.2.2:8080/files/users?uid=$uid&t=$timeStamp";
+  }
 
-  ListView createListTile() {
-    return ListView.builder(
-      itemCount: 1,
-      itemBuilder: (context, index) {
-        TurfInfo turfInfo = receivedData[index];
-        return ListTile(
-          leading: Icon(Icons.person),
-          title: Text(turfInfo.displayname),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              IconButton(
-                  icon: Icon(
-                    Icons.add,
-                    color: Colors.green,
-                  ),
-                  onPressed: () {
-                    _printusers();
-                  }),
-              IconButton(
-                icon: Icon(
-                  Icons.remove,
-                  color: Colors.red,
+  FutureBuilder<BeerTally> createListTile(int gid) {
+    String timeStamp = DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
+    return FutureBuilder<BeerTally>(
+      future: BeerTally.getData(gid),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+            itemCount: snapshot.data.getCount().length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                leading: Image.network("http://10.0.2.2:8080/files/users?uid=${snapshot.data.getPics().values.toList()[index]}&t=$timeStamp"),
+                title: Text(snapshot.data.getCount().keys.toList()[index]),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    IconButton(
+                        icon: Icon(
+                          Icons.add,
+                          color: Colors.green,
+                        ),
+                        onPressed: () {
+                          _printusers();
+                        }),
+                    IconButton(
+                      icon: Icon(
+                        Icons.remove,
+                        color: Colors.red,
+                      ),
+                      onPressed: () {
+                        print('You pressed - button');
+                      },
+                    ),
+                    Text(snapshot.data.getCount().values.toList()[index].toString())
+                  ],
                 ),
-                onPressed: () {
-                  print('You pressed - button');
-                },
-              ),
-              Text('0')
-            ],
-          ),
-        );
+              );
+            },
+          );
+        } else if (snapshot.hasError) {
+          return Text('${snapshot.error}');
+        }
+        return CircularProgressIndicator();
       },
     );
   }
 
   Widget build(BuildContext context) {
-    FutureBuilder<House> houseDisplayname = FutureBuilder<House>(
+    return FutureBuilder<House>(
       future: House.getCurrentHouse(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return Text(
-            snapshot.data.houseName,
-            style: TextStyle(fontWeight: FontWeight.bold),
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                snapshot.data.houseName,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            body: Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: createListTile(snapshot.data.groupId),
+            ),
           );
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
-        return AnimatedLiquidCustomProgressIndicator();
+        return CircularProgressIndicator();
       },
-    );
-
-    return Scaffold(
-      appBar: AppBar(
-        title: houseDisplayname,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 20),
-        child: createListTile(),
-      ),
     );
   }
 }
