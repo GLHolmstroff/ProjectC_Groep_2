@@ -1,5 +1,8 @@
 package com.group2projc.Huishoud.database
 
+import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.authorid
+import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.date
+import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.groupid
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.mutation
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.targetuserid
 
@@ -272,6 +275,29 @@ class DatabaseHelper(url: String) {
                         .toString()
                 it[targetuserid] = targetuid
                 it[BeerTallies.mutation] = mutation
+            }
+        }
+        return this@DatabaseHelper
+    }
+
+    fun getAllBeerEntriesForGroup(gid: Int): HashMap<String, Any> {
+        var out = HashMap<String,Any>()
+        transaction(db) {
+            addLogger(StdOutSqlLogger)
+            BeerTallies.select {(BeerTallies.groupid eq gid)}.forEach {
+                out["author"] = it[authorid]
+                out["target"] = it[targetuserid]
+                out["mutation"] = it[mutation]
+                out["date"] = it[date]
+            }
+        }
+        return out
+    }
+
+    fun updateBeerEntry(gid: Int, author: String, target:String, date:String, mut: Int) : DatabaseHelper{
+        transaction(db) {
+            BeerTallies.update ({(groupid eq gid) and (authorid eq author) and (targetuserid eq target) and (BeerTallies.date eq date)} ){
+                it[mutation] = mut
             }
         }
         return this@DatabaseHelper

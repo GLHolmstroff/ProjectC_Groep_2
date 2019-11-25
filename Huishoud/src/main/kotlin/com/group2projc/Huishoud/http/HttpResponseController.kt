@@ -85,6 +85,27 @@ class HttpResponseController {
 
     }
 
+    @RequestMapping("/getTallyEntries")
+    fun getTallyEntries(@RequestParam(value= "gid",defaultValue = "") gid: Int): HashMap<String, Any> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .getAllBeerEntriesForGroup(gid)
+        return map
+
+    }
+
+    @RequestMapping("/updateTallyEntry")
+    fun updateTallyEntry(   @RequestParam(value = "gid", defaultValue = "") gid: Int,
+                            @RequestParam(value= "authorid", defaultValue = "")authorid: String,
+                            @RequestParam(value= "targetid", defaultValue = "")targetid: String,
+                            @RequestParam(value= "mutation", defaultValue = "0")mutation: Int,
+                            @RequestParam(value = "date", defaultValue = "")date: String): HttpResponse {
+        val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .updateBeerEntry(gid,authorid,targetid,date,mutation)
+        return HttpResponse(counter.incrementAndGet().toInt(),
+                template + gid)
+    }
+
+
     @RequestMapping("/updateTally")
     fun updateTally(@RequestParam(value="gid",defaultValue = "")gid:Int,
                     @RequestParam(value="authorid",defaultValue = "")authorid:String,
