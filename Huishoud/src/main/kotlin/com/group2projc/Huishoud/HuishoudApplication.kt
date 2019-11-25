@@ -41,7 +41,6 @@ class HuishoudApplication: ExitCodeGenerator {
             val count = dbHelper.getTallyforGroup(1)
             print(count)
             val fsss:FileSystemStorageService = FileSystemStorageService(StorageProperties())
-            fsss.deleteAll()
             fsss.init()
         }
 
