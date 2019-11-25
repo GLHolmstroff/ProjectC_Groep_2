@@ -241,18 +241,19 @@ class DatabaseHelper(url: String) {
         return out;
     }
 
-    fun getTallyForGroupByNameAndPic(gid: Int): HashMap<String, HashMap<Int, String>> {
+    fun getTallyForGroupByNameAndPic(gid: Int): HashMap<String, HashMap<String, Any>> {
         val uids = getAllInGroup(gid).values
-        var out = HashMap<String, HashMap<Int, String>>()
+        var out = HashMap<String, HashMap<String, Any>>()
 
         uids.forEach {
             var user = getUser(it)
             var name: String? = user["display_name"] as String?
-            var imgUrl: String? = user["picture_link"] as String?
+            var uid: String? = it
 
-            if (name != null && imgUrl != null) {
-                var data = HashMap<Int, String>()
-                data[getBeerTally(gid,it)] = imgUrl
+            if (name != null && uid != null) {
+                var data = HashMap<String, Any>()
+                data["picture"] = uid
+                data["count"] = getBeerTally(gid,it)
                 out[name] = data
             }
         }
