@@ -82,16 +82,15 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
   Widget checkHousemateCard(BuildContext context, int index) {
     return new Container(
       child: Card(
-        elevation: 3,
+        elevation: 1.5,
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Row(
-            children: <Widget>[
-              Text("Profielfoto"), // Profielfoto
-              Text("Username"), // Username
-              Spacer(),
-              Text("Taak")
-            ],
+          padding: const EdgeInsets.all(2.0),
+          child: ListTile(
+            leading: Icon(Icons.account_circle),
+            title: Text("Username"),
+            subtitle: Text("Verrichte taak"),
+            trailing: Icon(Icons.arrow_right),
+            onTap: () {/* Go to page of task*/},
           ),
         ),
       ),
@@ -100,45 +99,76 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
 
   @override
   Widget build(BuildContext context) {
+    final taskHeader = Text(
+      "Jouw taken",
+      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+    );
+
+    final checkHousemates = Text(
+      "Goedkeuren huisgenoten",
+      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+    );
+
     return Center(
-        child: Column(children: <Widget>[
-      SizedBox(height: 40),
-      Text("Jouw taken",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-          )),
-      SizedBox(height: 10),
-      Container(
-          height: 200,
-          child: ListView.builder(
-              padding: const EdgeInsets.all(8),
-              itemCount: testList.length,
-              itemBuilder: (BuildContext context, int index) =>
-                  cleaningCard(context, index))),
-      SizedBox(height: 30),
-      Text(
-        "Goedkeuren huisgenoten",
-        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+      child: Column(
+        children: <Widget>[
+          Container(
+            height: 275,
+            width: MediaQuery.of(context).size.width,
+            color: Colors.orange[900],
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 10),
+                taskHeader,
+                Container(
+                  height: 225,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(8),
+                    itemCount: testList.length,
+                    itemBuilder: (BuildContext context, int index) =>
+                        cleaningCard(context, index),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Container(
+            height: 275,
+            width: MediaQuery.of(context).size.width,
+            color: Colors.orange[800],
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 10),
+                checkHousemates,
+                Container(
+                  height: 225,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(8),
+                    itemCount: 10,
+                    itemBuilder: (BuildContext context, int index) =>
+                        checkHousemateCard(context, index),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Expanded(
+            child: Container(
+              height: 78,
+              width: MediaQuery.of(context).size.width,
+              color: Colors.orange[700],
+              child: Center(
+                child: RaisedButton(
+                  child: Text("Huisagenda"),
+                  onPressed: () {},
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
-      SizedBox(height: 10),
-      Container(
-        height: 200,
-        child: ListView.builder(
-          padding: const EdgeInsets.all(8),
-          itemCount: 10,
-          itemBuilder: (BuildContext context, int index) =>
-              checkHousemateCard(context, index),
-        ),
-      ),
-      SizedBox(height: 15),
-      RaisedButton(
-        onPressed: () {},
-        child: Text(
-          "Huisagenda",
-          style: TextStyle(fontSize: 20),
-        ),
-      )
-    ]));
+    );
   }
 }
