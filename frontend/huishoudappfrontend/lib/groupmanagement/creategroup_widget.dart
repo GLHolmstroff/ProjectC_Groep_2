@@ -67,21 +67,31 @@ class _Creategroup_widget extends State {
 
     return Scaffold(
       body: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        Title_Widget(text:"Huis aanmaken"),
-        Center(
-          child:
-              Container(width: 250.0, height: 50.0, child: explanationText1),
-        ),
-        Center(child: Container(width: 250.0, height: 100.0,child: groupName)),
-        Center(
-        child:Container(
-          
-          child: makeGroupButton,
-        ))
-      ],
-    ));
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Title_Widget(text:"Huis aanmaken"),
+          Expanded(
+                      child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              
+              
+              Center(
+                child:
+                    Container(width: 250.0, height: 50.0, child: explanationText1),
+              ),
+              Center(child: Container(width: 250.0, height: 100.0,child: groupName)),
+              Center(
+              child:Container(
+                
+                child: makeGroupButton,
+              ))
+            ],
+    ),
+          ),
+        ],
+      ));
   }
 }

@@ -33,7 +33,7 @@ class Home_widget extends StatefulWidget{
 class Home_widget_state extends State<Home_widget>{
   
   String _userinfo = Home_widget.currentUser.toString();
-  
+  var currentUser = CurrentUser();
 
   void _changeUserInfo(String newinfo) {
     setState(() {
@@ -43,6 +43,23 @@ class Home_widget_state extends State<Home_widget>{
 
   @override
   Widget build(BuildContext context) {
+    Widget addUserToGroupButton = FlatButton(
+      child: Text("Get invite code"),
+      onPressed: () {
+        
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    InviteCode_widget(),
+              ));
+      });
+
+    if(currentUser.group_permission != "groupAdmin"){
+      print(currentUser.group_permission);
+      addUserToGroupButton = new Container();
+    }
+    
     return 
       Center(
         child: Column(
@@ -88,17 +105,8 @@ class Home_widget_state extends State<Home_widget>{
                         ));
                   
                 })),
-                FlatButton(
-                child: Text("Get invite code"),
-                onPressed: () {
-                   
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              InviteCode_widget(),
-                        ));
-                })
+
+                addUserToGroupButton
           ],
         ),
       );

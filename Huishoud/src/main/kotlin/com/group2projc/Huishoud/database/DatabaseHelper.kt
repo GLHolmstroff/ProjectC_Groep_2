@@ -154,6 +154,10 @@ class DatabaseHelper(url: String) {
                 out["display_name"] = it[Users.displayname]
                 out["picture_link"] = it[Users.picturelink]
             }
+
+            GroupPermissions.select ({ GroupPermissions.userid eq uid }).forEach {
+                out["group_permissions"] = it[GroupPermissions.permission]
+            }
         }
         return out
     }

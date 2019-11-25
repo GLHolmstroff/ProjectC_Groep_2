@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/Objects.dart';
+import 'package:huishoudappfrontend/groupmanagement/title_widget.dart';
 
 class InviteCode_widget extends StatefulWidget {
   _InviteCodeWidgetState createState() => _InviteCodeWidgetState();
@@ -32,16 +33,28 @@ class _InviteCodeWidgetState extends State {
     );
 
     final codeText = Text(
-      text
+      text,
+      style: TextStyle(fontSize: 20)
     );
 
     return 
     Scaffold(
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          codeText,
-          getCodeButton
+          Title_Widget(text: "Uitnodigingscode"),
+          Expanded(
+                      child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                
+                Center(child: codeText),
+                Center(child: getCodeButton)
+              ],
+            ),
+          ),
         ],
       ),
     );

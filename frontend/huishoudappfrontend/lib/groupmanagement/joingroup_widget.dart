@@ -14,23 +14,22 @@ class Joingroup_WidgetState extends State {
   final _inviteCodeController = TextEditingController();
 
   Future<void> _joinGroup() async {
-      var currentUser = CurrentUser();
-      var code = int.parse(_inviteCodeController.text);
-      var uid = currentUser.userId;
-      final response = await get(
-          "http://10.0.2.2:8080/joinGroupByCode?uid=$uid&ic=$code");
-      if (response.statusCode == 200) {
-        print("Succesfully Registered");
-      } else {
-        print("Connection Failed");
-        print(response.body);
-      }
-      Navigator.popAndPushNamed(context, HomePage.tag);
+    var currentUser = CurrentUser();
+    var code = int.parse(_inviteCodeController.text);
+    var uid = currentUser.userId;
+    final response =
+        await get("http://10.0.2.2:8080/joinGroupByCode?uid=$uid&ic=$code");
+    if (response.statusCode == 200) {
+      print("Succesfully Registered");
+    } else {
+      print("Connection Failed");
+      print(response.body);
+    }
+    Navigator.popAndPushNamed(context, HomePage.tag);
   }
 
   @override
   Widget build(BuildContext context) {
-    
     final joinGroupButton = RaisedButton(
       onPressed: _joinGroup,
       child: Text('Neem deel aan een groep', style: TextStyle(fontSize: 20)),
@@ -59,15 +58,23 @@ class Joingroup_WidgetState extends State {
         body: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-          Title_Widget(text:"Deelnemen aan een huis"),
-          Center(
-            child: explanationText1,
+            children: [
+          Title_Widget(text: "Deelnemen aan een huis"),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Center(
+                  child: explanationText1,
+                ),
+                Center(
+                  child: inviteCode,
+                ),
+                Center(child: joinGroupButton),
+              ],
+            ),
           ),
-          Center(
-            child: inviteCode,
-          ),
-          Center(child: joinGroupButton),
         ]));
   }
 }

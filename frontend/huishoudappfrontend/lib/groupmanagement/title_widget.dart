@@ -10,15 +10,15 @@ class Title_Widget extends StatelessWidget{
    return Container(
         height: 200.0,
         decoration: BoxDecoration(
-          color: Colors.blue,
+          color: Colors.deepOrange,
           boxShadow: [
             BoxShadow(
               color: Colors.grey,
-              blurRadius: 20.0, // has the effect of softening the shadow
-              spreadRadius: 5.0, // has the effect of extending the shadow
+              blurRadius: 10.0, // has the effect of softening the shadow
+              spreadRadius: 1.0, // has the effect of extending the shadow
               offset: Offset(
-               0, // horizontal, move right 10
-                4.0, // vertical, move down 10
+               1.0, // horizontal, move right 10
+                1.0, // vertical, move down 10
               ),
             )
           ],
@@ -33,7 +33,7 @@ class Title_Widget extends StatelessWidget{
                     this.text,
                     textAlign: TextAlign.left,
                     style: TextStyle(
-                        fontSize: 40.0,
+                        fontSize: 35.0,
                         fontWeight: FontWeight.w300,
                         color: Colors.white),
                   ))

@@ -23,13 +23,12 @@ class _GroupWidget extends State<GroupWidget> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>  Joingroup_Widget(),
+          builder: (context) => Joingroup_Widget(),
         ));
   }
 
   @override
   Widget build(BuildContext context) {
-    
     final explanationText1 = Text(
       "U zit nog niet in een huis",
       textAlign: TextAlign.center,
@@ -69,16 +68,23 @@ class _GroupWidget extends State<GroupWidget> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Title_Widget(text: "Setup",),
-        Center(
-          child:
-              Container(width: 250.0, height: 100.0, child: explanationText1),
+        Title_Widget(text: "Setup"),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Center(child: explanationText1),
+              Center(child: explanationText2),
+              Column(
+                children: <Widget>[
+                  Center(child: makeGroupButton),
+                  Center(child: joinGroupButton),
+                ],
+              )
+            ],
+          ),
         ),
-        Center(
-          child: Container(width: 250.0, height: 200, child: explanationText2),
-        ),
-        Center(child: makeGroupButton),
-        Center(child: joinGroupButton),
       ],
     ));
   }
