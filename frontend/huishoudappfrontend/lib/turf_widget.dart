@@ -28,10 +28,8 @@ class _Turfwidget extends State<Turfwidget> {
 
   List<TurfInfo> sentData = [];
 
-  void _printusers() async {
-    Group group = await Group.getGroup();
-    print(group.toString());
-  }
+
+
 
   Future<String> getImgUrl(String uid) async {
     String timeStamp =
@@ -74,7 +72,7 @@ class _Turfwidget extends State<Turfwidget> {
                           color: Colors.green,
                         ),
                         onPressed: () {
-                          _printusers();
+                          print('You pressed + button');
                         }),
                     IconButton(
                       icon: Icon(
