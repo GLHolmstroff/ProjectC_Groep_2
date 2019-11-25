@@ -10,7 +10,7 @@ import 'Objects.dart';
 class TurfInfo {
   TurfInfo({this.displayname, this.numberofbeers, this.profilepicture});
   final String displayname;
-  final String numberofbeers;
+  int numberofbeers;
   final String profilepicture;
 
   String toString() {
@@ -27,6 +27,10 @@ class _Turfwidget extends State<Turfwidget> {
   List<TurfInfo> receivedData = [];
 
   List<TurfInfo> sentData = [];
+
+  
+
+
 
 
 
@@ -51,18 +55,22 @@ class _Turfwidget extends State<Turfwidget> {
           for (int i = 0; i < pictures.length; i++) {
             receivedData.add(TurfInfo(
               displayname: names[i],
-              numberofbeers: counts[i].toString(),
+              numberofbeers: counts[i],
               profilepicture: pictures[i],
             ));
-            print(receivedData[i].toString());
+            sentData.add(TurfInfo(
+              displayname: names[i],
+              numberofbeers: counts[i],
+              profilepicture: pictures[i],
+            ));
           }
           return ListView.builder(
             itemCount: snapshot.data.getCount().length,
             itemBuilder: (context, index) {
               return ListTile(
                 leading: Image.network(
-                    "http://10.0.2.2:8080/files/users?uid=${receivedData[index].profilepicture}&t=$timeStamp"),
-                title: Text(receivedData[index].displayname),
+                    "http://10.0.2.2:8080/files/users?uid=${sentData[index].profilepicture}&t=$timeStamp"),
+                title: Text(sentData[index].displayname),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
@@ -72,7 +80,9 @@ class _Turfwidget extends State<Turfwidget> {
                           color: Colors.green,
                         ),
                         onPressed: () {
-                          print('You pressed + button');
+                          setState(() {
+                            sentData[index].numberofbeers += 1;
+                          });
                         }),
                     IconButton(
                       icon: Icon(
@@ -80,10 +90,18 @@ class _Turfwidget extends State<Turfwidget> {
                         color: Colors.red,
                       ),
                       onPressed: () {
-                        print('You pressed - button');
+                        setState(() {
+                          if (sentData[index].numberofbeers == 0){
+                          print('Can''t remove any more beers');
+                        }
+                        else {
+                          sentData[index].numberofbeers -=1;
+                        }
+                        });
+                        
                       },
                     ),
-                    Text(receivedData[index].numberofbeers)
+                    Text(sentData[index].numberofbeers.toString())
                   ],
                 ),
               );
