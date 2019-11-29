@@ -86,7 +86,7 @@ class HttpResponseController {
     }
 
     @RequestMapping("/getTallyByName")
-    fun getTallyByName(@RequestParam(value= "gid",defaultValue = "") gid: Int): HashMap<String, HashMap<Int, String>> {
+    fun getTallyByName(@RequestParam(value= "gid",defaultValue = "") gid: Int): HashMap<String, HashMap<String, Any>> {
         val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
                 .getTallyForGroupByNameAndPic(gid)
         return map

@@ -149,12 +149,12 @@ class Group {
     Group currentGroup;
     final Response res = await get("http://10.0.2.2:8080/getGroup?gid=$groupId",
         headers: {'Content-Type': 'application/json'});
-        if(res.statusCode == 200){
-          currentGroup = Group.fromJson(json.decode(res.body));
-        } else {
-          print(res.statusCode.toString());
-          print('Could not find group');
-        }
+    if (res.statusCode == 200) {
+      currentGroup = Group.fromJson(json.decode(res.body));
+    } else {
+      print(res.statusCode.toString());
+      print('Could not find group');
+    }
     return currentGroup;
   }
 }
@@ -193,18 +193,63 @@ class House {
 class BeerTally {
   //TODO: Link with group
   final Map<String, int> count;
+  final Map<String, String> pics;
 
-  BeerTally({this.count});
+  BeerTally({this.count, this.pics});
 
   Map<String, int> getCount() {
     return this.count;
   }
 
+  List<Map<String, int>> getCountAsList() {
+    List<Map<String, int>> out = List<Map<String, int>>();
+    this.count.forEach((k, v) {
+      Map<String, int> single = Map<String, int>();
+      single[k] = v;
+      out.add(single);
+    });
+
+    return out;
+  }
+
+  Map<String, String> getPics() {
+    return this.pics;
+  }
+
+  List<Map<String, String>> getPicsAsList() {
+    List<Map<String, String>> out = List<Map<String, String>>();
+    this.pics.forEach((k, v) {
+      Map<String, String> single = Map<String, String>();
+      single[k] = v;
+      out.add(single);
+    });
+
+    return out;
+  }
+
+  static Future<BeerTally> getData(int gid) async {
+    BeerTally beer;
+    final Response res = await get(
+        "http://10.0.2.2:8080/getTallyByName?gid=$gid",
+        headers: {'Content-Type': 'application/json'});
+    print(res.statusCode);
+    if (res.statusCode == 200) {
+      // If server returns an OK response, parse the JSON.
+      beer = BeerTally.fromJson(json.decode(res.body));
+    } else {
+      print("Could not find beer data");
+    }
+    return beer;
+  }
+
   factory BeerTally.fromJson(Map<String, dynamic> json) {
     Map<String, int> count = new Map<String, int>();
-    json.forEach((k, v) => count[k] = v);
-
-    return BeerTally(count: count);
+    Map<String, String> pics = new Map<String, String>();
+    json.forEach((k, v) {
+      count[k] = v["count"];
+      pics[k] = v["picture"];
+    });
+    return BeerTally(count: count, pics: pics);
   }
 
   String toString() {
