@@ -10,7 +10,8 @@ class BaseUser {
   String globalPermissions;
   String displayName;
   String picture_link;
-
+  String group_permission;
+  
   @override
   String toString() {
     return "userID: " +
@@ -41,6 +42,7 @@ class CurrentUser extends BaseUser {
     _instance.globalPermissions = json['global_permissions'];
     _instance.displayName = json['display_name'];
     _instance.picture_link = json['picture_link'];
+    _instance.group_permission = json['group_permissions'];
     return _instance;
   }
 

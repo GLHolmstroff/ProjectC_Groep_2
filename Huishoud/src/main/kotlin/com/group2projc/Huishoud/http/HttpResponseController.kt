@@ -3,10 +3,10 @@ package com.group2projc.Huishoud.http
 import com.group2projc.Huishoud.HuishoudApplication
 import com.group2projc.Huishoud.database.DatabaseHelper
 import com.group2projc.Huishoud.database.createGroup
-import java.util.concurrent.atomic.AtomicLong;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
+import java.util.concurrent.atomic.AtomicLong
 
 @RestController
 class HttpResponseController {
@@ -117,6 +117,20 @@ class HttpResponseController {
                 template + gid)
     }
 
+    @RequestMapping("/getInviteCode")
+        fun getInviteCode(@RequestParam(value="gid",defaultValue = "")gid:Int): HashMap<String, Int>{
+            val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").getInviteCode(gid)
+            return map;
+    }
+
+    @RequestMapping("/joinGroupByCode")
+        fun joinGroupByCode(@RequestParam(value="ic", defaultValue = "")ic:Int,
+                            @RequestParam(value="uid", defaultValue = "")uid:String):HashMap<String,String> {
+            val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").joinGroubByCode(ic,uid);
+            return map;
+
+    }
+
     @RequestMapping("/initDatabase")
     fun initDB():HashMap<String,String> {
         val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
@@ -128,4 +142,7 @@ class HttpResponseController {
     fun stopRunning() {
         HuishoudApplication.shutDown()
     }
+
+
 }
+
