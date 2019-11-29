@@ -71,12 +71,7 @@ class _Turfwidget extends State<Turfwidget> {
 
       }
     }
-
-    
-    
   }
-
-
 
   Future<String> getImgUrl(String uid) async {
     String timeStamp =
@@ -153,7 +148,7 @@ class _Turfwidget extends State<Turfwidget> {
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
-        return AnimatedLiquidCustomProgressIndicator();
+        return AnimatedLiquidCustomProgressIndicator(MediaQuery.of(context).size);
       },
     );
   }
