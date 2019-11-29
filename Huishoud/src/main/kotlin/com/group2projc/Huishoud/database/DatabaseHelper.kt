@@ -1,12 +1,15 @@
 package com.group2projc.Huishoud.database
 
+import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.authorid
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.date
+import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.groupid
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.mutation
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.targetuserid
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDate
+import java.util.Random
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -57,6 +60,14 @@ class DatabaseHelper(url: String) {
         val targetuserid = reference("targetid", Users.id)
         val mutation = integer("mutation")
     }
+
+    object InviteCodes : Table() {
+        val id = integer("id").primaryKey().autoIncrement()
+        val groupid = reference("groupid", Groups.id);
+        val code = integer("code");
+    }
+
+
 //TODO: Find out if it's Possible to use DAO, find way to pass EntityID to postgres
 
 //    //Entity (Row) objects for main tables.
@@ -103,7 +114,7 @@ class DatabaseHelper(url: String) {
     fun initDataBase(): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
-            SchemaUtils.create(Groups, Users, GroupPermissions, Schedules, BeerTallies)
+            SchemaUtils.create(Groups, Users, GroupPermissions, Schedules, BeerTallies, InviteCodes)
         }
 
         return this@DatabaseHelper
@@ -148,6 +159,10 @@ class DatabaseHelper(url: String) {
                 out["global_permissions"] = it[Users.global_permissions]
                 out["display_name"] = it[Users.displayname]
                 out["picture_link"] = it[Users.picturelink]
+            }
+
+            GroupPermissions.select ({ GroupPermissions.userid eq uid }).forEach {
+                out["group_permissions"] = it[GroupPermissions.permission]
             }
         }
         return out
@@ -279,6 +294,29 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
+    fun getAllBeerEntriesForGroup(gid: Int): HashMap<String, Any> {
+        var out = HashMap<String,Any>()
+        transaction(db) {
+            addLogger(StdOutSqlLogger)
+            BeerTallies.select {(BeerTallies.groupid eq gid)}.forEach {
+                out["author"] = it[authorid]
+                out["target"] = it[targetuserid]
+                out["mutation"] = it[mutation]
+                out["date"] = it[date]
+            }
+        }
+        return out
+    }
+
+    fun updateBeerEntry(gid: Int, author: String, target:String, date:String, mut: Int) : DatabaseHelper{
+        transaction(db) {
+            BeerTallies.update ({(groupid eq gid) and (authorid eq author) and (targetuserid eq target) and (BeerTallies.date eq date)} ){
+                it[mutation] = mut
+            }
+        }
+        return this@DatabaseHelper
+    }
+
     fun getBeerTally(gid: Int, targetuid: String): Int {
         var count = 0
          transaction(db) {
@@ -334,6 +372,66 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+    fun createInviteCode(): Int {
+
+        var random = Random();
+        var key = random.nextInt(999999 - 100000) + 100000
+        return key;
+
+
+
+    }
+
+    fun getInviteCode(gid : Int): HashMap<String, Int> {
+        var keyFound = false;
+        var finalKey  = 0;
+        var out = HashMap<String, Int>();
+        while (!keyFound) {
+            var key = createInviteCode();
+            var alreadyInUse = false;
+            transaction(db) {
+                InviteCodes.select { (InviteCodes.code eq key) }.forEach {
+                    alreadyInUse = true;
+                }
+            }
+            if(!alreadyInUse) {
+                keyFound = true
+                finalKey = key;
+                out["code"] = finalKey;
+            }
+        }
+
+        transaction(db) {
+            InviteCodes.insert {
+                it[groupid] = gid;
+                it[code] = finalKey;
+            }
+        }
+        return out;
+    }
+
+    fun joinGroubByCode(ic : Int, uid: String): HashMap<String, String>{
+        var groupid : Int? = null;
+        var out = HashMap<String, String>()
+        transaction(db) {
+            InviteCodes.select {(InviteCodes.code eq ic)}.forEach{
+                groupid = it[InviteCodes.groupid];
+            }
+        }
+        if(groupid != null) {
+            transaction(db) {
+                InviteCodes.deleteWhere {(InviteCodes.code eq ic)}
+            }
+            addUserToGroup(uid, groupid!!);
+            out["result"] = "Succes";
+        }
+        else{
+            out["result"] = "Code not found";
+        }
+
+        return out;
+    }
+
 }
 
 fun DatabaseHelper.createGroup(n: String, uid: String): DatabaseHelper {
@@ -347,3 +445,7 @@ fun DatabaseHelper.createGroup(n: String, uid: String): DatabaseHelper {
     }
     return this
 }
+
+
+
+
