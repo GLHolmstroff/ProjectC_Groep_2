@@ -15,6 +15,7 @@ import 'services/permission_serivce.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'design.dart';
 
 class Profilepage extends StatefulWidget {
   static String tag = 'profile_page';
@@ -229,7 +230,7 @@ class _Profilepage extends State<Profilepage> {
     //widgets variables
     final clipper = ClipPath(
       child: Container(
-        color: Colors.red,
+        color: Design.rood,
       ),
       clipper: getClipper(),
     );
@@ -242,7 +243,7 @@ class _Profilepage extends State<Profilepage> {
             snapshot.data.displayName,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: Design.geel,
             ),
           );
         } else if (snapshot.hasError) {
@@ -257,7 +258,7 @@ class _Profilepage extends State<Profilepage> {
     final userHouseText = Text(
       'Jouw huis',
       style: TextStyle(
-          fontSize: 20.0, fontStyle: FontStyle.italic, color: Colors.white),
+          fontSize: 20.0, fontStyle: FontStyle.italic, color: Design.geel),
     );
 
     FutureBuilder<House> userHouseName = FutureBuilder<House>(
@@ -273,7 +274,7 @@ class _Profilepage extends State<Profilepage> {
               style: TextStyle(
                 fontSize: 20,
                 fontStyle: FontStyle.italic,
-                color: Colors.white,
+                color: Design.geel,
               ),
             ),
           );
@@ -300,7 +301,7 @@ class _Profilepage extends State<Profilepage> {
                 print(imgUrl);
                 return Container(
                     decoration: BoxDecoration(
-                        color: Colors.black,
+                        color: Design.zwart,
                         image: DecorationImage(
                           image: NetworkImage(
                             imgUrl,
@@ -309,7 +310,7 @@ class _Profilepage extends State<Profilepage> {
                         ),
                         borderRadius: BorderRadius.circular(75.0),
                         border: Border.all(
-                          color: Colors.white,
+                          color: Design.geel,
                           width: 4.0,
                         )));
               } else if (snapshot.hasError) {
@@ -317,7 +318,7 @@ class _Profilepage extends State<Profilepage> {
               }
               return Icon(
                 Icons.photo_camera,
-                color: Colors.white,
+                color: Design.geel,
               );
             }),
       ),
@@ -346,11 +347,11 @@ class _Profilepage extends State<Profilepage> {
           }
         },
       ),
-      backgroundColor: Colors.red,
+      backgroundColor: Design.rood,
     );
 
     final upperpart = new Container(
-      color: Colors.red,
+      color: Design.rood,
       height: MediaQuery.of(context).size.height / 3,
       width: MediaQuery.of(context).size.width,
       child: Stack(
@@ -367,10 +368,10 @@ class _Profilepage extends State<Profilepage> {
             top: 20,
             left: MediaQuery.of(context).size.width / 2 - 75,
             child: FloatingActionButton(
-              backgroundColor: Colors.white,
+              backgroundColor: Design.geel,
               child: Icon(
                 Icons.photo_camera,
-                color: Colors.black,
+                color: Design.zwart,
               ),
               onPressed: () => _imageOptionsDialogBox(),
             ),
@@ -380,7 +381,7 @@ class _Profilepage extends State<Profilepage> {
     );
 
     final middelpart = new Container(
-      color: Colors.redAccent,
+      color: Design.orange1,
       height: MediaQuery.of(context).size.height / 12,
       width: MediaQuery.of(context).size.width,
       child: Row(
@@ -390,13 +391,13 @@ class _Profilepage extends State<Profilepage> {
           Text(
             CurrentUser().displayName,
             style: TextStyle(
-              color: Colors.white,
+              color: Design.geel,
               fontSize: 20,
               fontStyle: FontStyle.italic,
             ),
           ),
           VerticalDivider(
-            color: Colors.white,
+            color: Design.geel,
             thickness: 2,
           ),
           Column(
@@ -406,7 +407,7 @@ class _Profilepage extends State<Profilepage> {
             ],
           ),
           VerticalDivider(
-            color: Colors.white,
+            color: Design.geel,
             thickness: 2,
           ),
           Text("Saldo"),
@@ -424,9 +425,9 @@ class _Profilepage extends State<Profilepage> {
             series: <ChartSeries>[
               AreaSeries<ConsumeData, String>(
                 dataSource: snapshot.data,
-                color: Colors.deepOrange[300],
+                color: Design.orange2,
                 borderMode: AreaBorderMode.excludeBottom,
-                borderColor: Colors.red,
+                borderColor: Design.rood,
                 borderWidth: 2,
                 xValueMapper: (ConsumeData data, _) => data.date,
                 yValueMapper: (ConsumeData data, _) => data.amount,
@@ -450,7 +451,7 @@ class _Profilepage extends State<Profilepage> {
         children: <Widget>[
           upperpart,
           Divider(
-            color: Colors.white,
+            color: Design.geel,
             height: 1,
           ),
           middelpart,
