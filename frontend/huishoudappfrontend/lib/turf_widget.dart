@@ -110,7 +110,7 @@ class _Turfwidget extends State<Turfwidget> {
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
-        return CircularProgressIndicator();
+        return AnimatedLiquidCustomProgressIndicator();
       },
     );
   }
@@ -127,9 +127,17 @@ class _Turfwidget extends State<Turfwidget> {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
-            body: Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: createListTile(snapshot.data.groupId),
+            body: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: MediaQuery.of(context).size.height - 184,
+                  child: createListTile(snapshot.data.groupId),
+                ),
+                FlatButton(
+                  onPressed: () {},
+                  child: Text("Submit"),
+                )
+              ],
             ),
           );
         } else if (snapshot.hasError) {
