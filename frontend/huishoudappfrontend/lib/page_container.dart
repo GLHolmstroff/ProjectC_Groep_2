@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/home_widget.dart';
 import 'profile.dart';
 import 'package:huishoudappfrontend/schoonmaakrooster_widget.dart';
+import 'package:huishoudappfrontend/turf_widget.dart';
 
 import 'placeholder_widget.dart';
 
@@ -23,7 +24,7 @@ class HomePageState extends State<HomePage> {
   final List<Widget> _children = [
     Home_widget(),
     SchoonmaakPage(),
-    PlaceholderWidget(Colors.green),
+    Turfwidget(),
     Profilepage()
   ];
 
