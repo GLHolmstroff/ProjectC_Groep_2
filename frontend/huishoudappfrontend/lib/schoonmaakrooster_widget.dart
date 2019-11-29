@@ -17,11 +17,12 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
     User currentUser;
     final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
         headers: {'Content-Type': 'application/json'});
-    print(res.statusCode);
+    
     if (res.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       currentUser = User.fromJson(json.decode(res.body));
     } else {
+      print(res.statusCode);
       print("Could not find user");
     }
     return currentUser;

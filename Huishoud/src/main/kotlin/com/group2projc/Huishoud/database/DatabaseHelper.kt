@@ -324,7 +324,6 @@ class DatabaseHelper(url: String) {
              BeerTallies
                     .slice(mutation)
                     .select {(targetuserid eq targetuid)}
-                    .groupBy(mutation)
                      .forEach {
                          val c = it[mutation]
                          if (c != null){
@@ -332,7 +331,7 @@ class DatabaseHelper(url: String) {
                          }
                      }
         }
-        return if (count != null) count else 0
+        return count
     }
 
     fun getBeerTallyPerUserPerDay(gid: Int, targetuid: String): HashMap<Int, HashMap<String, Int>> {

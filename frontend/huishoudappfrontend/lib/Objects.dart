@@ -181,11 +181,11 @@ class House {
     final Response res = await get(
         "http://10.0.2.2:8080/getGroupName?gid=$groupID",
         headers: {'Content-Type': 'application/json'});
-    print(res.statusCode);
     if (res.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       currentGroup = House.fromJson(json.decode(res.body));
     } else {
+      print(res.statusCode);
       print("Could not find group");
     }
     return currentGroup;
@@ -234,11 +234,12 @@ class BeerTally {
     final Response res = await get(
         "http://10.0.2.2:8080/getTallyByName?gid=$gid",
         headers: {'Content-Type': 'application/json'});
-    print(res.statusCode);
+    
     if (res.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       beer = BeerTally.fromJson(json.decode(res.body));
     } else {
+      print(res.statusCode);
       print("Could not find beer data");
     }
     return beer;
