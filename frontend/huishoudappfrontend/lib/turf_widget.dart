@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -43,24 +45,35 @@ class _Turfwidget extends State<Turfwidget> {
     );
   }
 
-  int getMutation(){
-    int mutation;
-    setState(() {
-      mutation = sentData[1].numberofbeers - receivedData[1].numberofbeers;
-    });
-    return mutation; 
+  int getMutation(index){
+    return sentData[index].numberofbeers - receivedData[index].numberofbeers;
   }
 
-  Future finalData() async {
+  Future<void> finalData() async {
     CurrentUser user = CurrentUser();
     String gid = user.groupId.toString();
     String uid = user.userId;
-    String tid;
-    
 
-    int mutation = getMutation();
-    final Response res = await get("http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$uid&mutation=$mutation",
-        headers: {'Content-Type': 'application/json'});
+    var updateUsers = List<HashMap<String, dynamic>>();
+    for (int i = 0; i < sentData.length; i++){
+      if (receivedData[i].numberofbeers != sentData[i].numberofbeers){
+        var singleMap = HashMap<String,dynamic>();
+        singleMap['targetid'] = sentData[i].profilepicture;
+        singleMap['mutation'] = getMutation(i);
+        updateUsers.add(singleMap);
+        updateUsers.forEach( (map) async {
+          String target = map['targetid'];
+          int mutation = map['mutation'];
+          final Response res = await get("http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$target&mutation=$mutation",
+          headers: {'Content-Type': 'application/json'});
+      });
+        
+
+      }
+    }
+
+    
+    
   }
 
 
