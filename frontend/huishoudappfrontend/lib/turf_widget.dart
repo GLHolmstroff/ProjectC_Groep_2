@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'Objects.dart';
@@ -31,7 +32,22 @@ class _Turfwidget extends State<Turfwidget> {
   
 
 
+  int getMutation(){
+    int mutation;
+    setState(() {
+      mutation = sentData[1].numberofbeers - receivedData[1].numberofbeers;
+    });
+    return mutation; 
+  }
 
+  Future finalData() async {
+    CurrentUser user = CurrentUser();
+    String gid = user.groupId.toString();
+    String uid = user.userId;
+    int mutation = getMutation();
+    final Response res = await get("http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$uid&mutation=$mutation",
+        headers: {'Content-Type': 'application/json'});
+  }
 
 
 
@@ -122,9 +138,12 @@ class _Turfwidget extends State<Turfwidget> {
         if (snapshot.hasData) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(
-                snapshot.data.houseName,
-                style: TextStyle(fontWeight: FontWeight.bold),
+              backgroundColor: Design.rood,
+              title: Center(
+                child: Text(
+                  snapshot.data.houseName,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             ),
             body: Padding(
