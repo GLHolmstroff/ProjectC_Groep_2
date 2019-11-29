@@ -14,6 +14,7 @@ import 'package:image_picker/image_picker.dart';
 import 'services/permission_serivce.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class Profilepage extends StatefulWidget {
   static String tag = 'profile_page';
@@ -63,6 +64,15 @@ class _Profilepage extends State<Profilepage> {
   Future<File> openCamera() async {
     File image = await ImagePicker.pickImage(source: ImageSource.camera);
     _updateImage(image);
+  }
+
+  void _entrybeertallies() async {
+    CurrentUser user = CurrentUser();
+    String gid = user.groupId.toString();
+    String uid = user.userId;
+    String mu = '1';
+    final Response res = await get("http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$uid&mutation=$mu",
+        headers: {'Content-Type': 'application/json'});
   }
 
   Future<void> _updateImage(File image) async {
@@ -240,7 +250,7 @@ class _Profilepage extends State<Profilepage> {
         }
 
         // By default, show a loading spinner.
-        return AnimatedLiquidCustomProgressIndicator();
+        return AnimatedLiquidCustomProgressIndicator(context.size);
       },
     );
 
@@ -256,7 +266,7 @@ class _Profilepage extends State<Profilepage> {
         if (snapshot.hasData) {
           return new GestureDetector(
             onTap: () {
-              print('hallo');
+              _entrybeertallies();
             },
             child: Text(
               snapshot.data.houseName,
@@ -273,7 +283,7 @@ class _Profilepage extends State<Profilepage> {
         }
 
         // By default, show a loading spinner.
-        return AnimatedLiquidCustomProgressIndicator();
+        return AnimatedLiquidCustomProgressIndicator(Size(MediaQuery.of(context).size.width/3, MediaQuery.of(context).size.height/13));
       },
     );
 
@@ -404,6 +414,36 @@ class _Profilepage extends State<Profilepage> {
       ),
     );
 
+    final bottompart = new Container(
+      child: FutureBuilder<List<ConsumeData>>(
+      future: CurrentUser().getConsumeData(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return SfCartesianChart(
+            primaryXAxis: CategoryAxis(),
+            series: <ChartSeries>[
+              AreaSeries<ConsumeData, String>(
+                dataSource: snapshot.data,
+                color: Colors.deepOrange[300],
+                borderMode: AreaBorderMode.excludeBottom,
+                borderColor: Colors.red,
+                borderWidth: 2,
+                xValueMapper: (ConsumeData data, _) => data.date,
+                yValueMapper: (ConsumeData data, _) => data.amount,
+                dataLabelSettings: DataLabelSettings(isVisible: true),
+              )
+            ]
+          );
+        }else if(snapshot.hasError) {
+          print(snapshot.error);
+          return Text("${snapshot.error}");
+
+        }else{
+          return CircularProgressIndicator();
+        }
+      },
+    ));
+
     return new Scaffold(
       body: Container(
           child: Column(
@@ -414,11 +454,7 @@ class _Profilepage extends State<Profilepage> {
             height: 1,
           ),
           middelpart,
-          Container(
-            color: Colors.pink,
-            height: 30,
-            width: 30,
-          )
+          bottompart,
         ],
       )),
       floatingActionButton: settingsButton,

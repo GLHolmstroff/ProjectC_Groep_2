@@ -1,5 +1,6 @@
 package com.group2projc.Huishoud.database
 
+import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.date
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.mutation
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.targetuserid
 
@@ -293,6 +294,31 @@ class DatabaseHelper(url: String) {
         }
         return if (count != null) count else 0
     }
+
+    fun getBeerTallyPerUserPerDay(gid: Int, targetuid: String): HashMap<Int, HashMap<String, Int>> {
+        var out = HashMap<Int, HashMap<String, Int>>()
+        var i = 0
+        var count = 0
+        transaction(db) {
+            BeerTallies
+                    .slice(mutation.sum(), date.substring(0,11))
+                    .select {targetuserid eq targetuid}
+                    .groupBy(date.substring(0,11))
+                    .orderBy(date.substring(0,11))
+                    .forEach {
+                        var day = it[date.substring(0,11)]
+                        val c = it[mutation.sum()]
+                        if (c != null) {
+                            count += c
+                        }
+                        var placeholder = HashMap<String, Int>()
+                        placeholder[day] = count
+                        i += 1
+                        out[i] = placeholder
+                    }
+        }
+        return out
+    } // todo make it perday (groupby maybe?) todo: give days with 0 count still data...
 
     fun getAllInGroup(gid: Int): HashMap<String, String> {
         var out = HashMap<String, String>()
