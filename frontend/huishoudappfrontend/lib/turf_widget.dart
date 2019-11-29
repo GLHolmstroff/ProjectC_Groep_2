@@ -30,7 +30,18 @@ class _Turfwidget extends State<Turfwidget> {
   List<TurfInfo> sentData = [];
 
   
-
+  Widget submitButton(){
+    return
+    FlatButton(
+      onPressed: (){
+        finalData();
+        print('pressed');
+      },
+      child: Text(
+        'Submit'
+      ),
+    );
+  }
 
   int getMutation(){
     int mutation;
@@ -44,6 +55,9 @@ class _Turfwidget extends State<Turfwidget> {
     CurrentUser user = CurrentUser();
     String gid = user.groupId.toString();
     String uid = user.userId;
+    String tid;
+    
+
     int mutation = getMutation();
     final Response res = await get("http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$uid&mutation=$mutation",
         headers: {'Content-Type': 'application/json'});
@@ -149,7 +163,10 @@ class _Turfwidget extends State<Turfwidget> {
             body: Padding(
               padding: const EdgeInsets.only(top: 20),
               child: createListTile(snapshot.data.groupId),
+
             ),
+            floatingActionButton: submitButton(),
+            
           );
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');

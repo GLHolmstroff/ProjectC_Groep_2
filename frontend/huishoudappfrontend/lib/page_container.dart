@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/home_widget.dart';
 import 'profile.dart';
 import 'package:huishoudappfrontend/schoonmaakrooster_widget.dart';
@@ -88,7 +89,7 @@ class HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
               icon: new Icon(Icons.list), title: new Text("Turven")),
           BottomNavigationBarItem(
-              icon: new Icon(Icons.person), title: new Text("Profile"))
+              icon: new Icon(Icons.person), title: new Text("Profiel"))
         ],
       ),
     );
