@@ -14,6 +14,7 @@ import 'package:http/http.dart';
 import 'Objects.dart';
 import 'profile.dart';
 import 'package:huishoudappfrontend/schoonmaakrooster_widget.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 import 'placeholder_widget.dart';
 
@@ -50,13 +51,12 @@ class HomePageState extends State<HomePage> {
     // replace the placeholder widget with your widget
     // give _steNewBody as argument if you want to change the currentwidget from inside your widget
     setState(() => [
-        Home_widget(),
-        PlaceholderWidget(Colors.deepOrange),
-        PlaceholderWidget(Colors.green),
-        Profilepage()
-      ]);
+          Home_widget(),
+          PlaceholderWidget(Colors.deepOrange),
+          PlaceholderWidget(Colors.green),
+          Profilepage()
+        ]);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -79,27 +79,26 @@ class HomePageState extends State<HomePage> {
       body: _currentWidget,
       ),*/
       body: _children[_currentIndex],
-
       bottomNavigationBar: BottomNavigationBar(
         // type needs to be fixed otherwise the color of the navigationBariItems will be white, (weird bug)
         type: BottomNavigationBarType.fixed,
-        // set function for when an navigationbaritem is tapped 
+        // set function for when an navigationbaritem is tapped
         onTap: onTabTapped,
         currentIndex:
             _currentIndex, // this will be set when a new tab is tapped
         items: [
           BottomNavigationBarItem(
-            icon: new Icon(Icons.home),
+            icon: new Icon(LineAwesomeIcons.home),
             title: new Text('Huis'),
           ),
           BottomNavigationBarItem(
-            icon: new Icon(Icons.check),
-            title: new Text('Rooster'),
+            icon: new Icon(LineAwesomeIcons.clipboard),
+            title: new Text('Taken'),
           ),
           BottomNavigationBarItem(
-              icon: new Icon(Icons.list), title: new Text("Turven")),
+              icon: new Icon(LineAwesomeIcons.beer), title: new Text("Turven")),
           BottomNavigationBarItem(
-              icon: new Icon(Icons.person), title: new Text("Profile"))
+              icon: new Icon(LineAwesomeIcons.user), title: new Text("Profile"))
         ],
       ),
     );
