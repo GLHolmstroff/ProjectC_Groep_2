@@ -10,7 +10,8 @@ class BaseUser {
   String globalPermissions;
   String displayName;
   String picture_link;
-
+  String group_permission;
+  
   @override
   String toString() {
     return "userID: " +
@@ -41,6 +42,7 @@ class CurrentUser extends BaseUser {
     _instance.globalPermissions = json['global_permissions'];
     _instance.displayName = json['display_name'];
     _instance.picture_link = json['picture_link'];
+    _instance.group_permission = json['group_permissions'];
     return _instance;
   }
 
@@ -63,6 +65,31 @@ class CurrentUser extends BaseUser {
     }
     return placehoderCurrentUser;
   }
+
+  static List<ConsumeData> _listFromJson(Map<String, dynamic> json) {
+    List<ConsumeData> lst = new List<ConsumeData>();
+    ConsumeData placeholder;
+    json.forEach((k,v) => 
+    v.forEach((k1, v1) =>
+      lst.add(ConsumeData(k1, v1))
+    )
+    );
+    return lst;
+  }
+
+  Future<List<ConsumeData>> getConsumeData() async {
+    String uid = CurrentUser().userId.toString();
+    String gid = CurrentUser().groupId.toString();
+    List<ConsumeData> placeHolderListConsumeData;
+    final Response res = await get("http://10.0.2.2:8080/getTallyPerUserPerDay?gid=$gid&uid=$uid",
+        headers: {'Content-Type': 'application/json'});
+    if (res.statusCode == 200) {
+      placeHolderListConsumeData = CurrentUser._listFromJson(json.decode(res.body));
+    } else {
+      print("Could not make list of data");
+    }
+    return placeHolderListConsumeData;
+  }
 }
 
 class User extends BaseUser {
@@ -78,6 +105,7 @@ class User extends BaseUser {
     return User(json["uid"], json["groupid"], json["global_permissions"],
         json["display_name"], json["picture_link"]);
   }
+
 
   static Future<User> getUser(String cuid) async {
     String uid = cuid;
@@ -232,6 +260,12 @@ class BeerTally {
         (k, v) => out += k + " drank " + v.toString() + " beers" + "\n");
     return out;
   }
+}
+
+class ConsumeData {
+  final String date;
+  final int amount;
+  ConsumeData(this.date, this.amount);
 }
 
 //TODO:

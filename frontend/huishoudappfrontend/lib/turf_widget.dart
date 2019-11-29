@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'Objects.dart';
@@ -29,9 +32,49 @@ class _Turfwidget extends State<Turfwidget> {
   List<TurfInfo> sentData = [];
 
   
+  Widget submitButton(){
+    return
+    FlatButton(
+      onPressed: (){
+        finalData();
+        print('pressed');
+      },
+      child: Text(
+        'Submit'
+      ),
+    );
+  }
 
+  int getMutation(index){
+    return sentData[index].numberofbeers - receivedData[index].numberofbeers;
+  }
 
+  Future<void> finalData() async {
+    CurrentUser user = CurrentUser();
+    String gid = user.groupId.toString();
+    String uid = user.userId;
 
+    var updateUsers = List<HashMap<String, dynamic>>();
+    for (int i = 0; i < sentData.length; i++){
+      if (receivedData[i].numberofbeers != sentData[i].numberofbeers){
+        var singleMap = HashMap<String,dynamic>();
+        singleMap['targetid'] = sentData[i].profilepicture;
+        singleMap['mutation'] = getMutation(i);
+        updateUsers.add(singleMap);
+        updateUsers.forEach( (map) async {
+          String target = map['targetid'];
+          int mutation = map['mutation'];
+          final Response res = await get("http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$target&mutation=$mutation",
+          headers: {'Content-Type': 'application/json'});
+      });
+        
+
+      }
+    }
+
+    
+    
+  }
 
 
 
@@ -122,23 +165,21 @@ class _Turfwidget extends State<Turfwidget> {
         if (snapshot.hasData) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(
-                snapshot.data.houseName,
-                style: TextStyle(fontWeight: FontWeight.bold),
+              backgroundColor: Design.rood,
+              title: Center(
+                child: Text(
+                  snapshot.data.houseName,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             ),
-            body: Column(
-              children: <Widget>[
-                SizedBox(
-                  height: MediaQuery.of(context).size.height - 184,
-                  child: createListTile(snapshot.data.groupId),
-                ),
-                FlatButton(
-                  onPressed: () {},
-                  child: Text("Submit"),
-                )
-              ],
+            body: Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: createListTile(snapshot.data.groupId),
+
             ),
+            floatingActionButton: submitButton(),
+            
           );
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
