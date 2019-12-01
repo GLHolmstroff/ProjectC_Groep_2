@@ -12,6 +12,10 @@ import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'services/permission_serivce.dart';
+import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
+import 'package:huishoudappfrontend/setup/widgets.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'design.dart';
 
 class Profilepage extends StatefulWidget {
   static String tag = 'profile_page';
@@ -60,6 +64,15 @@ class _Profilepage extends State<Profilepage> {
   Future<File> openCamera() async {
     File image = await ImagePicker.pickImage(source: ImageSource.camera);
     _updateImage(image);
+  }
+
+  void _entrybeertallies() async {
+    CurrentUser user = CurrentUser();
+    String gid = user.groupId.toString();
+    String uid = user.userId;
+    String mu = '1';
+    final Response res = await get("http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$uid&mutation=$mu",
+        headers: {'Content-Type': 'application/json'});
   }
 
   Future<void> _updateImage(File image) async {
@@ -129,39 +142,6 @@ class _Profilepage extends State<Profilepage> {
         });
   }
 
-  Future<User> getUser() async {
-    String uid = await Auth().currentUser();
-    User currentUser;
-    final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
-        headers: {'Content-Type': 'application/json'});
-    print(res.statusCode);
-    if (res.statusCode == 200) {
-      // If server returns an OK response, parse the JSON.
-      currentUser = User.fromJson(json.decode(res.body));
-    } else {
-      print("Could not find user");
-    }
-    return currentUser;
-  }
-
-  Future<House> getHouse() async {
-    User currentUser = await getUser();
-    String groupID = currentUser.groupId.toString();
-    House currentGroup;
-    final Response res = await get(
-        "http://10.0.2.2:8080/getGroupName?gid=$groupID",
-        headers: {'Content-Type': 'application/json'});
-    print(res.statusCode);
-    if (res.statusCode == 200) {
-      // If server returns an OK response, parse the JSON.
-      currentGroup = House.fromJson(json.decode(res.body));
-    } else {
-      print("Could not find group");
-    }
-    return currentGroup;
-  }
-
-
   void _sendChangePasswordEmail() async {
     final auth = Provider.of(context).auth;
     print(await auth.getUserIdToken());
@@ -220,9 +200,6 @@ class _Profilepage extends State<Profilepage> {
     if (fromkey.currentState.validate()) {
       fromkey.currentState.save();
       Navigator.pop(context);
-      setState(() {
-        
-      });
       print(_name);
       String uid = await Auth().currentUser();
       final Response res = await get(
@@ -254,141 +231,183 @@ class _Profilepage extends State<Profilepage> {
     //widgets variables
     final clipper = ClipPath(
       child: Container(
-        color: Colors.black.withOpacity(0.9),
+        color: Design.rood,
       ),
       clipper: getClipper(),
     );
 
-    FutureBuilder<User> userDisplayname = FutureBuilder<User>(
-      future: getUser(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Text("Welcome, " + snapshot.data.displayName);
-        } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
-        }
-
-        // By default, show a loading spinner.
-        return CircularProgressIndicator();
-      },
-    );
-
-
-    final userHouseText = Text(
-      'Jouw huis',
-      style: TextStyle(
-        fontSize: 20.0,
-        fontStyle: FontStyle.italic,
+    final profielimage = GestureDetector(
+      onTap: _imageOptionsDialogBox,
+      child: Container(
+        width: 150.0,
+        height: 150.0,
+        child: FutureBuilder<String>(
+            future: getImgUrl(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                var imgUrl = snapshot.data;
+                print(imgUrl);
+                return Container(
+                    decoration: BoxDecoration(
+                        color: Design.zwart,
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            imgUrl,
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                        borderRadius: BorderRadius.circular(75.0),
+                        border: Border.all(
+                          color: Design.geel,
+                          width: 4.0,
+                        )));
+              } else if (snapshot.hasError) {
+                return Icon(Icons.person);
+              }
+              return Icon(
+                Icons.photo_camera,
+                color: Design.geel,
+              );
+            }),
       ),
     );
 
-    FutureBuilder<House> userHouseName = FutureBuilder<House>(
-      future: getHouse(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return new GestureDetector(
-            onTap: () {
-              print('hallo');
-            },
-            child: Text(snapshot.data.houseName),
-          );
-          //return Text("Welcome, " + snapshot.data.displayName);
-        } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
-        }
-
-        // By default, show a loading spinner.
-        return CircularProgressIndicator();
-      },
+    FloatingActionButton settingsButton = FloatingActionButton(
+      onPressed: () {},
+      child: FutureBuilder<ProfileConstants>(
+        future: _makeProfileConstants(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return PopupMenuButton<String>(
+              onSelected: _choiceAction,
+              itemBuilder: (BuildContext context) {
+                return snapshot.data.choices.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+              icon: Icon(Icons.settings),
+            );
+          } else {
+            return Icon(Icons.settings);
+          }
+        },
+      ),
+      backgroundColor: Design.rood,
     );
 
-    return new Scaffold(
-      body: new Stack(
-
+    final upperpart = new Container(
+      color: Design.rood,
+      height: MediaQuery.of(context).size.height / 3,
+      width: MediaQuery.of(context).size.width,
+      child: Stack(
         children: <Widget>[
           clipper,
           Positioned(
-            width: 400.0,
-            top: MediaQuery.of(context).size.height / 8,
-            child: Column(
-              children: <Widget>[
-                GestureDetector(
-                  onTap: _imageOptionsDialogBox,
-                  child: Container(
-                    width: 150.0,
-                    height: 150.0,
-                    child: FutureBuilder<String>(
-                        future: getImgUrl(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            var imgUrl = snapshot.data;
-                            print(imgUrl);
-                            return Container(
-                                decoration: BoxDecoration(
-                              color: Colors.black,
-                              image:
-                                  DecorationImage(image: NetworkImage(imgUrl)),
-                              borderRadius: BorderRadius.circular(75.0),
-                            ));
-                          } else if (snapshot.hasError) {
-                            return Text("${snapshot.error}");
-                          }
-                          return CircularProgressIndicator();
-                        }),
-                  ),
-                ),
-                SizedBox(
-                  height: 50.0,
-                ),
-                userDisplayname,
-                SizedBox(
-                  height: 30.0,
-                ),
-                Column(
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        userHouseText,
-                        userHouseName
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 30.0,
-                ),
-                //signOutButton,
-              ],
+            width: 150,
+            top: 35,
+            left: MediaQuery.of(context).size.width / 2 - 75,
+            child: profielimage,
+          ),
+          Positioned(
+            width: 40,
+            height: 40,
+            top: 20,
+            left: MediaQuery.of(context).size.width / 2 - 75,
+            child: FloatingActionButton(
+              backgroundColor: Design.geel,
+              child: Icon(
+                Icons.photo_camera,
+                color: Design.zwart,
+              ),
+              onPressed: () => _imageOptionsDialogBox(),
             ),
           )
         ],
       ),
-      
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){},
-        child: FutureBuilder<ProfileConstants>(
-          future: _makeProfileConstants(),
-          builder: (context, snapshot) {
-            if(snapshot.hasData){
-              return PopupMenuButton<String>(
-                onSelected: _choiceAction,
-                itemBuilder: (BuildContext context) {
-                  return snapshot.data.choices.map((String choice) {
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(choice),
-                    );
-                  }).toList();
-                },
-                icon: Icon(Icons.settings),
-              );  
-            } else {
-              return Icon(Icons.settings);
-            }
-          },
-        ),
-        backgroundColor: Colors.red,
+    );
+
+    final middelpart = new Container(
+      color: Design.orange1,
+      height: MediaQuery.of(context).size.height / 12,
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          //userDisplayname,
+          Text(
+            CurrentUser().displayName,
+            style: TextStyle(
+              color: Design.geel,
+              fontSize: 20,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+          VerticalDivider(
+            color: Design.geel,
+            thickness: 2,
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Text(CurrentUser().groupId.toString()),
+            ],
+          ),
+          VerticalDivider(
+            color: Design.geel,
+            thickness: 2,
+          ),
+          Text("Saldo"),
+        ],
       ),
+    );
+
+    final bottompart = new Container(
+      child: FutureBuilder<List<ConsumeData>>(
+      future: CurrentUser().getConsumeData(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return SfCartesianChart(
+            primaryXAxis: CategoryAxis(),
+            series: <ChartSeries>[
+              AreaSeries<ConsumeData, String>(
+                dataSource: snapshot.data,
+                color: Design.orange2,
+                borderMode: AreaBorderMode.excludeBottom,
+                borderColor: Design.rood,
+                borderWidth: 2,
+                xValueMapper: (ConsumeData data, _) => data.date,
+                yValueMapper: (ConsumeData data, _) => data.amount,
+                dataLabelSettings: DataLabelSettings(isVisible: true),
+              )
+            ]
+          );
+        }else if(snapshot.hasError) {
+          print(snapshot.error);
+          return Text("${snapshot.error}");
+
+        }else{
+          return CircularProgressIndicator();
+        }
+      },
+    ));
+
+    return new Scaffold(
+      body: Container(
+          child: Column(
+        children: <Widget>[
+          upperpart,
+          Divider(
+            color: Design.geel,
+            height: 1,
+          ),
+          middelpart,
+          bottompart,
+        ],
+      )),
+      floatingActionButton: settingsButton,
     );
   }
 }
