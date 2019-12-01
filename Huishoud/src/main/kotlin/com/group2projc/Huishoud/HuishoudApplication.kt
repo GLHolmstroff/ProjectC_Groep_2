@@ -38,7 +38,6 @@ class HuishoudApplication: ExitCodeGenerator {
 
             val dbHelper: DatabaseHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").initDataBase()
             val fsss:FileSystemStorageService = FileSystemStorageService(StorageProperties())
-            fsss.deleteAll()
             fsss.init()
         }
 

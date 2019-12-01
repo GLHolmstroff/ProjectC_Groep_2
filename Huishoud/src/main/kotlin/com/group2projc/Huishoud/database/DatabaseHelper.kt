@@ -1,10 +1,19 @@
 package com.group2projc.Huishoud.database
 
-import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.count
-import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.userid
+import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.authorid
+import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.date
+import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.groupid
+import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.mutation
+import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.targetuserid
+import com.group2projc.Huishoud.database.DatabaseHelper.Users.displayname
+import com.group2projc.Huishoud.database.DatabaseHelper.Users.id
+
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDate
+import java.util.Random
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class DatabaseHelper(url: String) {
     //Singleton pattern for Database connection, Multiple connect calls will cause memory leaks.
@@ -48,9 +57,19 @@ class DatabaseHelper(url: String) {
 
     object BeerTallies : Table() {
         val groupid = reference("groupid", Groups.id).primaryKey()
-        val userid = reference("userid", Users.id).primaryKey()
-        val count = integer("count")
+        val authorid = reference("authorid", Users.id).primaryKey()
+        val date = varchar("date", 25).primaryKey()
+        val targetuserid = reference("targetid", Users.id)
+        val mutation = integer("mutation")
     }
+
+    object InviteCodes : Table() {
+        val id = integer("id").primaryKey().autoIncrement()
+        val groupid = reference("groupid", Groups.id);
+        val code = integer("code");
+    }
+
+
 //TODO: Find out if it's Possible to use DAO, find way to pass EntityID to postgres
 
 //    //Entity (Row) objects for main tables.
@@ -97,7 +116,7 @@ class DatabaseHelper(url: String) {
     fun initDataBase(): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
-            SchemaUtils.create(Groups, Users, GroupPermissions, Schedules, BeerTallies)
+            SchemaUtils.create(Groups, Users, GroupPermissions, Schedules, BeerTallies, InviteCodes)
         }
 
         return this@DatabaseHelper
@@ -142,6 +161,10 @@ class DatabaseHelper(url: String) {
                 out["global_permissions"] = it[Users.global_permissions]
                 out["display_name"] = it[Users.displayname]
                 out["picture_link"] = it[Users.picturelink]
+            }
+
+            GroupPermissions.select ({ GroupPermissions.userid eq uid }).forEach {
+                out["group_permissions"] = it[GroupPermissions.permission]
             }
         }
         return out
@@ -194,7 +217,6 @@ class DatabaseHelper(url: String) {
                 p = "groupAdmin"
 
             setGroupPermission(gid, uid, p)
-            createBeerEntry(gid, uid)
         }
         return this@DatabaseHelper
     }
@@ -227,66 +249,128 @@ class DatabaseHelper(url: String) {
     }
 
     fun getTallyforGroup(gid: Int): HashMap<String, Int> {
+        val uids = getAllInGroup(gid).values
         var out = HashMap<String, Int>()
-        transaction(db) {
-            BeerTallies.select { (BeerTallies.groupid eq gid) }.forEach {
-                out[it[userid]] = it[count]
-            }
+
+        uids.forEach {
+            out[it] = getBeerTally(gid,it)
         }
+
         return out;
     }
 
-    fun getTallyforGroupByName(gid: Int): HashMap<String, Int> {
-        var temp = HashMap<String, Int>()
-        var out = HashMap<String, Int>()
-        transaction(db) {
-            BeerTallies.select { (BeerTallies.groupid eq gid) }.forEach {
-                temp[it[userid]] = it[count]
-            }
-            temp.forEach { k, v ->
-                Users.select { (Users.id eq k) }.forEach {
-                    out[it[Users.displayname]] = v
-                }
-            }
+    fun getTallyForGroupByNameAndPic(gid: Int): HashMap<String, HashMap<String, Any>> {
+        val uids = getAllInGroup(gid).values
+        print(uids);
+        var out = HashMap<String, HashMap<String, Any>>()
 
+        uids.forEach {
+            var user = getUser(it)
+            var name: String? = user["display_name"] as String?
+            var uid: String? = it
+
+            if (name != null && uid != null) {
+                var data = HashMap<String, Any>()
+                data["picture"] = uid
+                data["count"] = getBeerTally(gid,it)
+                out[name] = data
+            }
         }
+
         return out;
     }
 
-    fun createBeerEntry(gid: Int, uid: String): DatabaseHelper {
+    fun createBeerEntry(gid: Int, authoruid: String, targetuid: String, mutation: Int): DatabaseHelper {
         transaction(db) {
-
-            BeerTallies.insert {
+            addLogger(StdOutSqlLogger)
+            val entry = DatabaseHelper.BeerTallies.insert {
                 it[groupid] = gid
-                it[userid] = uid
-                it[count] = 0
+                it[authorid] = authoruid
+                it[date] = LocalDateTime.now()
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"))
+                        .toString()
+                it[targetuserid] = targetuid
+                it[BeerTallies.mutation] = mutation
             }
         }
         return this@DatabaseHelper
     }
 
-    fun updateBeerEntry(gid: Int, uid: String, count: Int): DatabaseHelper {
-        var bg = 0
-        var bu = ""
+    fun getAllBeerEntriesForGroup(gid: Int): ArrayList<HashMap<String, Any>> {
+        var outArr = ArrayList<HashMap<String,Any>>()
         transaction(db) {
-            BeerTallies.select { (BeerTallies.groupid eq gid) and (BeerTallies.userid eq uid) }.forEach {
-                bg = it[BeerTallies.groupid]
-                bu = it[BeerTallies.userid]
-            }
-            if (bg != 0 && bu != "") {
-                BeerTallies.update({ (BeerTallies.groupid eq gid) and (BeerTallies.userid eq uid) }) {
-                    it[BeerTallies.count] = count
-                }
-            } else {
-                createBeerEntry(gid, uid)
+            addLogger(StdOutSqlLogger)
+            val authorUser = Users.alias("uAuthor")
+            val targetUser = Users.alias("uTarget")
+            (BeerTallies.innerJoin(authorUser,{authorid}, {authorUser[id]})
+                    .innerJoin(targetUser,{targetuserid},{targetUser[id]}))
+                    .select {(BeerTallies.groupid eq gid)}.forEach {
+                        var out = HashMap<String, Any>()
+                        out["gid"] = gid
+                        out["authorid"] = it[authorid]
+                        out["authorname"] = it[authorUser[displayname]]
+                        out["targetid"] = it[targetuserid]
+                        out["targetname"] = it[targetUser[displayname]]
+                        out["mutation"] = it[mutation]
+                        out["date"] = it[date]
+                        outArr.add(out)
+                    }
+        }
+        return outArr
+    }
+
+    fun updateBeerEntry(gid: Int, author: String, target:String, date:String, mut: Int) : DatabaseHelper{
+        transaction(db) {
+            BeerTallies.update ({(groupid eq gid) and (authorid eq author) and (targetuserid eq target) and (BeerTallies.date eq date)} ){
+                it[mutation] = mut
             }
         }
         return this@DatabaseHelper
     }
+
+    fun getBeerTally(gid: Int, targetuid: String): Int {
+        var count = 0
+        transaction(db) {
+            addLogger(StdOutSqlLogger)
+            BeerTallies
+                    .slice(mutation)
+                    .select {(targetuserid eq targetuid)}
+                    .forEach {
+                        val c = it[mutation]
+                        if (c != null){
+                            count += c
+                        }
+                    }
+        }
+        return count
+    }
+
+    fun getBeerTallyPerUserPerDay(gid: Int, targetuid: String): HashMap<Int, HashMap<String, Int>> {
+        var out = HashMap<Int, HashMap<String, Int>>()
+        var i = 0
+        var count = 0
+        transaction(db) {
+            BeerTallies
+                    .slice(mutation.sum(), date.substring(0,11))
+                    .select {targetuserid eq targetuid}
+                    .groupBy(date.substring(0,11))
+                    .orderBy(date.substring(0,11))
+                    .forEach {
+                        var day = it[date.substring(0,11)]
+                        val c = it[mutation.sum()]
+                        if (c != null) {
+                            count += c
+                        }
+                        var placeholder = HashMap<String, Int>()
+                        placeholder[day] = count
+                        i += 1
+                        out[i] = placeholder
+                    }
+        }
+        return out
+    } // todo make it perday (groupby maybe?) todo: give days with 0 count still data...
 
     fun getAllInGroup(gid: Int): HashMap<String, String> {
-        var uid = ""
-        var uname = ""
         var out = HashMap<String, String>()
         transaction(db) {
             var i = 0
@@ -296,6 +380,66 @@ class DatabaseHelper(url: String) {
             }
         }
         return out
+    }
+
+    fun createInviteCode(): Int {
+
+        var random = Random();
+        var key = random.nextInt(999999 - 100000) + 100000
+        return key;
+
+
+
+    }
+
+    fun getInviteCode(gid : Int): HashMap<String, Int> {
+        var keyFound = false;
+        var finalKey  = 0;
+        var out = HashMap<String, Int>();
+        while (!keyFound) {
+            var key = createInviteCode();
+            var alreadyInUse = false;
+            transaction(db) {
+                InviteCodes.select { (InviteCodes.code eq key) }.forEach {
+                    alreadyInUse = true;
+                }
+            }
+            if(!alreadyInUse) {
+                keyFound = true
+                finalKey = key;
+                out["code"] = finalKey;
+            }
+        }
+
+        transaction(db) {
+            InviteCodes.insert {
+                it[groupid] = gid;
+                it[code] = finalKey;
+            }
+        }
+        return out;
+    }
+
+    fun joinGroubByCode(ic : Int, uid: String): HashMap<String, String>{
+        var groupid : Int? = null;
+        var out = HashMap<String, String>()
+        transaction(db) {
+            InviteCodes.select {(InviteCodes.code eq ic)}.forEach{
+                groupid = it[InviteCodes.groupid];
+            }
+        }
+        if(groupid != null) {
+            transaction(db) {
+                InviteCodes.deleteWhere {(InviteCodes.code eq ic)}
+            }
+            addUserToGroup(uid, groupid!!);
+            out["result"] = "Succes";
+        }
+        else{
+            out["result"] = "Code not found";
+        }
+
+        return out;
     }
 
 }
