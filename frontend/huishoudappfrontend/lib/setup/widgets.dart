@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 
+import '../design.dart';
+
 class AnimatedLiquidCustomProgressIndicator extends StatefulWidget {
   Size size;
   
   AnimatedLiquidCustomProgressIndicator(Size size){
     this.size = size;
   }
+
+  AnimatedLiquidCustomProgressIndicator.noContext();
   @override
   State<StatefulWidget> createState() =>
       AnimatedLiquidCustomProgressIndicatorState(size);
@@ -47,7 +51,7 @@ AnimatedLiquidCustomProgressIndicatorState(Size size) {
         value: _animationController.value,
         direction: Axis.vertical,
         backgroundColor: Colors.white,
-        valueColor: AlwaysStoppedAnimation(Colors.yellow),
+        valueColor: AlwaysStoppedAnimation(Design.orange2),
         shapePath: _buildGlass(this.size),
         center: Text(
           "${percentage.toStringAsFixed(0)}%",

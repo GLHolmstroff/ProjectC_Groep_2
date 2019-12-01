@@ -3,6 +3,8 @@ import 'package:huishoudappfrontend/Objects.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:huishoudappfrontend/turf_widget_edit.dart';
 
+import 'design.dart';
+
 class TurfWidgetAdmin extends StatefulWidget {
   static get tag => 'turfwidgetadmin';
 
@@ -67,7 +69,7 @@ class TurfWidgetAdminState extends State<TurfWidgetAdmin> {
 
         //Build list items
         return Container(
-            color: events[index].isSelected ? Colors.blue[100] : Colors.white,
+            color: events[index].isSelected ? Design.orange2 : Colors.white,
             child: ListTile(
               leading: Text(events[index].data.mutation.toString(),
                   textAlign: TextAlign.center),
@@ -112,12 +114,15 @@ class TurfWidgetAdminState extends State<TurfWidgetAdmin> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "Edit Beer events",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
+         appBar: AppBar(
+              backgroundColor: Design.rood,
+              title: Center(
+                child: Text(
+                  "Selecteer een event",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
         body: Container(
           height: MediaQuery.of(context).size.height,
           padding: const EdgeInsets.only(top: 0),

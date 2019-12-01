@@ -4,6 +4,8 @@ import 'package:huishoudappfrontend/turf_widget_admin.dart';
 import 'Objects.dart';
 import 'package:flutter/material.dart';
 
+import 'design.dart';
+
 class TurfWidgetEdit extends StatefulWidget {
   final BeerEvent event;
 
@@ -49,12 +51,15 @@ class TurfWidgetEditState extends State<TurfWidgetEdit> {
     return Form(
       key: _formKey,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "Edit Beer event",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
+         appBar: AppBar(
+              backgroundColor: Design.rood,
+              title: Center(
+                child: Text(
+                  "Wijzig beer event",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
