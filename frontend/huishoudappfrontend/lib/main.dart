@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/Objects.dart';
 import 'package:huishoudappfrontend/createaccount_widget.dart';
+import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/creategroup_widget.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
       perm: PermissionsService(),
       child: MaterialApp(
         title: 'Flutter Demo',
-        theme: ThemeData(primarySwatch: Colors.blue),
+        theme: ThemeData(primarySwatch: Design.materialRood),
         home: MyHomePage(),
         routes: routes,
       ),
