@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/home_widget.dart';
+import 'package:huishoudappfrontend/turf_widget.dart';
 import 'profile.dart';
 import 'package:huishoudappfrontend/schoonmaakrooster_widget.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -25,7 +26,7 @@ class HomePageState extends State<HomePage> {
   final List<Widget> _children = [
     Home_widget(),
     SchoonmaakPage(),
-    PlaceholderWidget(Colors.green),
+    Turfwidget(),
     Profilepage()
   ];
 
@@ -42,7 +43,7 @@ class HomePageState extends State<HomePage> {
     setState(() => [
           Home_widget(),
           PlaceholderWidget(Colors.deepOrange),
-          PlaceholderWidget(Colors.green),
+          Turfwidget(),
           Profilepage()
         ]);
   }
@@ -87,7 +88,7 @@ class HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
               icon: new Icon(LineAwesomeIcons.beer), title: new Text("Turven")),
           BottomNavigationBarItem(
-              icon: new Icon(LineAwesomeIcons.user), title: new Text("Profile"))
+              icon: new Icon(LineAwesomeIcons.user), title: new Text("Profiel"))
         ],
       ),
     );

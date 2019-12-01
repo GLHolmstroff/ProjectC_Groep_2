@@ -47,6 +47,9 @@ class CurrentUser extends BaseUser {
   }
 
   CurrentUser._internal() {
+    if (this.userId == null){
+      updateCurrentUser();
+    }
     userId = null;
     groupId = null;
     globalPermissions = null;
