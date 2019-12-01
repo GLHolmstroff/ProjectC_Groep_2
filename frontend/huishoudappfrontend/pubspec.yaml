@@ -31,6 +31,7 @@ dependencies:
   toast: ^0.1.5
   image_picker: ^0.6.1+11
   permission_handler: ^4.0.0
+  line_awesome_icons: ^1.0.4+2
   liquid_progress_indicator: ^0.3.2
   syncfusion_flutter_charts: ^1.0.0-beta.3
   cached_network_image: ^1.1.3

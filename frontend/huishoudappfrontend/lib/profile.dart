@@ -19,7 +19,7 @@ import 'design.dart';
 
 class Profilepage extends StatefulWidget {
   static String tag = 'profile_page';
-
+  
   @override
   State<StatefulWidget> createState() => _Profilepage();
 }
@@ -41,13 +41,12 @@ class _Profilepage extends State<Profilepage> {
     }
   }
 
-  Future<ProfileConstants> _makeProfileConstants() async {
+  Future<ProfileConstants> _makeProfileConstants () async {
     loginWithEmail = await _loggedinWithEmail();
     print('login met email =' + loginWithEmail.toString());
-    profCons = ProfileConstants(loginWithEmail);
+    profCons =ProfileConstants(loginWithEmail);
     return profCons;
   }
-
   File _image;
 
   Future<String> getImgUrl() async {
@@ -111,26 +110,29 @@ class _Profilepage extends State<Profilepage> {
                       if (!await perm.hasCameraPermission()) {
                         perm.requestCameraPermission(onPermissionDenied: () {
                           print('Permission has been denied');
-                        });
-                      }
-                      openCamera();
-                      Navigator.pop(context);
-                    },
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                  ),
-                  GestureDetector(
-                    child: new Text('Select from gallery'),
-                    onTap: () async {
-                      var perm = PermissionsService();
-                      if (!await perm.hasStoragePermission()) {
-                        perm.requestStoragePermission(onPermissionDenied: () {
+                        }
+                      );
+                    }
+                    openCamera();
+                    Navigator.pop(context);
+                  },
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                ),
+                GestureDetector(
+                  child: new Text('Select from gallery'),
+                  onTap: () async {
+                    var perm = PermissionsService();
+                    if(!await perm.hasStoragePermission()){
+                      perm.requestStoragePermission(
+                        onPermissionDenied: () {
                           print('Permission has been denied');
-                        });
-                      }
-                      openGallery();
-                      Navigator.pop(context);
+                        }
+                      );
+                    }
+                    openGallery();
+                    Navigator.pop(context);
                     },
                   ),
                 ],
@@ -198,14 +200,12 @@ class _Profilepage extends State<Profilepage> {
     if (fromkey.currentState.validate()) {
       fromkey.currentState.save();
       Navigator.pop(context);
-
       print(_name);
       String uid = await Auth().currentUser();
       final Response res = await get(
           "http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
           headers: {'Content-Type': 'application/json'});
     }
-    CurrentUser.updateCurrentUser();
   }
 
   void _choiceAction(String choice) async {
@@ -222,6 +222,7 @@ class _Profilepage extends State<Profilepage> {
       }
     } else if (choice == "Verander wachtwoord") {
       _sendChangePasswordEmail();
+
     }
   }
 
@@ -233,59 +234,6 @@ class _Profilepage extends State<Profilepage> {
         color: Design.rood,
       ),
       clipper: getClipper(),
-    );
-
-    FutureBuilder<CurrentUser> userDisplayname = FutureBuilder<CurrentUser>(
-      future: CurrentUser.updateCurrentUser(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Text(
-            snapshot.data.displayName,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Design.geel,
-            ),
-          );
-        } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
-        }
-
-        // By default, show a loading spinner.
-        return AnimatedLiquidCustomProgressIndicator(context.size);
-      },
-    );
-
-    final userHouseText = Text(
-      'Jouw huis',
-      style: TextStyle(
-          fontSize: 20.0, fontStyle: FontStyle.italic, color: Design.geel),
-    );
-
-    FutureBuilder<House> userHouseName = FutureBuilder<House>(
-      future: House.getCurrentHouse(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return new GestureDetector(
-            onTap: () {
-              _entrybeertallies();
-            },
-            child: Text(
-              snapshot.data.houseName,
-              style: TextStyle(
-                fontSize: 20,
-                fontStyle: FontStyle.italic,
-                color: Design.geel,
-              ),
-            ),
-          );
-          //return Text("Welcome, " + snapshot.data.displayName);
-        } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
-        }
-
-        // By default, show a loading spinner.
-        return AnimatedLiquidCustomProgressIndicator(Size(MediaQuery.of(context).size.width/3, MediaQuery.of(context).size.height/13));
-      },
     );
 
     final profielimage = GestureDetector(
@@ -356,6 +304,7 @@ class _Profilepage extends State<Profilepage> {
       width: MediaQuery.of(context).size.width,
       child: Stack(
         children: <Widget>[
+          clipper,
           Positioned(
             width: 150,
             top: 35,
@@ -403,7 +352,7 @@ class _Profilepage extends State<Profilepage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              userHouseName,
+              Text(CurrentUser().groupId.toString()),
             ],
           ),
           VerticalDivider(
@@ -469,8 +418,7 @@ class getClipper extends CustomClipper<Path> {
     var path = new Path();
 
     path.lineTo(0.0, size.height / 2.5);
-    path.lineTo(size.width, size.height / 2.5);
-    path.lineTo(size.width, 0.0);
+    path.lineTo(size.width * 1.9, 0.0);
     path.close();
     return path;
   }
@@ -480,3 +428,4 @@ class getClipper extends CustomClipper<Path> {
     return true;
   }
 }
+

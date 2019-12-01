@@ -125,19 +125,25 @@ class Group {
   //TODO: Add groupid, etc. and ways to query them
   final List<String> users;
 
+  
+
   Group({this.users});
 
-  factory Group.fromJson(Map<String, dynamic> json) {
+  factory Group.fromJson(Map<String,dynamic> json) {
     List<String> users = new List<String>();
     String keyPart = "UserId";
 
-    for (var i = 0; i < json.length; i++) {
-      String key = keyPart + i.toString();
-      users.add(json[key]);
-    }
-
-    return Group(users: users);
+    for( var i = 0; i < json.length; i++){
+        String key = keyPart + i.toString();
+        users.add(json[key]);
+      }
+    
+    return Group(
+      users: users
+    );
   }
+
+
 
   String toString() {
     String out = "";
@@ -162,13 +168,14 @@ class Group {
 }
 
 class House {
-  final int groupId;
-  final String createdAt;
-  final String houseName;
+    final int groupId;
+    final String createdAt;
+    final String houseName;
 
-  House({this.groupId, this.createdAt, this.houseName});
+    House({this.groupId, this.createdAt, this.houseName});
 
-  factory House.fromJson(Map<String, dynamic> json) {
+
+    factory House.fromJson(Map<String,dynamic> json) {
     return House(
         groupId: json['groupid'],
         createdAt: json['created_at'],
@@ -190,6 +197,7 @@ class House {
     }
     return currentGroup;
   }
+    
 }
 
 class BeerTally {
@@ -199,7 +207,7 @@ class BeerTally {
 
   BeerTally({this.count, this.pics});
 
-  Map<String, int> getCount() {
+  Map<String,int> getCount(){
     return this.count;
   }
 
@@ -255,10 +263,9 @@ class BeerTally {
     return BeerTally(count: count, pics: pics);
   }
 
-  String toString() {
+  String toString(){
     String out = "";
-    this.count.forEach(
-        (k, v) => out += k + " drank " + v.toString() + " beers" + "\n");
+    this.count.forEach((k,v) => out += k + " drank " + v.toString() + " beers" + "\n");
     return out;
   }
 }
@@ -315,3 +322,4 @@ class ConsumeData {
 //TODO:
 //Class Schedules
 //Class Group_Permissions
+
