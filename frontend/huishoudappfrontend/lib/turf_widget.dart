@@ -95,7 +95,7 @@ class _Turfwidget extends State<Turfwidget> {
       children: <Widget>[
         FlatButton(
           child: Text("Submit"),
-          onPressed: () {},
+          onPressed: finalData,
         )
       ],
     );
@@ -211,6 +211,7 @@ class _Turfwidget extends State<Turfwidget> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
+            ),
               body: Column(children: <Widget>[
                 Container(
                   height: MediaQuery.of(context).size.height / 2,
@@ -222,7 +223,7 @@ class _Turfwidget extends State<Turfwidget> {
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
-        return AnimatedLiquidCustomProgressIndicator();
+        return AnimatedLiquidCustomProgressIndicator(MediaQuery.of(context).size);
       },
     );
   }

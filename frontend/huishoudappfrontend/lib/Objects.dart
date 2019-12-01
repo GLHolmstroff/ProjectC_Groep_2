@@ -303,6 +303,7 @@ class BeerEvent {
     }
     return beerEvents;
   }
+}
 
 class ConsumeData {
   final String date;
