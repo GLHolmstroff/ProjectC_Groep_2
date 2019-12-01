@@ -31,7 +31,6 @@ class TurfInfo {
         this.numberofbeers.toString() +
         " " +
         this.profilepicture.toString();
-
   }
 
   void setimg(Image img) {
@@ -115,7 +114,6 @@ class _Turfwidget extends State<Turfwidget> {
     return buttons;
   }
 
-
   int getMutation(index) {
     return sentData[index].numberofbeers - receivedData[index].numberofbeers;
   }
@@ -192,7 +190,6 @@ class _Turfwidget extends State<Turfwidget> {
           ),
         );
       },
-
     );
   }
 
@@ -203,18 +200,18 @@ class _Turfwidget extends State<Turfwidget> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Scaffold(
-            appBar: AppBar(
-              backgroundColor: Design.rood,
-              title: Center(
-                child: Text(
-                  snapshot.data.houseName,
-                  style: TextStyle(fontWeight: FontWeight.bold),
+              appBar: AppBar(
+                backgroundColor: Design.rood,
+                title: Center(
+                  child: Text(
+                    snapshot.data.houseName,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
-            ),
               body: Column(children: <Widget>[
                 Container(
-                  height: MediaQuery.of(context).size.height / 2,
+                  height: MediaQuery.of(context).size.height * .7,
                   padding: const EdgeInsets.only(top: 20),
                   child: createListTile(snapshot.data.groupId),
                 ),
@@ -223,7 +220,8 @@ class _Turfwidget extends State<Turfwidget> {
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
-        return AnimatedLiquidCustomProgressIndicator(MediaQuery.of(context).size);
+        return AnimatedLiquidCustomProgressIndicator(
+            MediaQuery.of(context).size);
       },
     );
   }
