@@ -5,6 +5,8 @@ import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.date
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.groupid
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.mutation
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.targetuserid
+import com.group2projc.Huishoud.database.DatabaseHelper.Users.displayname
+import com.group2projc.Huishoud.database.DatabaseHelper.Users.id
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -297,11 +299,17 @@ class DatabaseHelper(url: String) {
         var outArr = ArrayList<HashMap<String,Any>>()
         transaction(db) {
             addLogger(StdOutSqlLogger)
-            BeerTallies.select {(BeerTallies.groupid eq gid)}.forEach {
+            val authorUser = Users.alias("uAuthor")
+            val targetUser = Users.alias("uTarget")
+            (BeerTallies.innerJoin(authorUser,{authorid}, {authorUser[id]})
+                        .innerJoin(targetUser,{targetuserid},{targetUser[id]}))
+                        .select {(BeerTallies.groupid eq gid)}.forEach {
                 var out = HashMap<String, Any>()
                 out["gid"] = gid
-                out["author"] = it[authorid]
-                out["target"] = it[targetuserid]
+                out["authorid"] = it[authorid]
+                out["authorname"] = it[authorUser[displayname]]
+                out["targetid"] = it[targetuserid]
+                out["targetname"] = it[targetUser[displayname]]
                 out["mutation"] = it[mutation]
                 out["date"] = it[date]
                 outArr.add(out)

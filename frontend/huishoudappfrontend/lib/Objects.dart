@@ -239,17 +239,23 @@ class BeerTally {
 class BeerEvent {
   int gid;
   String authorid;
+  String authorname;
   String targetid;
+  String targetname;
   String date;
   int mutation;
 
-  BeerEvent(this.gid, this.authorid, this.targetid, this.date, this.mutation);
+  BeerEvent(this.gid, this.authorid, this.authorname, this.targetid, this.targetname, this.date, this.mutation);
+
+  BeerEvent copyByVal(){
+    return BeerEvent(this.gid, this.authorid, this.authorname, this.targetid, this.targetname, this.date, this.mutation);
+  }
 
   static List<BeerEvent> fromJson(List<dynamic> json) {
     List<BeerEvent> out = List<BeerEvent>();
     json.forEach((event) {
-      BeerEvent beer = new BeerEvent(event["gid"], event["author"],
-          event["target"], event["date"], event["mutation"]);
+      BeerEvent beer = new BeerEvent(event["gid"], event["authorid"],event["authorname"],
+          event["targetid"],event["targetname"], event["date"], event["mutation"]);
       out.add(beer);
     });
     return out;
