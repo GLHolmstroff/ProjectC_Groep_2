@@ -11,7 +11,7 @@ class BaseUser {
   String displayName;
   String picture_link;
   String group_permission;
-  
+
   @override
   String toString() {
     return "userID: " +
@@ -233,6 +233,41 @@ class BeerTally {
     this.count.forEach(
         (k, v) => out += k + " drank " + v.toString() + " beers" + "\n");
     return out;
+  }
+}
+
+class BeerEvent {
+  int gid;
+  String authorid;
+  String targetid;
+  String date;
+  int mutation;
+
+  BeerEvent(this.gid, this.authorid, this.targetid, this.date, this.mutation);
+
+  static List<BeerEvent> fromJson(List<dynamic> json) {
+    List<BeerEvent> out = List<BeerEvent>();
+    json.forEach((event) {
+      BeerEvent beer = new BeerEvent(event["gid"], event["author"],
+          event["target"], event["date"], event["mutation"]);
+      out.add(beer);
+    });
+    return out;
+  }
+
+  static Future<List<BeerEvent>> getData(int gid) async {
+    List<BeerEvent> beerEvents;
+    final Response res = await get(
+        "http://10.0.2.2:8080/getTallyEntries?gid=$gid",
+        headers: {'Content-Type': 'application/json'});
+
+    if (res.statusCode == 200) {
+      // If server returns an OK response, parse the JSON.
+      beerEvents = BeerEvent.fromJson(json.decode(res.body));
+    } else {
+      print("Could not find beer data");
+    }
+    return beerEvents;
   }
 }
 

@@ -1,16 +1,11 @@
 import 'dart:convert';
 import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/invitecode_widget.dart';
-
-
 import 'Objects.dart';
 import 'page_container.dart';
 import 'package:flutter/material.dart';
-import 'package:huishoudappfrontend/beer_widget.dart';
-
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
-
 import 'package:http/http.dart';
 
 
@@ -82,9 +77,6 @@ class Home_widget_state extends State<Home_widget>{
                 child: Text("Go to Beer"),
                 onPressed: () {
                     CurrentUser currentUser = CurrentUser();
-                    
-                    Widget beerPage = BeerPage();
-                    widget.changeToWidget(beerPage);
                    
                   //   Navigator.push(
                   //       context,

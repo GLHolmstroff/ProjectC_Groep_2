@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
+import 'package:huishoudappfrontend/turf_widget_admin.dart';
 import 'Objects.dart';
 
 class TurfInfo {
@@ -14,7 +12,11 @@ class TurfInfo {
   final String profilepicture;
 
   String toString() {
-    return this.displayname + " " + this.numberofbeers.toString() + " " + this.profilepicture.toString(); 
+    return this.displayname +
+        " " +
+        this.numberofbeers.toString() +
+        " " +
+        this.profilepicture.toString();
   }
 }
 
@@ -37,6 +39,32 @@ class _Turfwidget extends State<Turfwidget> {
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
     return "http://10.0.2.2:8080/files/users?uid=$uid&t=$timeStamp";
+  }
+
+  ButtonBar buildButtons() {
+    ButtonBar buttons = ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: <Widget>[
+        FlatButton(
+          child: Text("Submit"),
+          onPressed: () {},
+        )
+      ],
+    );
+
+    if (CurrentUser().group_permission == "groupAdmin") {
+      buttons.children.add(FlatButton(
+        child: Text("View Log"),
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => new TurfWidgetAdmin(),
+              ));
+        },
+      ));
+    }
+    return buttons;
   }
 
   FutureBuilder<BeerTally> createListTile(int gid) {
@@ -94,8 +122,8 @@ class _Turfwidget extends State<Turfwidget> {
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
-        return CircularProgressIndicator();
-      },
+        return AnimatedLiquidCustomProgressIndicator();
+      }
     );
   }
 
@@ -105,21 +133,24 @@ class _Turfwidget extends State<Turfwidget> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Scaffold(
-            appBar: AppBar(
-              title: Text(
-                snapshot.data.houseName,
-                style: TextStyle(fontWeight: FontWeight.bold),
+              appBar: AppBar(
+                title: Text(
+                  snapshot.data.houseName,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            body: Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: createListTile(snapshot.data.groupId),
-            ),
-          );
+              body: Column(children: <Widget>[
+                Container(
+                  height: MediaQuery.of(context).size.height / 2,
+                  padding: const EdgeInsets.only(top: 20),
+                  child: createListTile(snapshot.data.groupId),
+                ),
+                buildButtons()
+              ]));
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
-        return CircularProgressIndicator();
+        return AnimatedLiquidCustomProgressIndicator();
       },
     );
   }

@@ -293,18 +293,21 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
-    fun getAllBeerEntriesForGroup(gid: Int): HashMap<String, Any> {
-        var out = HashMap<String,Any>()
+    fun getAllBeerEntriesForGroup(gid: Int): ArrayList<HashMap<String, Any>> {
+        var outArr = ArrayList<HashMap<String,Any>>()
         transaction(db) {
             addLogger(StdOutSqlLogger)
             BeerTallies.select {(BeerTallies.groupid eq gid)}.forEach {
+                var out = HashMap<String, Any>()
+                out["gid"] = gid
                 out["author"] = it[authorid]
                 out["target"] = it[targetuserid]
                 out["mutation"] = it[mutation]
                 out["date"] = it[date]
+                outArr.add(out)
             }
         }
-        return out
+        return outArr
     }
 
     fun updateBeerEntry(gid: Int, author: String, target:String, date:String, mut: Int) : DatabaseHelper{
