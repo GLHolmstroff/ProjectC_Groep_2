@@ -11,7 +11,7 @@ class BaseUser {
   String displayName;
   String picture_link;
   String group_permission;
-  
+
   @override
   String toString() {
     return "userID: " +
@@ -181,11 +181,11 @@ class House {
     final Response res = await get(
         "http://10.0.2.2:8080/getGroupName?gid=$groupID",
         headers: {'Content-Type': 'application/json'});
-    print(res.statusCode);
     if (res.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       currentGroup = House.fromJson(json.decode(res.body));
     } else {
+      print(res.statusCode);
       print("Could not find group");
     }
     return currentGroup;
@@ -234,11 +234,12 @@ class BeerTally {
     final Response res = await get(
         "http://10.0.2.2:8080/getTallyByName?gid=$gid",
         headers: {'Content-Type': 'application/json'});
-    print(res.statusCode);
+    
     if (res.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       beer = BeerTally.fromJson(json.decode(res.body));
     } else {
+      print(res.statusCode);
       print("Could not find beer data");
     }
     return beer;
@@ -262,10 +263,53 @@ class BeerTally {
   }
 }
 
+
+class BeerEvent {
+  int gid;
+  String authorid;
+  String authorname;
+  String targetid;
+  String targetname;
+  String date;
+  int mutation;
+
+  BeerEvent(this.gid, this.authorid, this.authorname, this.targetid, this.targetname, this.date, this.mutation);
+
+  BeerEvent copyByVal(){
+    return BeerEvent(this.gid, this.authorid, this.authorname, this.targetid, this.targetname, this.date, this.mutation);
+  }
+
+  static List<BeerEvent> fromJson(List<dynamic> json) {
+    List<BeerEvent> out = List<BeerEvent>();
+    json.forEach((event) {
+      BeerEvent beer = new BeerEvent(event["gid"], event["authorid"],event["authorname"],
+          event["targetid"],event["targetname"], event["date"], event["mutation"]);
+      out.add(beer);
+    });
+    return out;
+  }
+
+  static Future<List<BeerEvent>> getData(int gid) async {
+    List<BeerEvent> beerEvents;
+    final Response res = await get(
+        "http://10.0.2.2:8080/getTallyEntries?gid=$gid",
+        headers: {'Content-Type': 'application/json'});
+
+    if (res.statusCode == 200) {
+      // If server returns an OK response, parse the JSON.
+      beerEvents = BeerEvent.fromJson(json.decode(res.body));
+    } else {
+      print("Could not find beer data");
+    }
+    return beerEvents;
+  }
+}
+
 class ConsumeData {
   final String date;
   final int amount;
   ConsumeData(this.date, this.amount);
+
 }
 
 //TODO:
