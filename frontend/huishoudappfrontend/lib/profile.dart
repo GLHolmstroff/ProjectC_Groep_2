@@ -28,8 +28,20 @@ class _Profilepage extends State<Profilepage> {
   final fromkey = GlobalKey<FormState>();
   FormType _formType = FormType.editprofile;
   String _name;
+  String userhouseName;
   bool loginWithEmail;
   ProfileConstants profCons;
+
+  void initState() {
+    initActual();
+  }
+
+  Future<void> initActual() async{
+    String temphouse = (await House.getCurrentHouse()).houseName;
+    setState(()  {
+      userhouseName = temphouse;
+    });
+  }
 
   Future<bool> _loggedinWithEmail() async {
     final auth = Provider.of(context).auth;
@@ -352,7 +364,7 @@ class _Profilepage extends State<Profilepage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Text(CurrentUser().groupId.toString()),
+              Text(userhouseName != null ? userhouseName : "Loading..."),
             ],
           ),
           VerticalDivider(
