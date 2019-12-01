@@ -261,6 +261,7 @@ class DatabaseHelper(url: String) {
 
     fun getTallyForGroupByNameAndPic(gid: Int): HashMap<String, HashMap<String, Any>> {
         val uids = getAllInGroup(gid).values
+        print(uids);
         var out = HashMap<String, HashMap<String, Any>>()
 
         uids.forEach {
@@ -334,7 +335,6 @@ class DatabaseHelper(url: String) {
              BeerTallies
                     .slice(mutation)
                     .select {(targetuserid eq targetuid)}
-                    .groupBy(mutation)
                      .forEach {
                          val c = it[mutation]
                          if (c != null){
@@ -342,8 +342,33 @@ class DatabaseHelper(url: String) {
                          }
                      }
         }
-        return if (count != null) count else 0
+        return count
     }
+
+    fun getBeerTallyPerUserPerDay(gid: Int, targetuid: String): HashMap<Int, HashMap<String, Int>> {
+        var out = HashMap<Int, HashMap<String, Int>>()
+        var i = 0
+        var count = 0
+        transaction(db) {
+            BeerTallies
+                    .slice(mutation.sum(), date.substring(0,11))
+                    .select {targetuserid eq targetuid}
+                    .groupBy(date.substring(0,11))
+                    .orderBy(date.substring(0,11))
+                    .forEach {
+                        var day = it[date.substring(0,11)]
+                        val c = it[mutation.sum()]
+                        if (c != null) {
+                            count += c
+                        }
+                        var placeholder = HashMap<String, Int>()
+                        placeholder[day] = count
+                        i += 1
+                        out[i] = placeholder
+                    }
+        }
+        return out
+    } // todo make it perday (groupby maybe?) todo: give days with 0 count still data...
 
     fun getAllInGroup(gid: Int): HashMap<String, String> {
         var out = HashMap<String, String>()

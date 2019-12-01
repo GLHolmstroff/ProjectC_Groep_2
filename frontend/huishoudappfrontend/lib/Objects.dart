@@ -65,6 +65,31 @@ class CurrentUser extends BaseUser {
     }
     return placehoderCurrentUser;
   }
+
+  static List<ConsumeData> _listFromJson(Map<String, dynamic> json) {
+    List<ConsumeData> lst = new List<ConsumeData>();
+    ConsumeData placeholder;
+    json.forEach((k,v) => 
+    v.forEach((k1, v1) =>
+      lst.add(ConsumeData(k1, v1))
+    )
+    );
+    return lst;
+  }
+
+  Future<List<ConsumeData>> getConsumeData() async {
+    String uid = CurrentUser().userId.toString();
+    String gid = CurrentUser().groupId.toString();
+    List<ConsumeData> placeHolderListConsumeData;
+    final Response res = await get("http://10.0.2.2:8080/getTallyPerUserPerDay?gid=$gid&uid=$uid",
+        headers: {'Content-Type': 'application/json'});
+    if (res.statusCode == 200) {
+      placeHolderListConsumeData = CurrentUser._listFromJson(json.decode(res.body));
+    } else {
+      print("Could not make list of data");
+    }
+    return placeHolderListConsumeData;
+  }
 }
 
 class User extends BaseUser {
@@ -80,6 +105,7 @@ class User extends BaseUser {
     return User(json["uid"], json["groupid"], json["global_permissions"],
         json["display_name"], json["picture_link"]);
   }
+
 
   static Future<User> getUser(String cuid) async {
     String uid = cuid;
@@ -155,11 +181,11 @@ class House {
     final Response res = await get(
         "http://10.0.2.2:8080/getGroupName?gid=$groupID",
         headers: {'Content-Type': 'application/json'});
-    print(res.statusCode);
     if (res.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       currentGroup = House.fromJson(json.decode(res.body));
     } else {
+      print(res.statusCode);
       print("Could not find group");
     }
     return currentGroup;
@@ -208,11 +234,12 @@ class BeerTally {
     final Response res = await get(
         "http://10.0.2.2:8080/getTallyByName?gid=$gid",
         headers: {'Content-Type': 'application/json'});
-    print(res.statusCode);
+    
     if (res.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       beer = BeerTally.fromJson(json.decode(res.body));
     } else {
+      print(res.statusCode);
       print("Could not find beer data");
     }
     return beer;
@@ -235,6 +262,7 @@ class BeerTally {
     return out;
   }
 }
+
 
 class BeerEvent {
   int gid;
@@ -275,6 +303,12 @@ class BeerEvent {
     }
     return beerEvents;
   }
+
+class ConsumeData {
+  final String date;
+  final int amount;
+  ConsumeData(this.date, this.amount);
+
 }
 
 //TODO:

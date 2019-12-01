@@ -79,7 +79,7 @@ class MyHomePage extends StatelessWidget {
                       return Text("${innersnapshot.error}");
                     }
                     // By default, show a loading spinner.
-                    return AnimatedLiquidCustomProgressIndicator();
+                    return AnimatedLiquidCustomProgressIndicator(context.size);
                   });
             } else {
               print('to the loginpage');
