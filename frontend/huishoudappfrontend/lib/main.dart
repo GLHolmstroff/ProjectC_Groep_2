@@ -5,10 +5,11 @@ import 'package:http/http.dart';
 import 'package:huishoudappfrontend/Objects.dart';
 import 'package:huishoudappfrontend/createaccount_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
-//import 'package:huishoudappfrontend/creategroup_widget.dart';
+import 'package:huishoudappfrontend/groupmanagement/creategroup_widget.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
-//import 'groupsetup_widget.dart';
 import 'package:huishoudappfrontend/services/permission_serivce.dart';
+import 'package:huishoudappfrontend/turf_widget_admin.dart';
+import 'package:huishoudappfrontend/turf_widget_edit.dart';
 import 'login_widget.dart';
 import 'page_container.dart';
 import 'createaccount_widget.dart';
@@ -26,6 +27,8 @@ class MyApp extends StatelessWidget {
     CreateAccount.tag: (context) => CreateAccount(),
     Profilepage.tag: (context) => Profilepage(),
     GroupWidget.tag: (context) => GroupWidget(),
+    TurfWidgetAdmin.tag: (context) => TurfWidgetAdmin(),
+    TurfWidgetEdit.tag: (context) => TurfWidgetEdit(null),
   };
 
   @override

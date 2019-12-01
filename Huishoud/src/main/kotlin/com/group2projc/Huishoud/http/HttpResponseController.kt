@@ -94,7 +94,7 @@ class HttpResponseController {
     }
 
     @RequestMapping("/getTallyEntries")
-    fun getTallyEntries(@RequestParam(value= "gid",defaultValue = "") gid: Int): HashMap<String, Any> {
+    fun getTallyEntries(@RequestParam(value= "gid",defaultValue = "") gid: Int): ArrayList<HashMap<String, Any>> {
         val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
                 .getAllBeerEntriesForGroup(gid)
         return map

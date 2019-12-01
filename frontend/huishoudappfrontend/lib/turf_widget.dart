@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:ffi';
@@ -9,6 +10,7 @@ import 'package:http/http.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
+import 'package:huishoudappfrontend/turf_widget_admin.dart';
 import 'Objects.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -29,6 +31,7 @@ class TurfInfo {
         this.numberofbeers.toString() +
         " " +
         this.profilepicture.toString();
+
   }
 
   void setimg(Image img) {
@@ -86,15 +89,32 @@ class _Turfwidget extends State<Turfwidget> {
     });
   }
 
-  Widget submitButton() {
-    return FlatButton(
-      onPressed: () {
-        finalData();
-        print('pressed');
-      },
-      child: Text('Submit'),
+  ButtonBar buildButtons() {
+    ButtonBar buttons = ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: <Widget>[
+        FlatButton(
+          child: Text("Submit"),
+          onPressed: () {},
+        )
+      ],
     );
+
+    if (CurrentUser().group_permission == "groupAdmin") {
+      buttons.children.add(FlatButton(
+        child: Text("View Log"),
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => new TurfWidgetAdmin(),
+              ));
+        },
+      ));
+    }
+    return buttons;
   }
+
 
   int getMutation(index) {
     return sentData[index].numberofbeers - receivedData[index].numberofbeers;
@@ -172,6 +192,7 @@ class _Turfwidget extends State<Turfwidget> {
           ),
         );
       },
+
     );
   }
 
@@ -190,17 +211,18 @@ class _Turfwidget extends State<Turfwidget> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-            ),
-            body: Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: createListTile(snapshot.data.groupId),
-            ),
-            floatingActionButton: submitButton(),
-          );
+              body: Column(children: <Widget>[
+                Container(
+                  height: MediaQuery.of(context).size.height / 2,
+                  padding: const EdgeInsets.only(top: 20),
+                  child: createListTile(snapshot.data.groupId),
+                ),
+                buildButtons()
+              ]));
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
-        return AnimatedLiquidCustomProgressIndicator(MediaQuery.of(context).size);
+        return AnimatedLiquidCustomProgressIndicator();
       },
     );
   }
