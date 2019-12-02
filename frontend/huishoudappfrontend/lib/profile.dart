@@ -408,7 +408,8 @@ class _Profilepage extends State<Profilepage> {
 
     return new Scaffold(
       body: Container(
-          child: Column(
+        color: Colors.grey[100],
+        child: Column(
         children: <Widget>[
           upperpart,
           Divider(

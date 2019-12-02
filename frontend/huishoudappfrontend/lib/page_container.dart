@@ -1,3 +1,4 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/home_widget.dart';
@@ -53,42 +54,22 @@ class HomePageState extends State<HomePage> {
     // initialize all the children, cant be done in the constructor because we are parsing a function
     _setChildren();
     return Scaffold(
-      /*appBar: AppBar(
-        title: Text('Welcome Page'),
-        actions: <Widget>[
-          FlatButton(
-            child: Text("Jouw profiel"),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => Profilepage()));
-            },
-          )
-        ],
-      ),
-      // The body of the scaffold is the currentwidget
-      body: _currentWidget,
-      ),*/
       body: _children[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: CurvedNavigationBar(
         // type needs to be fixed otherwise the color of the navigationBariItems will be white, (weird bug)
-        type: BottomNavigationBarType.fixed,
         // set function for when an navigationbaritem is tapped
         onTap: onTabTapped,
-        currentIndex:
+        backgroundColor: Colors.grey[100],
+        height: 50,
+        animationCurve: Curves.easeInBack,
+        index:
             _currentIndex, // this will be set when a new tab is tapped
-        items: [
-          BottomNavigationBarItem(
-            icon: new Icon(LineAwesomeIcons.home),
-            title: new Text('Huis'),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(LineAwesomeIcons.clipboard),
-            title: new Text('Taken'),
-          ),
-          BottomNavigationBarItem(
-              icon: new Icon(LineAwesomeIcons.beer), title: new Text("Turven")),
-          BottomNavigationBarItem(
-              icon: new Icon(LineAwesomeIcons.user), title: new Text("Profiel"))
+        items: <Widget>[
+            Icon(LineAwesomeIcons.home),
+            Icon(LineAwesomeIcons.clipboard),
+            
+            Icon(LineAwesomeIcons.beer),
+            Icon(LineAwesomeIcons.user)
         ],
       ),
     );
