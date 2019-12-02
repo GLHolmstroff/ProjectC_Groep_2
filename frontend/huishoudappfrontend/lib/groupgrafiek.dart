@@ -10,13 +10,12 @@ Widget grafiek = FutureBuilder<List<ConsumeDataPerMonthPerUser>>(
           return SfCartesianChart(
             primaryXAxis: CategoryAxis(),
             series: <ChartSeries>[
-              AreaSeries<ConsumeDataPerMonthPerUser, String>(
+              ColumnSeries<ConsumeDataPerMonthPerUser, String>(
                 dataSource: snapshot.data,
                 color: Design.orange2,
-                borderMode: AreaBorderMode.excludeBottom,
                 borderColor: Design.rood,
                 borderWidth: 2,
-                xValueMapper: (ConsumeDataPerMonthPerUser data, _) => data.uid,
+                xValueMapper: (ConsumeDataPerMonthPerUser data, _) => data.name,
                 yValueMapper: (ConsumeDataPerMonthPerUser data, _) => data.amount,
                 dataLabelSettings: DataLabelSettings(isVisible: true),
               )

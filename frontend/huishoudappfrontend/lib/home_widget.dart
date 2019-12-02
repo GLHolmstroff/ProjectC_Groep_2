@@ -117,7 +117,7 @@ class Home_widget_state extends State<Home_widget>{
                 })),
 
                 addUserToGroupButton,
-                //grafiek,
+                grafiek,
           ],
         ),
       );

@@ -80,7 +80,6 @@ class CurrentUser extends BaseUser {
   static List<ConsumeDataPerMonthPerUser> _listGroupDataFromJson(Map<String, dynamic> json) {
     List<ConsumeDataPerMonthPerUser> lst = new List<ConsumeDataPerMonthPerUser>();
     json.forEach((k, v) => lst.add(ConsumeDataPerMonthPerUser(k, v)));
-    print('gelukt');
     return lst;
   }
 
@@ -342,9 +341,9 @@ class ConsumeData {
 }
 
 class ConsumeDataPerMonthPerUser {
-  final String uid;
+  final String name;
   final int amount;
-  ConsumeDataPerMonthPerUser(this.uid, this.amount);
+  ConsumeDataPerMonthPerUser(this.name, this.amount);
 }
 
 //TODO:

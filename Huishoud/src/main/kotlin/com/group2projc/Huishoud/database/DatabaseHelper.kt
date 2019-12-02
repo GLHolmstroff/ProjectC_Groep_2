@@ -389,6 +389,8 @@ class DatabaseHelper(url: String) {
                 .toString().substring(5,7)
         var out = HashMap<String, Int>()
         uids.forEach{ id ->
+            var user = getUser(id)
+            var name: String? = user["display_name"] as String?
             transaction(db){
                 BeerTallies
                         .slice(mutation.sum(), date.substring(6,2))
@@ -401,8 +403,8 @@ class DatabaseHelper(url: String) {
 
                             if(i[date.substring(6,2)] == month && i[mutation.sum()] != null) {
                                 val total = i[mutation.sum()]
-                                if(total != null) {
-                                    out[id] = total
+                                if(total != null && name != null) {
+                                    out[name] = total
                                 }
                             }
                         }
