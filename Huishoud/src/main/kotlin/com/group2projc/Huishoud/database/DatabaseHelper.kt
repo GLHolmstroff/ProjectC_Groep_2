@@ -382,6 +382,35 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+    fun getTotalConsumePerMonthPerUser(gid: Int): HashMap<String, Int> {
+        val uids = getAllInGroup(gid).values
+        var month = LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"))
+                .toString().substring(5,7)
+        var out = HashMap<String, Int>()
+        uids.forEach{ id ->
+            transaction(db){
+                BeerTallies
+                        .slice(mutation.sum(), date.substring(6,2))
+                        .select{targetuserid eq id}
+                        .groupBy(date.substring(6,2))
+                        .orderBy(date.substring(6,2))
+                        .forEach { i ->
+                            println(month)
+                            println(i[date.substring(6,2)])
+
+                            if(i[date.substring(6,2)] == month && i[mutation.sum()] != null) {
+                                val total = i[mutation.sum()]
+                                if(total != null) {
+                                    out[id] = total
+                                }
+                            }
+                        }
+            }
+        }
+        return out
+    }
+
     fun createInviteCode(): Int {
 
         var random = Random();

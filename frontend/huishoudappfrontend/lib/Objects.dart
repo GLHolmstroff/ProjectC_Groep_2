@@ -77,6 +77,27 @@ class CurrentUser extends BaseUser {
     return lst;
   }
 
+  static List<ConsumeDataPerMonthPerUser> _listGroupDataFromJson(Map<String, dynamic> json) {
+    List<ConsumeDataPerMonthPerUser> lst = new List<ConsumeDataPerMonthPerUser>();
+    json.forEach((k, v) => lst.add(ConsumeDataPerMonthPerUser(k, v)));
+    print('gelukt');
+    return lst;
+  }
+
+  Future<List<ConsumeDataPerMonthPerUser>> getGroupConsumeData() async {
+    String gid = CurrentUser().groupId.toString();
+    List<ConsumeDataPerMonthPerUser> placeHolderList;
+    final Response res = await get("http://10.0.2.2:8080/getTallyPerUserPerMonth?gid=$gid",
+        headers: {'Content-Type': 'application/json'});
+    if (res.statusCode == 200) {
+      placeHolderList = CurrentUser._listGroupDataFromJson(json.decode(res.body));
+    } else {
+      print("Could not make list of data");
+    }
+    return placeHolderList;
+  }
+  
+
   Future<List<ConsumeData>> getConsumeData() async {
     String uid = CurrentUser().userId.toString();
     String gid = CurrentUser().groupId.toString();
@@ -141,6 +162,8 @@ class Group {
     return Group(
       users: users
     );
+
+
   }
 
 
@@ -316,7 +339,12 @@ class ConsumeData {
   final String date;
   final int amount;
   ConsumeData(this.date, this.amount);
+}
 
+class ConsumeDataPerMonthPerUser {
+  final String uid;
+  final int amount;
+  ConsumeDataPerMonthPerUser(this.uid, this.amount);
 }
 
 //TODO:

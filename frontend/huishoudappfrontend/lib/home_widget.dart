@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:huishoudappfrontend/groupgrafiek.dart';
 import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/invitecode_widget.dart';
 import 'Objects.dart';
@@ -115,7 +116,8 @@ class Home_widget_state extends State<Home_widget>{
                   
                 })),
 
-                addUserToGroupButton
+                addUserToGroupButton,
+                //grafiek,
           ],
         ),
       );
