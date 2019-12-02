@@ -70,9 +70,10 @@ class HttpResponseController {
     }
 
     @RequestMapping("/getTally")
-    fun getTally(@RequestParam(value= "gid",defaultValue = "") gid: Int): HashMap<String, Int> {
+    fun getTally(@RequestParam(value= "gid",defaultValue = "") gid: Int,
+                 @RequestParam(value = "product",defaultValue = "") product: String): HashMap<String, Int> {
         val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
-                .getTallyforGroup(gid)
+                .getTallyforGroup(gid,product)
         return map
 
     }
@@ -86,9 +87,10 @@ class HttpResponseController {
     }
 
     @RequestMapping("/getTallyByName")
-    fun getTallyByName(@RequestParam(value= "gid",defaultValue = "") gid: Int): HashMap<String, HashMap<String, Any>> {
+    fun getTallyByName(@RequestParam(value= "gid",defaultValue = "") gid: Int,
+                       @RequestParam(value= "product", defaultValue = "")product: String): HashMap<String, HashMap<String, Any>> {
         val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
-                .getTallyForGroupByNameAndPic(gid)
+                .getTallyForGroupByNameAndPic(gid,product)
         return map
 
     }
@@ -106,9 +108,10 @@ class HttpResponseController {
                             @RequestParam(value= "authorid", defaultValue = "")authorid: String,
                             @RequestParam(value= "targetid", defaultValue = "")targetid: String,
                             @RequestParam(value= "mutation", defaultValue = "0")mutation: Int,
+                            @RequestParam(value= "product", defaultValue = "")product: String,
                             @RequestParam(value = "date", defaultValue = "")date: String): HttpResponse {
         val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
-                .updateBeerEntry(gid,authorid,targetid,date,mutation)
+                .updateBeerEntry(gid,authorid,targetid,date,mutation,product)
         return HttpResponse(counter.incrementAndGet().toInt(),
                 template + gid)
     }
@@ -118,9 +121,10 @@ class HttpResponseController {
     fun updateTally(@RequestParam(value="gid",defaultValue = "")gid:Int,
                     @RequestParam(value="authorid",defaultValue = "")authorid:String,
                     @RequestParam(value="targetid",defaultValue = "")targetid:String,
+                    @RequestParam(value= "product", defaultValue = "")product: String,
                     @RequestParam(value="mutation",defaultValue = "")mutation:Int):HttpResponse {
         DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
-                .createBeerEntry(gid,authorid,targetid,mutation)
+                .createBeerEntry(gid,authorid,targetid,mutation,product)
         return HttpResponse(counter.incrementAndGet().toInt(),
                 template + gid)
     }
@@ -137,6 +141,22 @@ class HttpResponseController {
             val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").joinGroubByCode(ic,uid);
             return map;
 
+    }
+
+    @RequestMapping("/getAllProducts")
+    fun joinGroupByCode(@RequestParam(value="gid", defaultValue = "")gid:Int):HashMap<String,HashMap<String,Any>> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").getAllProducts(gid);
+        return map;
+
+    }
+
+    @RequestMapping("/addProduct")
+    fun joinGroupByCode(@RequestParam(value="gid", defaultValue = "")gid:Int,
+                        @RequestParam(value="name", defaultValue = "")name:String,
+                        @RequestParam(value="price",defaultValue = "")price:Float):HttpResponse {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").addProduct(gid,name,price);
+        return  HttpResponse(counter.incrementAndGet().toInt(),
+                template + gid);
     }
 
     @RequestMapping("/initDatabase")

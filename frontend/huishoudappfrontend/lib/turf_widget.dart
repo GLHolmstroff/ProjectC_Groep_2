@@ -56,7 +56,7 @@ class _Turfwidget extends State<Turfwidget> {
   }
 
   void initActual() async {
-    BeerTally beer = await BeerTally.getData(CurrentUser().groupId);
+    BeerTally beer = await BeerTally.getData(CurrentUser().groupId, "beer");
     print(beer);
     List pictures = beer.getPics().values.toList();
     List names = beer.getCount().keys.toList();
@@ -149,7 +149,7 @@ class _Turfwidget extends State<Turfwidget> {
       String target = map['targetid'];
       int mutation = map['mutation'];
       final Response res = await get(
-          "http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$target&mutation=$mutation");
+          "http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$target&mutation=$mutation&product=beer");
       if (res.statusCode == 200) {
         print("tally update sent");
       } else {
