@@ -82,8 +82,6 @@ class _Turfwidget extends State<Turfwidget> {
     setState(() {
       for (int i = 0; i < sentData.length; i++) {
         sentData[i].setimg(images[i]);
-        print(
-            "DONTYOUFUCKINGDAREREMOVETHISPRINTTHISISMYVICTORYPRINTTHISSHITFINALLYFUCKINWORKSBIATCH");
       }
     });
   }
@@ -93,7 +91,7 @@ class _Turfwidget extends State<Turfwidget> {
       alignment: MainAxisAlignment.center,
       children: <Widget>[
         FlatButton(
-          child: Text("Submit"),
+          child: Text("Verzenden"),
           onPressed: finalData,
         )
       ],
