@@ -1,4 +1,5 @@
 import 'package:http/http.dart';
+import 'package:huishoudappfrontend/turf_widget.dart';
 import 'package:huishoudappfrontend/turf_widget_admin.dart';
 
 import 'Objects.dart';
@@ -124,7 +125,7 @@ class TurfWidgetEditState extends State<TurfWidgetEdit> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              new TurfWidgetAdmin(),
+                              new Turfwidget(),
                         ));
                       },
                     ),
@@ -136,7 +137,7 @@ class TurfWidgetEditState extends State<TurfWidgetEdit> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              new TurfWidgetAdmin(),
+                              new Turfwidget(),
                         ));
                       },
                     )
