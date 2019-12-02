@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:huishoudappfrontend/turf_widget_admin.dart';
 import 'Objects.dart';
@@ -23,7 +24,7 @@ class TurfInfo {
   final String displayname;
   int numberofbeers;
   final String profilepicture;
-  Image img;
+  CachedNetworkImage img;
 
   String toString() {
     return this.displayname +
@@ -33,7 +34,7 @@ class TurfInfo {
         this.profilepicture.toString();
   }
 
-  void setimg(Image img) {
+  void setimg(CachedNetworkImage img) {
     this.img = img;
   }
 }
@@ -56,6 +57,7 @@ class _Turfwidget extends State<Turfwidget> {
 
   void initActual() async {
     BeerTally beer = await BeerTally.getData(CurrentUser().groupId);
+    print(beer);
     List pictures = beer.getPics().values.toList();
     List names = beer.getCount().keys.toList();
     List counts = beer.getCount().values.toList();
@@ -73,12 +75,22 @@ class _Turfwidget extends State<Turfwidget> {
     }
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
-    List<Image> images = [];
+    List<CachedNetworkImage> images = [];
+    print("Picture length: ${pictures.length}");
+    final Directory temp = await getTemporaryDirectory();
     for (var pic in pictures) {
-      images.add(Image.memory(
-          (await get("http://10.0.2.2:8080/files/users?uid=$pic&t=$timeStamp"))
-              .bodyBytes));
+      print("Loading image${pictures.indexOf(pic)}");
+      images.add(new CachedNetworkImage(
+        imageUrl: "http://10.0.2.2:8080/files/users?uid=$pic&t=$timeStamp",
+        placeholder: (BuildContext context, String s) {
+          return new Icon(Icons.person);
+        },
+        errorWidget: (BuildContext context, String s, Object o) {
+          return new Icon(Icons.error);
+        },
+      ));
     }
+    print(sentData.length);
     setState(() {
       for (int i = 0; i < sentData.length; i++) {
         sentData[i].setimg(images[i]);
@@ -98,7 +110,7 @@ class _Turfwidget extends State<Turfwidget> {
         )
       ],
     );
-
+    print(CurrentUser().group_permission);
     if (CurrentUser().group_permission == "groupAdmin") {
       buttons.children.add(FlatButton(
         child: Text("View Log"),
@@ -155,7 +167,13 @@ class _Turfwidget extends State<Turfwidget> {
       itemCount: sentData.length,
       itemBuilder: (context, index) {
         return ListTile(
-          leading: sentData[index].img,
+          leading: SizedBox(
+            width: MediaQuery.of(context).size.width * .15,
+            child: FittedBox(
+              child: sentData[index].img,
+              fit: BoxFit.fill,
+            ),
+          ),
           title: Text(sentData[index].displayname),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
@@ -211,7 +229,7 @@ class _Turfwidget extends State<Turfwidget> {
               ),
               body: Column(children: <Widget>[
                 Container(
-                  height: MediaQuery.of(context).size.height * .7,
+                  height: MediaQuery.of(context).size.height * .65,
                   padding: const EdgeInsets.only(top: 20),
                   child: createListTile(snapshot.data.groupId),
                 ),
