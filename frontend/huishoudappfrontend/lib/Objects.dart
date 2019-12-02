@@ -104,6 +104,7 @@ class User extends BaseUser {
     this.picture_link = picture_link;
   }
 
+
   factory User.fromJson(Map<String, dynamic> json) {
     return User(json["uid"], json["groupid"], json["global_permissions"],
         json["display_name"], json["picture_link"]);

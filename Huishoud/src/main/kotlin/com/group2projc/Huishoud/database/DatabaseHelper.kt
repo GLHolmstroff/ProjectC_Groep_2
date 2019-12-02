@@ -48,11 +48,13 @@ class DatabaseHelper(url: String) {
     }
 
     object Schedules : Table() {
-        val groupid = reference("groupid", Groups.id).primaryKey()
-        val useridto = reference("useridto", Users.id).primaryKey()
-        val datedue = varchar("datetime", 20).primaryKey()
-        val useridby = reference("useridby", Users.id)
+        val taskid = integer("taskid").primaryKey()
+        val groupid = reference("groupid", Groups.id)
+        val userid = reference("userid", Users.id)
+        val taskname = varchar("taskname", 25)
         val description = varchar("description", 50)
+        val datedue = varchar("datedue", 20)
+        val done = integer("done")
     }
 
     object BeerTallies : Table() {

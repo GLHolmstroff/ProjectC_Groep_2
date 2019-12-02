@@ -4,7 +4,7 @@ import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/home_widget.dart';
 import 'package:huishoudappfrontend/turf_widget.dart';
 import 'profile.dart';
-import 'package:huishoudappfrontend/schoonmaakrooster_widget.dart';
+import 'schedules/schoonmaakrooster_widget.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 import 'placeholder_widget.dart';
@@ -62,14 +62,12 @@ class HomePageState extends State<HomePage> {
         backgroundColor: Colors.grey[100],
         height: 50,
         animationCurve: Curves.easeInBack,
-        index:
-            _currentIndex, // this will be set when a new tab is tapped
+        index: _currentIndex, // this will be set when a new tab is tapped
         items: <Widget>[
-            Icon(LineAwesomeIcons.home),
-            Icon(LineAwesomeIcons.clipboard),
-            
-            Icon(LineAwesomeIcons.beer),
-            Icon(LineAwesomeIcons.user)
+          Icon(LineAwesomeIcons.home),
+          Icon(LineAwesomeIcons.clipboard),
+          Icon(LineAwesomeIcons.beer),
+          Icon(LineAwesomeIcons.user)
         ],
       ),
     );

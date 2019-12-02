@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'profile.dart';
-import 'Objects.dart';
+import '../profile.dart';
+import '../Objects.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'dart:convert';
@@ -12,20 +12,15 @@ class SchoonmaakPage extends StatefulWidget {
 }
 
 class _SchoonmaakPageState extends State<SchoonmaakPage> {
-  Future<User> getUser() async {
-    String uid = await Auth().currentUser();
-    User currentUser;
-    final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
-        headers: {'Content-Type': 'application/json'});
-    
-    if (res.statusCode == 200) {
-      // If server returns an OK response, parse the JSON.
-      currentUser = User.fromJson(json.decode(res.body));
+  String userName = CurrentUser().displayName.toString();
+  String userPermissions = CurrentUser().group_permission.toString();
+
+  String getButtonText() {
+    if (userPermissions == "groupAdmin") {
+      return "Taken uitdelen";
     } else {
-      print(res.statusCode);
-      print("Could not find user");
+      return "Huisagenda";
     }
-    return currentUser;
   }
 
   List getCleaningJobs() {
@@ -157,13 +152,14 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
           ),
           Expanded(
             child: Container(
-              height: 78,
               width: MediaQuery.of(context).size.width,
               color: Colors.orange[700],
               child: Center(
                 child: RaisedButton(
-                  child: Text("Huisagenda"),
-                  onPressed: () {},
+                  child: Text(getButtonText()),
+                  onPressed: () {
+                    if (userPermissions == "groupAdmin") {}
+                  },
                 ),
               ),
             ),
