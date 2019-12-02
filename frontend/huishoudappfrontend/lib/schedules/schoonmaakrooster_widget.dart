@@ -5,8 +5,11 @@ import 'package:http/http.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'dart:convert';
 import 'package:toast/toast.dart';
+import 'admintaskadder_widget.dart';
 
 class SchoonmaakPage extends StatefulWidget {
+  static String tag = "schoonmaakrooster_widget";
+
   @override
   _SchoonmaakPageState createState() => _SchoonmaakPageState();
 }
@@ -158,7 +161,12 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
                 child: RaisedButton(
                   child: Text(getButtonText()),
                   onPressed: () {
-                    if (userPermissions == "groupAdmin") {}
+                    if (userPermissions == "groupAdmin") {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => new AdminTaskAdder()));
+                    }
                   },
                 ),
               ),
