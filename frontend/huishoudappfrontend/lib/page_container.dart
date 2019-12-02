@@ -60,6 +60,8 @@ class HomePageState extends State<HomePage> {
         // set function for when an navigationbaritem is tapped
         onTap: onTabTapped,
         backgroundColor: Colors.grey[100],
+        buttonBackgroundColor: Colors.white,
+        color: Colors.orange[700],
         height: 50,
         animationCurve: Curves.easeInBack,
         index:
