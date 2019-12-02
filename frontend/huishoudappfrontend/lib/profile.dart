@@ -163,7 +163,7 @@ class _Profilepage extends State<Profilepage> {
       try {
         await auth.signOut();
         print("loged out");
-        //Navigator.pop(context);
+        Navigator.popUntil(context, ModalRoute.withName(LoginPage.tag));
       } catch (a) {
         print(a);
       }
