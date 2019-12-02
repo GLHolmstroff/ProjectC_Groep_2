@@ -68,11 +68,11 @@ class MyHomePage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.active || snapshot.connectionState == ConnectionState.waiting) {
             if (snapshot.hasData) {
               print("Waiting");
-              return FutureBuilder<bool>(
-                  future: _checkGroup(),
+              return FutureBuilder<CurrentUser>(
+                  future: CurrentUser.updateCurrentUser(),
                   builder: (context, innersnapshot) {
                     if (innersnapshot.hasData) {
-                      if (innersnapshot.data) {
+                      if (CurrentUser().groupId != null) {
                         return (HomePage());
                       } else {
                         return (GroupWidget());

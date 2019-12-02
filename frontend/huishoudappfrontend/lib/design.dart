@@ -22,4 +22,3 @@ class Design {
     };
     static MaterialColor materialRood = new MaterialColor(0xFFBF0F0F, roodMap);
 }
-

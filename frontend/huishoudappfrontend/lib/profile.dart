@@ -163,7 +163,7 @@ class _Profilepage extends State<Profilepage> {
       try {
         await auth.signOut();
         print("loged out");
-        //Navigator.pop(context);
+        Navigator.popUntil(context, ModalRoute.withName(LoginPage.tag));
       } catch (a) {
         print(a);
       }
@@ -409,7 +409,8 @@ class _Profilepage extends State<Profilepage> {
 
     return new Scaffold(
       body: Container(
-          child: Column(
+        color: Colors.grey[100],
+        child: Column(
         children: <Widget>[
           upperpart,
           // Divider(
