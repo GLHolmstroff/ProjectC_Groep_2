@@ -48,6 +48,10 @@ class _Turfwidget extends State<Turfwidget> {
 
   List<TurfInfo> sentData = [];
 
+  List<String> turfItems = ['Bier', 'Eieren'];
+
+  String _currentItemSelected = 'Bier';
+
   @override
   void initState() {
     initActual();
@@ -191,6 +195,25 @@ class _Turfwidget extends State<Turfwidget> {
     );
   }
 
+  DropdownButton dropDown() {
+    var dropdownButton = DropdownButton(
+          items: turfItems.map((String dropDownString) {
+            return DropdownMenuItem<String>(
+              value: dropDownString,
+              child: Text(dropDownString),
+            );
+          }).toList(),
+    
+          onChanged: (String newValue) async => setState(() {
+              this._currentItemSelected = newValue;
+            }),
+          value: _currentItemSelected,
+        );
+        DropdownButton dropdown = dropdownButton;
+
+    return dropdown;
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<House>(
@@ -213,7 +236,8 @@ class _Turfwidget extends State<Turfwidget> {
                   padding: const EdgeInsets.only(top: 20),
                   child: createListTile(snapshot.data.groupId),
                 ),
-                buildButtons()
+                dropDown(),
+                buildButtons(),
               ]));
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
