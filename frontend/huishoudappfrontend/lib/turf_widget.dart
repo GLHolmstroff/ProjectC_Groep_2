@@ -48,7 +48,7 @@ class _Turfwidget extends State<Turfwidget> {
 
   List<TurfInfo> sentData = [];
 
-  List<String> turfItems = ['Bier', 'Eieren'];
+  List<String> turfItems = ['Bier', 'Eieren', 'Chips'];
 
   String _currentItemSelected = 'Bier';
 
@@ -197,19 +197,23 @@ class _Turfwidget extends State<Turfwidget> {
 
   DropdownButton dropDown() {
     var dropdownButton = DropdownButton(
-          items: turfItems.map((String dropDownString) {
-            return DropdownMenuItem<String>(
-              value: dropDownString,
-              child: Text(dropDownString),
-            );
-          }).toList(),
-    
-          onChanged: (String newValue) async => setState(() {
-              this._currentItemSelected = newValue;
-            }),
-          value: _currentItemSelected,
+      items: turfItems.map((String dropDownString) {
+        return DropdownMenuItem<String>(
+          value: dropDownString,
+          child: Center(
+            child: Text(
+              dropDownString,
+            ),
+          ),
         );
-        DropdownButton dropdown = dropdownButton;
+      }).toList(),
+      onChanged: (String newValue) async => setState(() {
+        this._currentItemSelected = newValue;
+      }),
+      value: _currentItemSelected,
+      isExpanded: true,
+    );
+    DropdownButton dropdown = dropdownButton;
 
     return dropdown;
   }
@@ -232,12 +236,16 @@ class _Turfwidget extends State<Turfwidget> {
               ),
               body: Column(children: <Widget>[
                 Container(
-                  height: MediaQuery.of(context).size.height * .6,
-                  padding: const EdgeInsets.only(top: 20),
-                  child: createListTile(snapshot.data.groupId),
+                  child: dropDown(),
                 ),
-                dropDown(),
-                buildButtons(),
+                Column(children: <Widget>[
+                  Container(
+                    height: MediaQuery.of(context).size.height * .6,
+                    padding: const EdgeInsets.only(top: 10),
+                    child: createListTile(snapshot.data.groupId),
+                  ),
+                  buildButtons(),
+                ])
               ]));
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
