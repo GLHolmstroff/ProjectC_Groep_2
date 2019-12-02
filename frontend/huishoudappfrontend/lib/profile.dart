@@ -312,6 +312,7 @@ class _Profilepage extends State<Profilepage> {
     );
 
     final upperpart = new Container(
+      
       color: Design.rood,
       height: MediaQuery.of(context).size.height / 3,
       width: MediaQuery.of(context).size.width,
@@ -342,7 +343,10 @@ class _Profilepage extends State<Profilepage> {
       ),
     );
 
-    final middelpart = new Container(
+    final middelpart = new Material(
+      elevation: 15,
+      child: Container(
+      
       color: Design.orange1,
       height: MediaQuery.of(context).size.height / 12,
       width: MediaQuery.of(context).size.width,
@@ -375,7 +379,7 @@ class _Profilepage extends State<Profilepage> {
           Text("Saldo"),
         ],
       ),
-    );
+    ));
 
     final bottompart = new Container(
       child: FutureBuilder<List<ConsumeData>>(
@@ -412,6 +416,7 @@ class _Profilepage extends State<Profilepage> {
         color: Colors.grey[100],
         child: Column(
         children: <Widget>[
+          
           upperpart,
           // Divider(
           //   color: Design.geel,
