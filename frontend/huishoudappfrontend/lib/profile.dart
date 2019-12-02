@@ -269,11 +269,11 @@ class _Profilepage extends State<Profilepage> {
                           fit: BoxFit.cover,
                         ),
                         borderRadius: BorderRadius.circular(75.0),
-                        // border: Border.all(
-                        //   color: Design.geel,
-                        //   width: 4.0,
-                        // )
-                        ));
+
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 1.0,
+                        )));
               } else if (snapshot.hasError) {
                 return Icon(Icons.person);
               }
@@ -314,7 +314,7 @@ class _Profilepage extends State<Profilepage> {
     final upperpart = new Container(
       
       color: Design.rood,
-      height: MediaQuery.of(context).size.height / 3,
+      height: (MediaQuery.of(context).size.height - 50) * 0.33,
       width: MediaQuery.of(context).size.width,
       child: Stack(
         children: <Widget>[
@@ -348,7 +348,7 @@ class _Profilepage extends State<Profilepage> {
       child: Container(
       
       color: Design.orange1,
-      height: MediaQuery.of(context).size.height / 12,
+      height: (MediaQuery.of(context).size.height - 50) * 0.08,
       width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -382,6 +382,7 @@ class _Profilepage extends State<Profilepage> {
     ));
 
     final bottompart = new Container(
+      height: (MediaQuery.of(context).size.height - 50) * 0.58,
       child: FutureBuilder<List<ConsumeData>>(
       future: CurrentUser().getConsumeData(),
       builder: (context, snapshot) {
