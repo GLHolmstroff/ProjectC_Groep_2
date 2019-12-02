@@ -5,6 +5,8 @@ import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.date
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.groupid
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.mutation
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.targetuserid
+import com.group2projc.Huishoud.database.DatabaseHelper.Users.displayname
+import com.group2projc.Huishoud.database.DatabaseHelper.Users.id
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -259,6 +261,7 @@ class DatabaseHelper(url: String) {
 
     fun getTallyForGroupByNameAndPic(gid: Int): HashMap<String, HashMap<String, Any>> {
         val uids = getAllInGroup(gid).values
+        print(uids);
         var out = HashMap<String, HashMap<String, Any>>()
 
         uids.forEach {
@@ -293,18 +296,27 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
-    fun getAllBeerEntriesForGroup(gid: Int): HashMap<String, Any> {
-        var out = HashMap<String,Any>()
+    fun getAllBeerEntriesForGroup(gid: Int): ArrayList<HashMap<String, Any>> {
+        var outArr = ArrayList<HashMap<String,Any>>()
         transaction(db) {
             addLogger(StdOutSqlLogger)
-            BeerTallies.select {(BeerTallies.groupid eq gid)}.forEach {
-                out["author"] = it[authorid]
-                out["target"] = it[targetuserid]
-                out["mutation"] = it[mutation]
-                out["date"] = it[date]
-            }
+            val authorUser = Users.alias("uAuthor")
+            val targetUser = Users.alias("uTarget")
+            (BeerTallies.innerJoin(authorUser,{authorid}, {authorUser[id]})
+                    .innerJoin(targetUser,{targetuserid},{targetUser[id]}))
+                    .select {(BeerTallies.groupid eq gid)}.forEach {
+                        var out = HashMap<String, Any>()
+                        out["gid"] = gid
+                        out["authorid"] = it[authorid]
+                        out["authorname"] = it[authorUser[displayname]]
+                        out["targetid"] = it[targetuserid]
+                        out["targetname"] = it[targetUser[displayname]]
+                        out["mutation"] = it[mutation]
+                        out["date"] = it[date]
+                        outArr.add(out)
+                    }
         }
-        return out
+        return outArr
     }
 
     fun updateBeerEntry(gid: Int, author: String, target:String, date:String, mut: Int) : DatabaseHelper{
@@ -318,21 +330,45 @@ class DatabaseHelper(url: String) {
 
     fun getBeerTally(gid: Int, targetuid: String): Int {
         var count = 0
-         transaction(db) {
+        transaction(db) {
             addLogger(StdOutSqlLogger)
-             BeerTallies
+            BeerTallies
                     .slice(mutation)
                     .select {(targetuserid eq targetuid)}
-                    .groupBy(mutation)
-                     .forEach {
-                         val c = it[mutation]
-                         if (c != null){
-                             count += c
-                         }
-                     }
+                    .forEach {
+                        val c = it[mutation]
+                        if (c != null){
+                            count += c
+                        }
+                    }
         }
-        return if (count != null) count else 0
+        return count
     }
+
+    fun getBeerTallyPerUserPerDay(gid: Int, targetuid: String): HashMap<Int, HashMap<String, Int>> {
+        var out = HashMap<Int, HashMap<String, Int>>()
+        var i = 0
+        var count = 0
+        transaction(db) {
+            BeerTallies
+                    .slice(mutation.sum(), date.substring(0,11))
+                    .select {targetuserid eq targetuid}
+                    .groupBy(date.substring(0,11))
+                    .orderBy(date.substring(0,11))
+                    .forEach {
+                        var day = it[date.substring(0,11)]
+                        val c = it[mutation.sum()]
+                        if (c != null) {
+                            count += c
+                        }
+                        var placeholder = HashMap<String, Int>()
+                        placeholder[day] = count
+                        i += 1
+                        out[i] = placeholder
+                    }
+        }
+        return out
+    } // todo make it perday (groupby maybe?) todo: give days with 0 count still data...
 
     fun getAllInGroup(gid: Int): HashMap<String, String> {
         var out = HashMap<String, String>()
@@ -419,7 +455,3 @@ fun DatabaseHelper.createGroup(n: String, uid: String): DatabaseHelper {
     }
     return this
 }
-
-
-
-

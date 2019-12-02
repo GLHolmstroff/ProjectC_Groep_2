@@ -1,17 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 
+import '../design.dart';
+
 class AnimatedLiquidCustomProgressIndicator extends StatefulWidget {
+  Size size;
+  
+  AnimatedLiquidCustomProgressIndicator(Size size){
+    this.size = size;
+  }
+
+  AnimatedLiquidCustomProgressIndicator.noContext();
   @override
   State<StatefulWidget> createState() =>
-      AnimatedLiquidCustomProgressIndicatorState();
+      AnimatedLiquidCustomProgressIndicatorState(size);
 }
 
 class AnimatedLiquidCustomProgressIndicatorState
     extends State<AnimatedLiquidCustomProgressIndicator>
     with SingleTickerProviderStateMixin {
   AnimationController _animationController;
-
+  Size size;
+  
+AnimatedLiquidCustomProgressIndicatorState(Size size) {
+ this.size = size;
+}
   @override
   void initState() {
     super.initState();
@@ -38,8 +51,8 @@ class AnimatedLiquidCustomProgressIndicatorState
         value: _animationController.value,
         direction: Axis.vertical,
         backgroundColor: Colors.white,
-        valueColor: AlwaysStoppedAnimation(Colors.yellow),
-        shapePath: _buildGlass(context),
+        valueColor: AlwaysStoppedAnimation(Design.orange2),
+        shapePath: _buildGlass(this.size),
         center: Text(
           "${percentage.toStringAsFixed(0)}%",
           style: TextStyle(
@@ -64,15 +77,13 @@ class AnimatedLiquidCustomProgressIndicatorState
       ..close();
   }
 
-  Path _buildGlass(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+  Path _buildGlass(Size size) {
     return Path()
-    ..moveTo(0.2*width, height)
+    ..moveTo(0.2*size.width, size.height)
     ..lineTo(0, 0)
-    ..lineTo(0.8*width, 0)
-    ..lineTo(0.6*width, height)
-    ..lineTo(0.2*width, height)
+    ..lineTo(0.8*size.width, 0)
+    ..lineTo(0.6*size.width, size.height)
+    ..lineTo(0.2*size.width, size.height)
     ..close();
   }
 }

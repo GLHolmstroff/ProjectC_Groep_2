@@ -14,10 +14,12 @@ import 'package:image_picker/image_picker.dart';
 import 'services/permission_serivce.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'design.dart';
 
 class Profilepage extends StatefulWidget {
   static String tag = 'profile_page';
-
+  
   @override
   State<StatefulWidget> createState() => _Profilepage();
 }
@@ -26,8 +28,20 @@ class _Profilepage extends State<Profilepage> {
   final fromkey = GlobalKey<FormState>();
   FormType _formType = FormType.editprofile;
   String _name;
+  String userhouseName;
   bool loginWithEmail;
   ProfileConstants profCons;
+
+  void initState() {
+    initActual();
+  }
+
+  Future<void> initActual() async{
+    String temphouse = (await House.getCurrentHouse()).houseName;
+    setState(()  {
+      userhouseName = temphouse;
+    });
+  }
 
   Future<bool> _loggedinWithEmail() async {
     final auth = Provider.of(context).auth;
@@ -39,13 +53,12 @@ class _Profilepage extends State<Profilepage> {
     }
   }
 
-  Future<ProfileConstants> _makeProfileConstants() async {
+  Future<ProfileConstants> _makeProfileConstants () async {
     loginWithEmail = await _loggedinWithEmail();
     print('login met email =' + loginWithEmail.toString());
-    profCons = ProfileConstants(loginWithEmail);
+    profCons =ProfileConstants(loginWithEmail);
     return profCons;
   }
-
   File _image;
 
   Future<String> getImgUrl() async {
@@ -63,6 +76,15 @@ class _Profilepage extends State<Profilepage> {
   Future<File> openCamera() async {
     File image = await ImagePicker.pickImage(source: ImageSource.camera);
     _updateImage(image);
+  }
+
+  void _entrybeertallies() async {
+    CurrentUser user = CurrentUser();
+    String gid = user.groupId.toString();
+    String uid = user.userId;
+    String mu = '1';
+    final Response res = await get("http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$uid&mutation=$mu",
+        headers: {'Content-Type': 'application/json'});
   }
 
   Future<void> _updateImage(File image) async {
@@ -100,26 +122,29 @@ class _Profilepage extends State<Profilepage> {
                       if (!await perm.hasCameraPermission()) {
                         perm.requestCameraPermission(onPermissionDenied: () {
                           print('Permission has been denied');
-                        });
-                      }
-                      openCamera();
-                      Navigator.pop(context);
-                    },
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                  ),
-                  GestureDetector(
-                    child: new Text('Select from gallery'),
-                    onTap: () async {
-                      var perm = PermissionsService();
-                      if (!await perm.hasStoragePermission()) {
-                        perm.requestStoragePermission(onPermissionDenied: () {
+                        }
+                      );
+                    }
+                    openCamera();
+                    Navigator.pop(context);
+                  },
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                ),
+                GestureDetector(
+                  child: new Text('Select from gallery'),
+                  onTap: () async {
+                    var perm = PermissionsService();
+                    if(!await perm.hasStoragePermission()){
+                      perm.requestStoragePermission(
+                        onPermissionDenied: () {
                           print('Permission has been denied');
-                        });
-                      }
-                      openGallery();
-                      Navigator.pop(context);
+                        }
+                      );
+                    }
+                    openGallery();
+                    Navigator.pop(context);
                     },
                   ),
                 ],
@@ -138,7 +163,7 @@ class _Profilepage extends State<Profilepage> {
       try {
         await auth.signOut();
         print("loged out");
-        //Navigator.pop(context);
+        Navigator.popUntil(context, ModalRoute.withName(LoginPage.tag));
       } catch (a) {
         print(a);
       }
@@ -187,14 +212,12 @@ class _Profilepage extends State<Profilepage> {
     if (fromkey.currentState.validate()) {
       fromkey.currentState.save();
       Navigator.pop(context);
-
       print(_name);
       String uid = await Auth().currentUser();
       final Response res = await get(
           "http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
           headers: {'Content-Type': 'application/json'});
     }
-    CurrentUser.updateCurrentUser();
   }
 
   void _choiceAction(String choice) async {
@@ -211,6 +234,7 @@ class _Profilepage extends State<Profilepage> {
       }
     } else if (choice == "Verander wachtwoord") {
       _sendChangePasswordEmail();
+
     }
   }
 
@@ -219,62 +243,9 @@ class _Profilepage extends State<Profilepage> {
     //widgets variables
     final clipper = ClipPath(
       child: Container(
-        color: Colors.red,
+        color: Design.rood,
       ),
       clipper: getClipper(),
-    );
-
-    FutureBuilder<CurrentUser> userDisplayname = FutureBuilder<CurrentUser>(
-      future: CurrentUser.updateCurrentUser(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Text(
-            snapshot.data.displayName,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          );
-        } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
-        }
-
-        // By default, show a loading spinner.
-        return AnimatedLiquidCustomProgressIndicator();
-      },
-    );
-
-    final userHouseText = Text(
-      'Jouw huis',
-      style: TextStyle(
-          fontSize: 20.0, fontStyle: FontStyle.italic, color: Colors.white),
-    );
-
-    FutureBuilder<House> userHouseName = FutureBuilder<House>(
-      future: House.getCurrentHouse(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return new GestureDetector(
-            onTap: () {
-              print('hallo');
-            },
-            child: Text(
-              snapshot.data.houseName,
-              style: TextStyle(
-                fontSize: 20,
-                fontStyle: FontStyle.italic,
-                color: Colors.white,
-              ),
-            ),
-          );
-          //return Text("Welcome, " + snapshot.data.displayName);
-        } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
-        }
-
-        // By default, show a loading spinner.
-        return AnimatedLiquidCustomProgressIndicator();
-      },
     );
 
     final profielimage = GestureDetector(
@@ -290,7 +261,7 @@ class _Profilepage extends State<Profilepage> {
                 print(imgUrl);
                 return Container(
                     decoration: BoxDecoration(
-                        color: Colors.black,
+                        color: Design.zwart,
                         image: DecorationImage(
                           image: NetworkImage(
                             imgUrl,
@@ -298,16 +269,17 @@ class _Profilepage extends State<Profilepage> {
                           fit: BoxFit.cover,
                         ),
                         borderRadius: BorderRadius.circular(75.0),
+
                         border: Border.all(
                           color: Colors.white,
-                          width: 4.0,
+                          width: 1.0,
                         )));
               } else if (snapshot.hasError) {
                 return Icon(Icons.person);
               }
               return Icon(
                 Icons.photo_camera,
-                color: Colors.white,
+                color: Design.geel,
               );
             }),
       ),
@@ -336,15 +308,16 @@ class _Profilepage extends State<Profilepage> {
           }
         },
       ),
-      backgroundColor: Colors.red,
+      backgroundColor: Design.rood,
     );
 
     final upperpart = new Container(
-      color: Colors.red,
-      height: MediaQuery.of(context).size.height / 3,
+      color: Design.rood,
+      height: (MediaQuery.of(context).size.height - 50) * 0.33,
       width: MediaQuery.of(context).size.width,
       child: Stack(
         children: <Widget>[
+          clipper,
           Positioned(
             width: 150,
             top: 35,
@@ -357,10 +330,10 @@ class _Profilepage extends State<Profilepage> {
             top: 20,
             left: MediaQuery.of(context).size.width / 2 - 75,
             child: FloatingActionButton(
-              backgroundColor: Colors.white,
+              backgroundColor: Design.geel,
               child: Icon(
                 Icons.photo_camera,
-                color: Colors.black,
+                color: Design.zwart,
               ),
               onPressed: () => _imageOptionsDialogBox(),
             ),
@@ -370,8 +343,8 @@ class _Profilepage extends State<Profilepage> {
     );
 
     final middelpart = new Container(
-      color: Colors.redAccent,
-      height: MediaQuery.of(context).size.height / 12,
+      color: Design.orange1,
+      height: (MediaQuery.of(context).size.height - 50) * 0.08,
       width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -385,40 +358,68 @@ class _Profilepage extends State<Profilepage> {
               fontStyle: FontStyle.italic,
             ),
           ),
-          VerticalDivider(
-            color: Colors.white,
-            thickness: 2,
-          ),
+          // VerticalDivider(
+          //   color: Design.geel,
+          //   thickness: 2,
+          // ),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              userHouseName,
+              Text(userhouseName != null ? userhouseName : "Loading..."),
             ],
           ),
-          VerticalDivider(
-            color: Colors.white,
-            thickness: 2,
-          ),
+          // VerticalDivider(
+          //   color: Design.geel,
+          //   thickness: 2,
+          // ),
           Text("Saldo"),
         ],
       ),
     );
 
+    final bottompart = new Container(
+      height: (MediaQuery.of(context).size.height - 50) * 0.58,
+      child: FutureBuilder<List<ConsumeData>>(
+      future: CurrentUser().getConsumeData(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return SfCartesianChart(
+            primaryXAxis: CategoryAxis(),
+            series: <ChartSeries>[
+              AreaSeries<ConsumeData, String>(
+                dataSource: snapshot.data,
+                color: Design.orange2,
+                borderMode: AreaBorderMode.excludeBottom,
+                borderColor: Design.rood,
+                borderWidth: 2,
+                xValueMapper: (ConsumeData data, _) => data.date,
+                yValueMapper: (ConsumeData data, _) => data.amount,
+                dataLabelSettings: DataLabelSettings(isVisible: true),
+              )
+            ]
+          );
+        }else if(snapshot.hasError) {
+          print(snapshot.error);
+          return Text("${snapshot.error}");
+
+        }else{
+          return CircularProgressIndicator();
+        }
+      },
+    ));
+
     return new Scaffold(
       body: Container(
-          child: Column(
+        color: Colors.grey[100],
+        child: Column(
         children: <Widget>[
           upperpart,
-          Divider(
-            color: Colors.white,
-            height: 1,
-          ),
+          // Divider(
+          //   color: Design.geel,
+          //   height: 1,
+          // ),
           middelpart,
-          Container(
-            color: Colors.pink,
-            height: 30,
-            width: 30,
-          )
+          bottompart,
         ],
       )),
       floatingActionButton: settingsButton,
@@ -432,8 +433,7 @@ class getClipper extends CustomClipper<Path> {
     var path = new Path();
 
     path.lineTo(0.0, size.height / 2.5);
-    path.lineTo(size.width, size.height / 2.5);
-    path.lineTo(size.width, 0.0);
+    path.lineTo(size.width * 1.9, 0.0);
     path.close();
     return path;
   }
@@ -443,3 +443,4 @@ class getClipper extends CustomClipper<Path> {
     return true;
   }
 }
+

@@ -77,6 +77,14 @@ class HttpResponseController {
 
     }
 
+    @RequestMapping("/getTallyPerUserPerDay")
+    fun getBeerTallyPerUserPerDay(@RequestParam(value= "gid", defaultValue = "") gid: Int,
+                                    @RequestParam(value= "uid", defaultValue = "") uid: String): HashMap<Int, HashMap<String, Int>> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .getBeerTallyPerUserPerDay(gid, uid)
+        return map
+    }
+
     @RequestMapping("/getTallyByName")
     fun getTallyByName(@RequestParam(value= "gid",defaultValue = "") gid: Int): HashMap<String, HashMap<String, Any>> {
         val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
@@ -86,7 +94,7 @@ class HttpResponseController {
     }
 
     @RequestMapping("/getTallyEntries")
-    fun getTallyEntries(@RequestParam(value= "gid",defaultValue = "") gid: Int): HashMap<String, Any> {
+    fun getTallyEntries(@RequestParam(value= "gid",defaultValue = "") gid: Int): ArrayList<HashMap<String, Any>> {
         val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
                 .getAllBeerEntriesForGroup(gid)
         return map
@@ -145,4 +153,3 @@ class HttpResponseController {
 
 
 }
-

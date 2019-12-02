@@ -1,8 +1,11 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/home_widget.dart';
-import 'profile.dart';
-import 'package:huishoudappfrontend/schoonmaakrooster_widget.dart';
 import 'package:huishoudappfrontend/turf_widget.dart';
+import 'profile.dart';
+import 'package:huishoudappfrontend/schoonmaakrooster/schoonmaakrooster_widget.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 import 'placeholder_widget.dart';
 
@@ -39,56 +42,36 @@ class HomePageState extends State<HomePage> {
     // replace the placeholder widget with your widget
     // give _steNewBody as argument if you want to change the currentwidget from inside your widget
     setState(() => [
-        Home_widget(),
-        PlaceholderWidget(Colors.deepOrange),
-        PlaceholderWidget(Colors.green),
-        Profilepage()
-      ]);
+          Home_widget(),
+          PlaceholderWidget(Colors.deepOrange),
+          Turfwidget(),
+          Profilepage()
+        ]);
   }
-
 
   @override
   Widget build(BuildContext context) {
     // initialize all the children, cant be done in the constructor because we are parsing a function
     _setChildren();
     return Scaffold(
-      /*appBar: AppBar(
-        title: Text('Welcome Page'),
-        actions: <Widget>[
-          FlatButton(
-            child: Text("Jouw profiel"),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => Profilepage()));
-            },
-          )
-        ],
-      ),
-      // The body of the scaffold is the currentwidget
-      body: _currentWidget,
-      ),*/
       body: _children[_currentIndex],
-
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: CurvedNavigationBar(
         // type needs to be fixed otherwise the color of the navigationBariItems will be white, (weird bug)
-        type: BottomNavigationBarType.fixed,
-        // set function for when an navigationbaritem is tapped 
+        // set function for when an navigationbaritem is tapped
         onTap: onTabTapped,
-        currentIndex:
+        backgroundColor: Colors.grey[100],
+        buttonBackgroundColor: Colors.white,
+        color: Colors.orange[700],
+        height: 50,
+        animationCurve: Curves.easeInBack,
+        index:
             _currentIndex, // this will be set when a new tab is tapped
-        items: [
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.home),
-            title: new Text('Huis'),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.check),
-            title: new Text('Rooster'),
-          ),
-          BottomNavigationBarItem(
-              icon: new Icon(Icons.list), title: new Text("Turven")),
-          BottomNavigationBarItem(
-              icon: new Icon(Icons.person), title: new Text("Profile"))
+        items: <Widget>[
+            Icon(LineAwesomeIcons.home),
+            Icon(LineAwesomeIcons.clipboard),
+            
+            Icon(LineAwesomeIcons.beer),
+            Icon(LineAwesomeIcons.user)
         ],
       ),
     );
