@@ -211,7 +211,7 @@ class _Turfwidget extends State<Turfwidget> {
               ),
               body: Column(children: <Widget>[
                 Container(
-                  height: MediaQuery.of(context).size.height * .7,
+                  height: MediaQuery.of(context).size.height * .6,
                   padding: const EdgeInsets.only(top: 20),
                   child: createListTile(snapshot.data.groupId),
                 ),
