@@ -269,6 +269,7 @@ class _Profilepage extends State<Profilepage> {
                           fit: BoxFit.cover,
                         ),
                         borderRadius: BorderRadius.circular(75.0),
+
                         border: Border.all(
                           color: Colors.white,
                           width: 1.0,
@@ -352,25 +353,25 @@ class _Profilepage extends State<Profilepage> {
           Text(
             CurrentUser().displayName,
             style: TextStyle(
-              color: Design.geel,
+              color: Colors.white,
               fontSize: 20,
               fontStyle: FontStyle.italic,
             ),
           ),
-          VerticalDivider(
-            color: Design.geel,
-            thickness: 2,
-          ),
+          // VerticalDivider(
+          //   color: Design.geel,
+          //   thickness: 2,
+          // ),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Text(userhouseName != null ? userhouseName : "Loading..."),
             ],
           ),
-          VerticalDivider(
-            color: Design.geel,
-            thickness: 2,
-          ),
+          // VerticalDivider(
+          //   color: Design.geel,
+          //   thickness: 2,
+          // ),
           Text("Saldo"),
         ],
       ),
@@ -413,10 +414,10 @@ class _Profilepage extends State<Profilepage> {
         child: Column(
         children: <Widget>[
           upperpart,
-          Divider(
-            color: Design.geel,
-            height: 1,
-          ),
+          // Divider(
+          //   color: Design.geel,
+          //   height: 1,
+          // ),
           middelpart,
           bottompart,
         ],

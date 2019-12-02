@@ -4,7 +4,7 @@ import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/home_widget.dart';
 import 'package:huishoudappfrontend/turf_widget.dart';
 import 'profile.dart';
-import 'package:huishoudappfrontend/schoonmaakrooster_widget.dart';
+import 'package:huishoudappfrontend/schoonmaakrooster/schoonmaakrooster_widget.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 import 'placeholder_widget.dart';
