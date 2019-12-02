@@ -102,46 +102,56 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
   Widget build(BuildContext context) {
     final taskHeader = Text(
       "Jouw taken",
-      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.orange[800]),
     );
 
     final checkHousemates = Text(
       "Goedkeuren huisgenoten",
-      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.orange[800]),
     );
 
     return Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Container(
-            height: 275,
-            width: MediaQuery.of(context).size.width,
-            color: Colors.orange[900],
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 10),
-                taskHeader,
-                Container(
-                  height: 225,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(8),
-                    itemCount: testList.length,
-                    itemBuilder: (BuildContext context, int index) =>
-                        cleaningCard(context, index),
-                  ),
-                )
-              ],
+           Padding(
+             padding: const EdgeInsets.all(8.0),
+             child: taskHeader,
+           ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Container(
+              height: 225,
+              width: MediaQuery.of(context).size.width,
+              color: Colors.grey[100],
+              child: Column(
+                children: <Widget>[
+                  
+                 
+                  Container(
+                    height: 225,
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(8),
+                      itemCount: testList.length,
+                      itemBuilder: (BuildContext context, int index) =>
+                          cleaningCard(context, index),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: checkHousemates,
+          ),
           Container(
-            height: 275,
+            height: 225,
             width: MediaQuery.of(context).size.width,
-            color: Colors.orange[800],
+            color: Colors.grey[100],
             child: Column(
               children: <Widget>[
-                SizedBox(height: 10),
-                checkHousemates,
                 Container(
                   height: 225,
                   width: MediaQuery.of(context).size.width,
@@ -155,14 +165,16 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
               ],
             ),
           ),
+
           Expanded(
             child: Container(
-              height: 78,
+             
               width: MediaQuery.of(context).size.width,
-              color: Colors.orange[700],
+              color: Colors.grey[100],
               child: Center(
                 child: RaisedButton(
-                  child: Text("Huisagenda"),
+                  child: Text("Huisagenda", style: TextStyle(color: Colors.white),),
+                  color: Colors.orange[800],
                   onPressed: () {},
                 ),
               ),
