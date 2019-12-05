@@ -138,12 +138,12 @@ packages:
     source: hosted
     version: "0.6.1+11"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.16.0"
+    version: "0.15.7"
   line_awesome_icons:
     dependency: "direct main"
     description:
@@ -260,7 +260,7 @@ packages:
       name: syncfusion_flutter_charts
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-beta.5"
+    version: "1.0.0-beta.4"
   synchronized:
     dependency: transitive
     description:

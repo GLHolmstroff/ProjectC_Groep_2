@@ -28,7 +28,7 @@ class HomePageState extends State<HomePage> {
     Home_widget(),
     SchoonmaakPage(),
     Turfwidget(),
-    Profilepage()
+    Profilepage(),
   ];
 
   void onTabTapped(int index) {
@@ -45,7 +45,8 @@ class HomePageState extends State<HomePage> {
           Home_widget(),
           PlaceholderWidget(Colors.deepOrange),
           Turfwidget(),
-          Profilepage()
+          Profilepage(),
+          SchoonmaakPage()
         ]);
   }
 
