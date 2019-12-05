@@ -34,6 +34,23 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
       });
   }
 
+  Widget usersCard(BuildContext context, int index) {
+    return new Container(
+      child: Card(
+        elevation: 2.5,
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: ListTile(
+            leading: Icon(Icons.account_circle),
+            title: Text("Username"),
+            trailing: Icon(Icons.cancel),
+            onTap: () {/* Add user to list of selectedUsers*/},
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final titleWidget = Container(
@@ -82,10 +99,16 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
             )
           ],
         ),
-        SizedBox(height: 20),
         Container(
-          height: 50,
-        )
+          height: 135,
+          width: MediaQuery.of(context).size.width * 0.75,
+          child: ListView.builder(
+            padding: const EdgeInsets.all(8),
+            itemCount: 4,
+            itemBuilder: (BuildContext context, int index) =>
+                usersCard(context, index),
+          ),
+        ),
         //TO DO Widget which shows all selected users in a listview with tiles
       ],
     );
@@ -144,32 +167,34 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
     );
 
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          titleWidget,
-          Expanded(
-            child: Container(
-              alignment: Alignment(-1.0, 0),
-              width: 350,
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: 35),
-                  taskNameWidget,
-                  SizedBox(height: 25),
-                  selectedUsersWidget,
-                  SizedBox(height: 40),
-                  selectDateWidget,
-                  SizedBox(height: 25),
-                  textDescriptionWidget,
-                  SizedBox(height: 5),
-                  descriptionInputWidget,
-                  SizedBox(height: 20),
-                  addTaskButtonWidget
-                ],
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            titleWidget,
+            Flexible(
+              child: Container(
+                alignment: Alignment(-1.0, 0),
+                width: 350,
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 35),
+                    taskNameWidget,
+                    SizedBox(height: 25),
+                    selectedUsersWidget,
+                    SizedBox(height: 20),
+                    selectDateWidget,
+                    SizedBox(height: 20),
+                    textDescriptionWidget,
+                    SizedBox(height: 5),
+                    descriptionInputWidget,
+                    SizedBox(height: 15),
+                    addTaskButtonWidget
+                  ],
+                ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

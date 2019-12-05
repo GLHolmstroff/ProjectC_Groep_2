@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/design.dart';
+import 'package:huishoudappfrontend/profile.dart';
 import 'admintaskadder_widget.dart';
 import 'schoonmaakrooster_widget.dart';
+import 'package:huishoudappfrontend/Objects.dart';
 
 class SelectUsersForTasks extends StatefulWidget {
   @override
@@ -9,7 +11,14 @@ class SelectUsersForTasks extends StatefulWidget {
 }
 
 class _SelectUsersForTasksState extends State<SelectUsersForTasks> {
-  List selectedUsers;
+  String getGroupId() {
+    CurrentUser user = CurrentUser();
+    String groupID = user.groupId.toString();
+
+    return groupID;
+  }
+
+  List<int> indexSelectedUsers = [];
 
   Widget usersCard(BuildContext context, int index) {
     return new Container(
@@ -21,7 +30,9 @@ class _SelectUsersForTasksState extends State<SelectUsersForTasks> {
             leading: Icon(Icons.account_circle),
             title: Text("Username"),
             trailing: Icon(Icons.add_circle),
-            onTap: () {/* Add user to list of selectedUsers*/},
+            onTap: () {
+              print(index);
+            },
           ),
         ),
       ),
@@ -73,7 +84,7 @@ class _SelectUsersForTasksState extends State<SelectUsersForTasks> {
                     usersCard(context, index),
               ),
             ),
-            SizedBox(height: 30),
+            SizedBox(height: 50),
             readyButton
           ],
         ),
