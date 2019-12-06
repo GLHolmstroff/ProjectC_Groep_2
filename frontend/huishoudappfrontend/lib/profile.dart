@@ -19,7 +19,7 @@ import 'design.dart';
 
 class Profilepage extends StatefulWidget {
   static String tag = 'profile_page';
-  
+
   @override
   State<StatefulWidget> createState() => _Profilepage();
 }
@@ -36,9 +36,9 @@ class _Profilepage extends State<Profilepage> {
     initActual();
   }
 
-  Future<void> initActual() async{
+  Future<void> initActual() async {
     String temphouse = (await House.getCurrentHouse()).houseName;
-    setState(()  {
+    setState(() {
       userhouseName = temphouse;
     });
   }
@@ -53,19 +53,20 @@ class _Profilepage extends State<Profilepage> {
     }
   }
 
-  Future<ProfileConstants> _makeProfileConstants () async {
+  Future<ProfileConstants> _makeProfileConstants() async {
     loginWithEmail = await _loggedinWithEmail();
     print('login met email =' + loginWithEmail.toString());
-    profCons =ProfileConstants(loginWithEmail);
+    profCons = ProfileConstants(loginWithEmail);
     return profCons;
   }
+
   File _image;
 
   Future<String> getImgUrl() async {
     String uid = await Auth().currentUser();
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
-    return "http://10.0.2.2:8080/files/users?uid=$uid&t=$timeStamp";
+    return "http://seprojects.nl:8080/files/users?uid=$uid&t=$timeStamp";
   }
 
   Future<File> openGallery() async {
@@ -83,7 +84,8 @@ class _Profilepage extends State<Profilepage> {
     String gid = user.groupId.toString();
     String uid = user.userId;
     String mu = '1';
-    final Response res = await get("http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$uid&mutation=$mu",
+    final Response res = await get(
+        "http://seprojects.nl:8080/updateTally?gid=$gid&authorid=$uid&targetid=$uid&mutation=$mu",
         headers: {'Content-Type': 'application/json'});
   }
 
@@ -98,7 +100,7 @@ class _Profilepage extends State<Profilepage> {
         'file', await image.readAsBytes(),
         filename: timeStamp + 'testfile.png');
 
-    var uri = Uri.parse("http://10.0.2.2:8080/files/upload");
+    var uri = Uri.parse("http://seprojects.nl:8080/files/upload");
     var request = new MultipartRequest("POST", uri);
     request.fields['uid'] = uid;
     request.files.add(mf);
@@ -122,29 +124,26 @@ class _Profilepage extends State<Profilepage> {
                       if (!await perm.hasCameraPermission()) {
                         perm.requestCameraPermission(onPermissionDenied: () {
                           print('Permission has been denied');
-                        }
-                      );
-                    }
-                    openCamera();
-                    Navigator.pop(context);
-                  },
-                ),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-                GestureDetector(
-                  child: new Text('Select from gallery'),
-                  onTap: () async {
-                    var perm = PermissionsService();
-                    if(!await perm.hasStoragePermission()){
-                      perm.requestStoragePermission(
-                        onPermissionDenied: () {
+                        });
+                      }
+                      openCamera();
+                      Navigator.pop(context);
+                    },
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                  ),
+                  GestureDetector(
+                    child: new Text('Select from gallery'),
+                    onTap: () async {
+                      var perm = PermissionsService();
+                      if (!await perm.hasStoragePermission()) {
+                        perm.requestStoragePermission(onPermissionDenied: () {
                           print('Permission has been denied');
-                        }
-                      );
-                    }
-                    openGallery();
-                    Navigator.pop(context);
+                        });
+                      }
+                      openGallery();
+                      Navigator.pop(context);
                     },
                   ),
                 ],
@@ -215,7 +214,7 @@ class _Profilepage extends State<Profilepage> {
       print(_name);
       String uid = await Auth().currentUser();
       final Response res = await get(
-          "http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
+          "http://seprojects.nl:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
           headers: {'Content-Type': 'application/json'});
     }
   }
@@ -234,7 +233,6 @@ class _Profilepage extends State<Profilepage> {
       }
     } else if (choice == "Verander wachtwoord") {
       _sendChangePasswordEmail();
-
     }
   }
 
@@ -261,7 +259,7 @@ class _Profilepage extends State<Profilepage> {
                 print(imgUrl);
                 return Container(
                     decoration: BoxDecoration(
-                        color: Design.zwart,
+                        color: Colors.white,
                         image: DecorationImage(
                           image: NetworkImage(
                             imgUrl,
@@ -269,17 +267,16 @@ class _Profilepage extends State<Profilepage> {
                           fit: BoxFit.cover,
                         ),
                         borderRadius: BorderRadius.circular(75.0),
-
                         border: Border.all(
                           color: Colors.white,
                           width: 1.0,
                         )));
               } else if (snapshot.hasError) {
-                return Icon(Icons.person);
+                return Icon(Icons.person, color: Colors.white);
               }
               return Icon(
                 Icons.photo_camera,
-                color: Design.geel,
+                color: Colors.white,
               );
             }),
       ),
@@ -312,7 +309,6 @@ class _Profilepage extends State<Profilepage> {
     );
 
     final upperpart = new Container(
-      
       color: Design.rood,
       height: (MediaQuery.of(context).size.height - 50) * 0.33,
       width: MediaQuery.of(context).size.width,
@@ -331,10 +327,10 @@ class _Profilepage extends State<Profilepage> {
             top: 20,
             left: MediaQuery.of(context).size.width / 2 - 75,
             child: FloatingActionButton(
-              backgroundColor: Design.geel,
+              backgroundColor: Design.orange2,
               child: Icon(
                 Icons.photo_camera,
-                color: Design.zwart,
+                color: Colors.white,
               ),
               onPressed: () => _imageOptionsDialogBox(),
             ),
@@ -344,89 +340,109 @@ class _Profilepage extends State<Profilepage> {
     );
 
     final middelpart = new Material(
-      elevation: 15,
-      child: Container(
-      
-      color: Design.orange1,
-      height: (MediaQuery.of(context).size.height - 50) * 0.08,
-      width: MediaQuery.of(context).size.width,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          //userDisplayname,
-          Text(
-            CurrentUser().displayName,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-          // VerticalDivider(
-          //   color: Design.geel,
-          //   thickness: 2,
-          // ),
-          Column(
+        elevation: 15,
+        child: Container(
+          color: Design.orange1,
+          height: (MediaQuery.of(context).size.height - 50) * 0.08,
+          width: MediaQuery.of(context).size.width,
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Text(userhouseName != null ? userhouseName : "Loading..."),
+              //userDisplayname,
+              Text(
+                CurrentUser().displayName,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              // VerticalDivider(
+              //   color: Design.geel,
+              //   thickness: 2,
+              // ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text(userhouseName != null ? userhouseName : "Loading..."),
+                ],
+              ),
+              // VerticalDivider(
+              //   color: Design.geel,
+              //   thickness: 2,
+              // ),
+              Text("Saldo"),
             ],
           ),
-          // VerticalDivider(
-          //   color: Design.geel,
-          //   thickness: 2,
-          // ),
-          Text("Saldo"),
-        ],
-      ),
-    ));
+        ));
 
-    final bottompart = new Container(
-      height: (MediaQuery.of(context).size.height - 50) * 0.58,
-      child: FutureBuilder<List<ConsumeData>>(
-      future: CurrentUser().getConsumeData(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return SfCartesianChart(
-            primaryXAxis: CategoryAxis(),
-            series: <ChartSeries>[
-              AreaSeries<ConsumeData, String>(
-                dataSource: snapshot.data,
-                color: Design.orange2,
-                borderMode: AreaBorderMode.excludeBottom,
-                borderColor: Design.rood,
-                borderWidth: 2,
-                xValueMapper: (ConsumeData data, _) => data.date,
-                yValueMapper: (ConsumeData data, _) => data.amount,
-                dataLabelSettings: DataLabelSettings(isVisible: true),
+    final bottompart = new Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      
+      children: <Widget>[
+      Padding(
+        padding: const EdgeInsets.only(top: 12.0, bottom: 0, left: 10),
+        child: Text("Jouw bier data", style: TextStyle(fontSize: 25, color: Design.orange2, fontWeight: FontWeight.bold, )),
+      ),  
+      Container(
+        height: (MediaQuery.of(context).size.height - 50) * 0.40,
+        child: FutureBuilder<List<ConsumeData>>(
+          future: CurrentUser().getConsumeData(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Padding(
+                padding: const EdgeInsets.all(10),
+                child: Card(
+                  elevation: 3,
+                  
+                  child: SfCartesianChart(
+                      primaryXAxis: CategoryAxis(),
+                      series: <ChartSeries>[
+                        AreaSeries<ConsumeData, String>(
+                          dataSource: snapshot.data,
+                          color: Design.orange2,
+                          // borderMode: AreaBorderMode.excludeBottom,
+
+                          // borderWidth: 2,
+                          xValueMapper: (ConsumeData data, _) => data.date,
+                          yValueMapper: (ConsumeData data, _) => data.amount,
+                          dataLabelSettings: DataLabelSettings(isVisible: true),
+                        )
+                      ]),
+                ),
+              );
+            } else if (snapshot.hasError) {
+              print(snapshot.error);
+              return Text("${snapshot.error}");
+            } else {
+              return Center(
+                child:Container(
+                  width: 100,
+                  height: 100,
+                  child:CircularProgressIndicator(),
+                )
               )
-            ]
-          );
-        }else if(snapshot.hasError) {
-          print(snapshot.error);
-          return Text("${snapshot.error}");
-
-        }else{
-          return CircularProgressIndicator();
-        }
-      },
-    ));
+              ;
+            }
+          },
+        ))]);
 
     return new Scaffold(
       body: Container(
-        color: Colors.grey[100],
-        child: Column(
-        children: <Widget>[
-          
-          upperpart,
-          // Divider(
-          //   color: Design.geel,
-          //   height: 1,
-          // ),
-          middelpart,
-          bottompart,
-        ],
-      )),
+          color: Colors.grey[100],
+          child: Column(
+            children: <Widget>[
+              upperpart,
+              // Divider(
+              //   color: Design.geel,
+              //   height: 1,
+              // ),
+              middelpart,
+              
+              ,
+              bottompart,
+            ],
+          )),
       floatingActionButton: settingsButton,
     );
   }
@@ -448,4 +464,3 @@ class getClipper extends CustomClipper<Path> {
     return true;
   }
 }
-
