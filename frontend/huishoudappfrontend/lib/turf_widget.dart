@@ -251,9 +251,11 @@ class _Turfwidget extends State<Turfwidget> {
       }),
       value: _currentItemSelected,
       isExpanded: true,
+      
     );
-    DropdownButton dropdown = dropdownButton;
 
+    DropdownButton dropdown = dropdownButton;
+    
     return dropdown;
   }
 
