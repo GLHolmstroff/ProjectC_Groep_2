@@ -183,13 +183,6 @@ class _Turfwidget extends State<Turfwidget> {
     }
   }
 
-  Text loadData(index){
-    
-    if (_currentItemSelected == turfItems[0]){
-      return Text(sentData[index].numberofbeers.toString()); 
-    }
-    else return (Text('0'));
-  }
 
   ListView createListTile(int gid) {
     return ListView.builder(
@@ -233,7 +226,7 @@ class _Turfwidget extends State<Turfwidget> {
                   });
                 },
               ),
-              loadData(index)
+              Text(sentData[index].numberofbeers.toString())
             ],
           ),
         );
