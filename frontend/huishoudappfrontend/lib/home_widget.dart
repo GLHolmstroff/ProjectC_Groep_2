@@ -53,6 +53,7 @@ class Home_widget_state extends State<Home_widget>{
 
   @override
   Widget build(BuildContext context) {
+    CurrentUser.updateCurrentUser();
     Widget addUserToGroupButton = FlatButton(
       child: Text("Get invite code"),
       onPressed: () {

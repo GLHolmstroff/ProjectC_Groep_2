@@ -47,9 +47,6 @@ class CurrentUser extends BaseUser {
   }
 
   CurrentUser._internal() {
-    if (this.userId == null){
-      updateCurrentUser();
-    }
     userId = null;
     groupId = null;
     globalPermissions = null;
@@ -207,8 +204,9 @@ class BeerTally {
   //TODO: Link with group
   final Map<String, int> count;
   final Map<String, String> pics;
+  final String product;
 
-  BeerTally({this.count, this.pics});
+  BeerTally({this.count, this.pics, this.product});
 
   Map<String,int> getCount(){
     return this.count;
@@ -240,10 +238,10 @@ class BeerTally {
     return out;
   }
 
-  static Future<BeerTally> getData(int gid) async {
+  static Future<BeerTally> getData(int gid, String product) async {
     BeerTally beer;
     final Response res = await get(
-        "http://10.0.2.2:8080/getTallyByName?gid=$gid",
+        "http://10.0.2.2:8080/getTallyByName?gid=$gid&product=$product",
         headers: {'Content-Type': 'application/json'});
     
     if (res.statusCode == 200) {

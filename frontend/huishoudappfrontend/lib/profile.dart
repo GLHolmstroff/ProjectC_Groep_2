@@ -163,7 +163,7 @@ class _Profilepage extends State<Profilepage> {
       try {
         await auth.signOut();
         print("loged out");
-        //Navigator.pop(context);
+        Navigator.popUntil(context, ModalRoute.withName(LoginPage.tag));
       } catch (a) {
         print(a);
       }
@@ -269,9 +269,10 @@ class _Profilepage extends State<Profilepage> {
                           fit: BoxFit.cover,
                         ),
                         borderRadius: BorderRadius.circular(75.0),
+
                         border: Border.all(
-                          color: Design.geel,
-                          width: 4.0,
+                          color: Colors.white,
+                          width: 1.0,
                         )));
               } else if (snapshot.hasError) {
                 return Icon(Icons.person);
@@ -312,7 +313,7 @@ class _Profilepage extends State<Profilepage> {
 
     final upperpart = new Container(
       color: Design.rood,
-      height: MediaQuery.of(context).size.height / 3,
+      height: (MediaQuery.of(context).size.height - 50) * 0.33,
       width: MediaQuery.of(context).size.width,
       child: Stack(
         children: <Widget>[
@@ -343,7 +344,7 @@ class _Profilepage extends State<Profilepage> {
 
     final middelpart = new Container(
       color: Design.orange1,
-      height: MediaQuery.of(context).size.height / 12,
+      height: (MediaQuery.of(context).size.height - 50) * 0.08,
       width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -352,31 +353,32 @@ class _Profilepage extends State<Profilepage> {
           Text(
             CurrentUser().displayName,
             style: TextStyle(
-              color: Design.geel,
+              color: Colors.white,
               fontSize: 20,
               fontStyle: FontStyle.italic,
             ),
           ),
-          VerticalDivider(
-            color: Design.geel,
-            thickness: 2,
-          ),
+          // VerticalDivider(
+          //   color: Design.geel,
+          //   thickness: 2,
+          // ),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Text(userhouseName != null ? userhouseName : "Loading..."),
             ],
           ),
-          VerticalDivider(
-            color: Design.geel,
-            thickness: 2,
-          ),
+          // VerticalDivider(
+          //   color: Design.geel,
+          //   thickness: 2,
+          // ),
           Text("Saldo"),
         ],
       ),
     );
 
     final bottompart = new Container(
+      height: (MediaQuery.of(context).size.height - 50) * 0.58,
       child: FutureBuilder<List<ConsumeData>>(
       future: CurrentUser().getConsumeData(),
       builder: (context, snapshot) {
@@ -408,13 +410,14 @@ class _Profilepage extends State<Profilepage> {
 
     return new Scaffold(
       body: Container(
-          child: Column(
+        color: Colors.grey[100],
+        child: Column(
         children: <Widget>[
           upperpart,
-          Divider(
-            color: Design.geel,
-            height: 1,
-          ),
+          // Divider(
+          //   color: Design.geel,
+          //   height: 1,
+          // ),
           middelpart,
           bottompart,
         ],
