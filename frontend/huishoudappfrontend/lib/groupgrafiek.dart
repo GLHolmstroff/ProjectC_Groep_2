@@ -3,14 +3,14 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'Objects.dart';
 import 'design.dart';
 
-Widget grafiek = FutureBuilder<List<ConsumeDataPerMonthPerUser>>(
+FutureBuilder grafiek = FutureBuilder<List<ConsumeDataPerMonthPerUser>>(
       future: CurrentUser().getGroupConsumeData(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return SfCartesianChart(
             primaryXAxis: CategoryAxis(),
             series: <ChartSeries>[
-              ColumnSeries<ConsumeDataPerMonthPerUser, String>(
+              BarSeries<ConsumeDataPerMonthPerUser, String>(
                 dataSource: snapshot.data,
                 color: Design.orange2,
                 borderColor: Design.rood,
