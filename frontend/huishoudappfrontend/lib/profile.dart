@@ -439,7 +439,7 @@ class _Profilepage extends State<Profilepage> {
               // ),
               middelpart,
               
-              ,
+              
               bottompart,
             ],
           )),
