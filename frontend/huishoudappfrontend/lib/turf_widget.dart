@@ -45,13 +45,16 @@ class Turfwidget extends StatefulWidget {
 }
 
 class _Turfwidget extends State<Turfwidget> {
+  List<String> pics = [];
+  List<String> names = [];
+
   List<TurfInfo> receivedData = [];
 
   List<TurfInfo> sentData = [];
 
-  List<String> turfItems = ['Bier', 'Eieren', 'Chips'];
+  List<String> turfItems = [];
 
-  String _currentItemSelected = 'Bier';
+  String _currentItemSelected = '';
 
   @override
   void initState() {
@@ -60,30 +63,47 @@ class _Turfwidget extends State<Turfwidget> {
   }
 
   void initActual() async {
+    List<Product> products = await Product.getData(CurrentUser().groupId);
+    setState(() {
+      for(var product in products){
+        turfItems.add(product.name);
+      }
+      turfItems.sort();
+      _currentItemSelected = turfItems[0];
+    });
+
+    List<Map> namePics = await Group.getNamesAndPics(CurrentUser().groupId);
+
+    setState(() {
+      for(var namePic in namePics){
+        pics.add(namePic['picture']);
+        names.add(namePic['name']);
+      }
+      
+    });
+
     BeerTally beer = await BeerTally.getData(CurrentUser().groupId, "beer");
     print(beer);
-    List pictures = beer.getPics().values.toList();
-    List names = beer.getCount().keys.toList();
     List counts = beer.getCount().values.toList();
-    for (int i = 0; i < pictures.length; i++) {
+    for (int i = 0; i < counts.length; i++) {
       receivedData.add(TurfInfo(
         displayname: names[i],
         numberofbeers: counts[i],
-        profilepicture: pictures[i],
+        profilepicture: '',
       ));
       sentData.add(TurfInfo(
         displayname: names[i],
         numberofbeers: counts[i],
-        profilepicture: pictures[i],
+        profilepicture: '',
       ));
     }
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
     List<CachedNetworkImage> images = [];
-    print("Picture length: ${pictures.length}");
-    final Directory temp = await getTemporaryDirectory();
-    for (var pic in pictures) {
-      print("Loading image${pictures.indexOf(pic)}");
+    print("Picture length: ${pics.length}");
+    
+    for (var pic in pics) {
+      print("Loading image${pics.indexOf(pic)}");
       images.add(new CachedNetworkImage(
         imageUrl: "http://10.0.2.2:8080/files/users?uid=$pic&t=$timeStamp",
         placeholder: (BuildContext context, String s) {

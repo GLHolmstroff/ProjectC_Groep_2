@@ -268,6 +268,20 @@ class DatabaseHelper(url: String) {
         return out;
     }
 
+    fun getNamesAndPicsForGroup(gid:Int): HashMap<String, HashMap<String, String>>{
+        val uids = getAllInGroup(gid).values
+        var out = HashMap<String, HashMap<String,String>>()
+        var i = 0
+        uids.forEach {
+            var user = HashMap<String,String>()
+            user["name"] = getUser(it)["display_name"] as String
+            user["picture"] = it
+            out["$i"] = user
+            i++
+        }
+        return out
+    }
+
     fun getTallyForGroupByNameAndPic(gid: Int, product: String): HashMap<String, HashMap<String, Any>> {
         val uids = getAllInGroup(gid).values
         print(uids);
