@@ -151,6 +151,14 @@ class _Turfwidget extends State<Turfwidget> {
     }
   }
 
+  Text loadData(index){
+    
+    if (_currentItemSelected == turfItems[0]){
+      return Text(sentData[index].numberofbeers.toString()); 
+    }
+    else return (Text('0'));
+  }
+
   ListView createListTile(int gid) {
     return ListView.builder(
       addAutomaticKeepAlives: true,
@@ -187,7 +195,7 @@ class _Turfwidget extends State<Turfwidget> {
                   });
                 },
               ),
-              Text(sentData[index].numberofbeers.toString())
+              loadData(index)
             ],
           ),
         );
@@ -217,6 +225,8 @@ class _Turfwidget extends State<Turfwidget> {
 
     return dropdown;
   }
+
+
 
   @override
   Widget build(BuildContext context) {
