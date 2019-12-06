@@ -63,6 +63,7 @@ class DatabaseHelper(url: String) {
         val targetuserid = reference("targetid", Users.id)
         val mutation = integer("mutation")
         val product = varchar("product", 50)
+
     }
 
     object InviteCodes : Table() {

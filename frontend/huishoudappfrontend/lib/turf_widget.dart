@@ -49,6 +49,10 @@ class _Turfwidget extends State<Turfwidget> {
 
   List<TurfInfo> sentData = [];
 
+  List<String> turfItems = ['Bier', 'Eieren', 'Chips'];
+
+  String _currentItemSelected = 'Bier';
+
   @override
   void initState() {
     initActual();
@@ -94,8 +98,6 @@ class _Turfwidget extends State<Turfwidget> {
     setState(() {
       for (int i = 0; i < sentData.length; i++) {
         sentData[i].setimg(images[i]);
-        print(
-            "DONTYOUFUCKINGDAREREMOVETHISPRINTTHISISMYVICTORYPRINTTHISSHITFINALLYFUCKINWORKSBIATCH");
       }
     });
   }
@@ -105,7 +107,7 @@ class _Turfwidget extends State<Turfwidget> {
       alignment: MainAxisAlignment.center,
       children: <Widget>[
         FlatButton(
-          child: Text("Submit"),
+          child: Text("Verzenden"),
           onPressed: finalData,
         )
       ],
@@ -161,6 +163,14 @@ class _Turfwidget extends State<Turfwidget> {
     }
   }
 
+  Text loadData(index){
+    
+    if (_currentItemSelected == turfItems[0]){
+      return Text(sentData[index].numberofbeers.toString()); 
+    }
+    else return (Text('0'));
+  }
+
   ListView createListTile(int gid) {
     return ListView.builder(
       addAutomaticKeepAlives: true,
@@ -203,13 +213,38 @@ class _Turfwidget extends State<Turfwidget> {
                   });
                 },
               ),
-              Text(sentData[index].numberofbeers.toString())
+              loadData(index)
             ],
           ),
         );
       },
     );
   }
+
+  DropdownButton dropDown() {
+    var dropdownButton = DropdownButton(
+      items: turfItems.map((String dropDownString) {
+        return DropdownMenuItem<String>(
+          value: dropDownString,
+          child: Center(
+            child: Text(
+              dropDownString,
+            ),
+          ),
+        );
+      }).toList(),
+      onChanged: (String newValue) async => setState(() {
+        this._currentItemSelected = newValue;
+      }),
+      value: _currentItemSelected,
+      isExpanded: true,
+    );
+    DropdownButton dropdown = dropdownButton;
+
+    return dropdown;
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -229,11 +264,16 @@ class _Turfwidget extends State<Turfwidget> {
               ),
               body: Column(children: <Widget>[
                 Container(
-                  height: MediaQuery.of(context).size.height * .65,
-                  padding: const EdgeInsets.only(top: 20),
-                  child: createListTile(snapshot.data.groupId),
+                  child: dropDown(),
                 ),
-                buildButtons()
+                Column(children: <Widget>[
+                  Container(
+                    height: MediaQuery.of(context).size.height * .6,
+                    padding: const EdgeInsets.only(top: 10),
+                    child: createListTile(snapshot.data.groupId),
+                  ),
+                  buildButtons(),
+                ])
               ]));
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
