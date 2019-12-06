@@ -1,9 +1,13 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/profile.dart';
 import 'admintaskadder_widget.dart';
 import 'schoonmaakrooster_widget.dart';
 import 'package:huishoudappfrontend/Objects.dart';
+import 'package:http/http.dart';
+import 'dart:convert';
 
 class SelectUsersForTasks extends StatefulWidget {
   @override
@@ -11,14 +15,24 @@ class SelectUsersForTasks extends StatefulWidget {
 }
 
 class _SelectUsersForTasksState extends State<SelectUsersForTasks> {
-  String getGroupId() {
-    CurrentUser user = CurrentUser();
-    String groupID = user.groupId.toString();
+  static CurrentUser user = CurrentUser();
+  String groupId = user.groupId.toString();
 
-    return groupID;
+  List<String> usernames = [];
+
+  Future<void> getPicUsernameUsers() async {
+    final Response res = await get(
+        "http://10.0.2.2:8080/getUserInfoInGroup?gid=$groupId",
+        headers: {'Content-Type': 'application/json'});
+    if (res.statusCode == 200) {
+      print(json.decode(res.body));
+    } else {
+      print(res.statusCode.toString());
+      print('Could not find group');
+    }
   }
 
-  List<int> indexSelectedUsers = [];
+  //List<int> indexSelectedUsers = [];
 
   Widget usersCard(BuildContext context, int index) {
     return new Container(
@@ -41,6 +55,7 @@ class _SelectUsersForTasksState extends State<SelectUsersForTasks> {
 
   @override
   Widget build(BuildContext context) {
+    getPicUsernameUsers();
     final titleWidget = Container(
       height: 100,
       child: Text(

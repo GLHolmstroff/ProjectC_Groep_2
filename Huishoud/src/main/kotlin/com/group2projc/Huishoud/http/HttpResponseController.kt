@@ -62,6 +62,14 @@ class HttpResponseController {
         return map
     }
 
+    @RequestMapping("/getUserInfoInGroup")
+    fun getUserInfoInGroup(@RequestParam(value = "gid", defaultValue = "") gid: Int): HashMap<String, String> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .getUserInfoInGroup(gid)
+        return map
+    }
+
+
     @RequestMapping("/getGroupName")
     fun getGroupname(@RequestParam(value = "gid", defaultValue = "TokenNotSet") gid: Int ): HashMap<String,Any?> {
         val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")

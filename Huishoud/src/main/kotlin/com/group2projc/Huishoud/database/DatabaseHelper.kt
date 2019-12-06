@@ -384,6 +384,22 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+    fun getUserInfoInGroup(gid: Int) : HashMap<String, HashMap<String, String>> {
+        var out = HashMap<String, HashMap<String, String>>()
+
+        transaction(db) {
+            Users.select { (Users.groupid eq gid) }.forEach{
+                var userid = it[Users.id]
+
+                var data = HashMap<String, String>()
+                data["displayname"] = it[Users.displayname]
+
+                out[userid] = data
+            }
+        }
+        return out
+    }
+
     fun createInviteCode(): Int {
 
         var random = Random();
