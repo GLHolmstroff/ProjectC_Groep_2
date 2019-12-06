@@ -257,12 +257,17 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
-    fun getTallyforGroup(gid: Int, product: String): HashMap<String, Int> {
+    fun getTallyforGroup(gid: Int, product: String): HashMap<String, Any> {
         val uids = getAllInGroup(gid).values
-        var out = HashMap<String, Int>()
-
+        var out = HashMap<String, Any>()
+        out["product"] = product
+        var i = 0
         uids.forEach {
-            out[it] = getBeerTally(gid,product,it)
+            var singleMap = HashMap<String, Any>();
+            singleMap["uid"] = it
+            singleMap["count"] = getBeerTally(gid,product,it)
+            out["$i"] = singleMap
+            i++
         }
 
         return out;
@@ -503,6 +508,7 @@ fun DatabaseHelper.createGroup(n: String, uid: String): DatabaseHelper {
             it[name] = n
         }
         addUserToGroup(uid, group[DatabaseHelper.Groups.id], makeUserAdmin = true)
+        addProduct(group[DatabaseHelper.Groups.id],"bier",1.0f)
     }
     return this
 }

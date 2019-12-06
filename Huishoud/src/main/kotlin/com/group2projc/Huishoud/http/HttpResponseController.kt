@@ -71,7 +71,7 @@ class HttpResponseController {
 
     @RequestMapping("/getTally")
     fun getTally(@RequestParam(value= "gid",defaultValue = "") gid: Int,
-                 @RequestParam(value = "product",defaultValue = "") product: String): HashMap<String, Int> {
+                 @RequestParam(value = "product",defaultValue = "") product: String): HashMap<String, Any> {
         val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
                 .getTallyforGroup(gid,product)
         return map

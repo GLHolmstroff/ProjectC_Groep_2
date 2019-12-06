@@ -17,26 +17,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 class TurfInfo {
   TurfInfo({
-    this.displayname,
     this.numberofbeers,
-    this.profilepicture,
+    this.uid
   });
-  final String displayname;
   int numberofbeers;
-  final String profilepicture;
-  CachedNetworkImage img;
-
-  String toString() {
-    return this.displayname +
-        " " +
-        this.numberofbeers.toString() +
-        " " +
-        this.profilepicture.toString();
-  }
-
-  void setimg(CachedNetworkImage img) {
-    this.img = img;
-  }
+  String uid;
+  
 }
 
 class Turfwidget extends StatefulWidget {
@@ -45,7 +31,8 @@ class Turfwidget extends StatefulWidget {
 }
 
 class _Turfwidget extends State<Turfwidget> {
-  List<String> pics = [];
+  List<CachedNetworkImage> pics = [];
+  List<String> picIDs = [];
   List<String> names = [];
 
   List<TurfInfo> receivedData = [];
@@ -76,34 +63,32 @@ class _Turfwidget extends State<Turfwidget> {
 
     setState(() {
       for(var namePic in namePics){
-        pics.add(namePic['picture']);
+        picIDs.add(namePic['picture']);
         names.add(namePic['name']);
       }
       
     });
 
-    BeerTally beer = await BeerTally.getData(CurrentUser().groupId, "beer");
+    BeerTally beer = await BeerTally.getData(CurrentUser().groupId, _currentItemSelected);
     print(beer);
-    List counts = beer.getCount().values.toList();
+    List<int> counts = beer.getCount();
     for (int i = 0; i < counts.length; i++) {
       receivedData.add(TurfInfo(
-        displayname: names[i],
         numberofbeers: counts[i],
-        profilepicture: '',
+        uid: picIDs[i]
       ));
       sentData.add(TurfInfo(
-        displayname: names[i],
         numberofbeers: counts[i],
-        profilepicture: '',
+        uid: picIDs[i]
       ));
     }
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
     List<CachedNetworkImage> images = [];
-    print("Picture length: ${pics.length}");
+    print("Picture length: ${picIDs.length}");
     
-    for (var pic in pics) {
-      print("Loading image${pics.indexOf(pic)}");
+    for (var pic in picIDs) {
+      print("Loading image${picIDs.indexOf(pic)}");
       images.add(new CachedNetworkImage(
         imageUrl: "http://10.0.2.2:8080/files/users?uid=$pic&t=$timeStamp",
         placeholder: (BuildContext context, String s) {
@@ -114,10 +99,9 @@ class _Turfwidget extends State<Turfwidget> {
         },
       ));
     }
-    print(sentData.length);
     setState(() {
-      for (int i = 0; i < sentData.length; i++) {
-        sentData[i].setimg(images[i]);
+      for (int i = 0; i < images.length; i++) {
+        pics.add(images[i]);
       }
     });
   }
@@ -148,6 +132,20 @@ class _Turfwidget extends State<Turfwidget> {
     return buttons;
   }
 
+  Future<void> switchProduct() async{
+    BeerTally product = await BeerTally.getData(CurrentUser().groupId, _currentItemSelected);
+    print(product);
+    List<int> counts = product.getCount();
+    for (int i = 0; i < counts.length; i++) {
+      receivedData[i].numberofbeers = counts[i];
+      sentData[i].numberofbeers = counts[i];
+    }
+    setState(() {
+      receivedData = receivedData;
+      sentData = sentData;
+    });
+  }
+
   int getMutation(index) {
     return sentData[index].numberofbeers - receivedData[index].numberofbeers;
   }
@@ -156,29 +154,32 @@ class _Turfwidget extends State<Turfwidget> {
     CurrentUser user = CurrentUser();
     String gid = user.groupId.toString();
     String uid = user.userId;
+    String product = _currentItemSelected;
 
     var updateUsers = List<HashMap<String, dynamic>>();
     for (int i = 0; i < sentData.length; i++) {
       if (receivedData[i].numberofbeers != sentData[i].numberofbeers) {
         var singleMap = HashMap<String, dynamic>();
-        singleMap['targetid'] = sentData[i].profilepicture;
+        singleMap['targetid'] = sentData[i].uid;
         singleMap['mutation'] = getMutation(i);
         updateUsers.add(singleMap);
       }
     }
-
+    print("Sending tally updates");
     for (HashMap map in updateUsers) {
       String target = map['targetid'];
       int mutation = map['mutation'];
       final Response res = await get(
-          "http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$target&mutation=$mutation&product=beer");
+          "http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$target&mutation=$mutation&product=$product");
       if (res.statusCode == 200) {
         print("tally update sent");
       } else {
         print(res.statusCode);
       }
       setState(() {
-        receivedData = sentData;
+        for (int i = 0; i < sentData.length; i++){
+          receivedData[i].numberofbeers = sentData[i].numberofbeers;
+        }
       });
     }
   }
@@ -194,17 +195,17 @@ class _Turfwidget extends State<Turfwidget> {
   ListView createListTile(int gid) {
     return ListView.builder(
       addAutomaticKeepAlives: true,
-      itemCount: sentData.length,
+      itemCount: pics.length,
       itemBuilder: (context, index) {
         return ListTile(
           leading: SizedBox(
             width: MediaQuery.of(context).size.width * .15,
             child: FittedBox(
-              child: sentData[index].img,
+              child: pics[index],
               fit: BoxFit.fill,
             ),
           ),
-          title: Text(sentData[index].displayname),
+          title: Text(names[index]),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -233,7 +234,7 @@ class _Turfwidget extends State<Turfwidget> {
                   });
                 },
               ),
-              loadData(index)
+              Text(sentData[index].numberofbeers.toString())
             ],
           ),
         );
@@ -255,6 +256,7 @@ class _Turfwidget extends State<Turfwidget> {
       }).toList(),
       onChanged: (String newValue) async => setState(() {
         this._currentItemSelected = newValue;
+        switchProduct();
       }),
       value: _currentItemSelected,
       isExpanded: true,
