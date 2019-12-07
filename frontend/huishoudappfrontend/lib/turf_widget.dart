@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
+import 'package:huishoudappfrontend/turf_widget_addproduct.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:huishoudappfrontend/turf_widget_admin.dart';
@@ -147,12 +148,18 @@ class _Turfwidget extends State<Turfwidget> {
     return buttons;
   }
 
+
+
   FlatButton addProducts() {
     if (CurrentUser().group_permission == 'groupAdmin') {
       FlatButton addproduct = FlatButton(
         child: Text("Producten toevoegen"),
         onPressed: () {
-          print('Pressed');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => new TurfWidgetAddProduct(),
+            ));
         },
       );
       return addproduct;
