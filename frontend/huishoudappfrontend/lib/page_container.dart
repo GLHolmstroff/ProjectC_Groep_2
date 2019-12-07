@@ -54,24 +54,25 @@ class HomePageState extends State<HomePage> {
     // initialize all the children, cant be done in the constructor because we are parsing a function
     _setChildren();
     return Scaffold(
-      body: _children[_currentIndex],
+      body: _children[_currentIndex], backgroundColor: Colors.grey[100],
       bottomNavigationBar: CurvedNavigationBar(
         // type needs to be fixed otherwise the color of the navigationBariItems will be white, (weird bug)
         // set function for when an navigationbaritem is tapped
         onTap: onTabTapped,
         backgroundColor: Colors.grey[100],
-        buttonBackgroundColor: Colors.white,
-        color: Colors.orange[700],
+        buttonBackgroundColor: Design.rood,
+        
         height: 50,
+        color: Design.rood,
         animationCurve: Curves.easeInBack,
         index:
             _currentIndex, // this will be set when a new tab is tapped
         items: <Widget>[
-            Icon(LineAwesomeIcons.home),
-            Icon(LineAwesomeIcons.clipboard),
+            Icon(LineAwesomeIcons.home, color: Colors.white,),
+            Icon(LineAwesomeIcons.clipboard, color: Colors.white),
             
-            Icon(LineAwesomeIcons.beer),
-            Icon(LineAwesomeIcons.user)
+            Icon(LineAwesomeIcons.beer, color: Colors.white),
+            Icon(LineAwesomeIcons.user, color: Colors.white)
         ],
       ),
     );
