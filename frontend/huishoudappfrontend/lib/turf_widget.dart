@@ -65,7 +65,7 @@ class _Turfwidget extends State<Turfwidget> {
   void initActual() async {
     List<Product> products = await Product.getData(CurrentUser().groupId);
     setState(() {
-      for(var product in products){
+      for (var product in products) {
         turfItems.add(product.name);
       }
       turfItems.sort();
@@ -75,11 +75,10 @@ class _Turfwidget extends State<Turfwidget> {
     List<Map> namePics = await Group.getNamesAndPics(CurrentUser().groupId);
 
     setState(() {
-      for(var namePic in namePics){
+      for (var namePic in namePics) {
         pics.add(namePic['picture']);
         names.add(namePic['name']);
       }
-      
     });
 
     BeerTally beer = await BeerTally.getData(CurrentUser().groupId, "beer");
@@ -101,7 +100,7 @@ class _Turfwidget extends State<Turfwidget> {
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
     List<CachedNetworkImage> images = [];
     print("Picture length: ${pics.length}");
-    
+
     for (var pic in pics) {
       print("Loading image${pics.indexOf(pic)}");
       images.add(new CachedNetworkImage(
@@ -148,6 +147,18 @@ class _Turfwidget extends State<Turfwidget> {
     return buttons;
   }
 
+  FlatButton addProducts() {
+    if (CurrentUser().group_permission == 'groupAdmin') {
+      FlatButton addproduct = FlatButton(
+        child: Text("Producten toevoegen"),
+        onPressed: () {
+          print('Pressed');
+        },
+      );
+      return addproduct;
+    }
+  }
+
   int getMutation(index) {
     return sentData[index].numberofbeers - receivedData[index].numberofbeers;
   }
@@ -182,7 +193,6 @@ class _Turfwidget extends State<Turfwidget> {
       });
     }
   }
-
 
   ListView createListTile(int gid) {
     return ListView.builder(
@@ -242,6 +252,7 @@ class _Turfwidget extends State<Turfwidget> {
           child: Center(
             child: Text(
               dropDownString,
+              style: TextStyle(fontSize: 25),
             ),
           ),
         );
@@ -251,15 +262,15 @@ class _Turfwidget extends State<Turfwidget> {
       }),
       value: _currentItemSelected,
       isExpanded: true,
-      
+      icon: Icon(Icons.more_horiz),
+      iconEnabledColor: Design.rood,
+      iconSize: 40,
     );
 
     DropdownButton dropdown = dropdownButton;
-    
+
     return dropdown;
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -283,10 +294,11 @@ class _Turfwidget extends State<Turfwidget> {
                 ),
                 Column(children: <Widget>[
                   Container(
-                    height: MediaQuery.of(context).size.height * .6,
+                    height: MediaQuery.of(context).size.height * .5,
                     padding: const EdgeInsets.only(top: 10),
                     child: createListTile(snapshot.data.groupId),
                   ),
+                  addProducts(),
                   buildButtons(),
                 ])
               ]));
