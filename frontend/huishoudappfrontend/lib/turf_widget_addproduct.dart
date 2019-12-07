@@ -17,17 +17,29 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
     final inputProductName = TextFormField(
       keyboardType: TextInputType.text,
       decoration: InputDecoration(
-        hintText: 'Naam van het product',
-        contentPadding: const EdgeInsets.all(15.0),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32.0),
-          borderSide: BorderSide(color: Design.rood),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32.0),
-          borderSide: BorderSide(color: Design.rood)
-        )
-      ),
+          hintText: 'Naam van het product',
+          contentPadding: const EdgeInsets.all(15.0),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(32.0),
+            borderSide: BorderSide(color: Design.rood),
+          ),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(32.0),
+              borderSide: BorderSide(color: Design.rood))),
+    );
+
+    final inputProductPrice = TextFormField(
+      keyboardType: TextInputType.text,
+      decoration: InputDecoration(
+          hintText: '€',
+          contentPadding: const EdgeInsets.all(15.0),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(32.0),
+            borderSide: BorderSide(color: Design.rood),
+          ),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(32.0),
+              borderSide: BorderSide(color: Design.rood))),
     );
 
     final addProductButton = Padding(
@@ -50,27 +62,25 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
     );
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Design.rood,
-          title: Center(
-            child: Text(
-              "Producten toevoegen",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+      appBar: AppBar(
+        backgroundColor: Design.rood,
+        title: Center(
+          child: Text(
+            "Producten toevoegen",
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        body: Column(
-          children: <Widget>[
-            Container(
-              child: Center(child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: inputProductName,
-              )),
-            ),
-            Container(
-              child: addProductButton,
-            )
-          ],
-        ));
+      ),
+      body: Column(
+        children: <Widget>[
+          SizedBox(height: 50),
+          inputProductName,
+          SizedBox(height: 10,),
+          inputProductPrice,
+          SizedBox(height: 20),
+          addProductButton
+        ],
+      ),
+    );
   }
 }
