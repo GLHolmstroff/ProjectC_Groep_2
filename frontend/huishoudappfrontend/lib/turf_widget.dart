@@ -259,7 +259,7 @@ class _Turfwidget extends State<Turfwidget> {
           child: Center(
             child: Text(
               dropDownString,
-              style: TextStyle(fontSize: 25, color: Design.rood),
+              style: TextStyle(fontSize: 25, color: Design.rood, fontWeight: FontWeight.bold),
             ),
           ),
         );

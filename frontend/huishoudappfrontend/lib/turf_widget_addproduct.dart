@@ -12,15 +12,42 @@ class TurfWidgetAddProduct extends StatefulWidget {
   State<StatefulWidget> createState() => TurfWidgetAddProductState();
 }
 
-
 class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
-  
-
-  
-
   Widget build(BuildContext context) {
+    final inputProductName = TextFormField(
+      keyboardType: TextInputType.text,
+      decoration: InputDecoration(
+        hintText: 'Naam van het product',
+        contentPadding: const EdgeInsets.all(15.0),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32.0),
+          borderSide: BorderSide(color: Design.rood),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32.0),
+          borderSide: BorderSide(color: Design.rood)
+        )
+      ),
+    );
 
-    
+    final addProductButton = Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        onPressed: () {
+          print('product toegevoegd');
+        },
+        padding: EdgeInsets.all(12),
+        color: Colors.orange[700],
+        child: Text(
+          'Product toevoegen',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
 
     return Scaffold(
         appBar: AppBar(
@@ -31,11 +58,19 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-        ),);
-        
-        
-      
+        ),
+        body: Column(
+          children: <Widget>[
+            Container(
+              child: Center(child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: inputProductName,
+              )),
+            ),
+            Container(
+              child: addProductButton,
+            )
+          ],
+        ));
   }
 }
-
-
