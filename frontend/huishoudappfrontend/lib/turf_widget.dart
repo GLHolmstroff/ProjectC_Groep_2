@@ -259,7 +259,7 @@ class _Turfwidget extends State<Turfwidget> {
           child: Center(
             child: Text(
               dropDownString,
-              style: TextStyle(fontSize: 25),
+              style: TextStyle(fontSize: 25, color: Design.rood),
             ),
           ),
         );
@@ -267,11 +267,13 @@ class _Turfwidget extends State<Turfwidget> {
       onChanged: (String newValue) async => setState(() {
         this._currentItemSelected = newValue;
       }),
+    
       value: _currentItemSelected,
       isExpanded: true,
       icon: Icon(Icons.more_horiz),
       iconEnabledColor: Design.rood,
       iconSize: 40,
+      
     );
 
     DropdownButton dropdown = dropdownButton;
