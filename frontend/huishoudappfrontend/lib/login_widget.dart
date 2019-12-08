@@ -133,18 +133,19 @@ class _LoginPageState extends State<LoginPage> {
                 validator: EmailValidator.validate,
                 onSaved: (value) => _email = value,
                 decoration: InputDecoration(
-                    hintText: 'Jouw email',
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32.0),
-                      borderSide: BorderSide(
-                        color: Colors.orange[700],
-                      ),
+                  hintText: 'Jouw email',
+                  contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(32.0),
+                    borderSide: BorderSide(
+                      color: Colors.orange[700],
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32.0),
-                      borderSide: BorderSide(color: Colors.grey),
-                    )),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(32.0),
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                ),
               ),
             ),
           ),
@@ -175,8 +176,7 @@ class _LoginPageState extends State<LoginPage> {
     // Widget variables
     final logo = Image(
       image: AssetImage('images/beerphoto2.png'),
-      width: 150,
-      height: 180,
+      fit: BoxFit.cover,
     );
 
     final email = TextFormField(
@@ -325,7 +325,23 @@ class _LoginPageState extends State<LoginPage> {
             padding: EdgeInsets.only(left: 20.0, right: 20.0),
             children: <Widget>[
               SizedBox(height: 60),
-              logo,
+              Center(
+                child: Container(
+                  alignment: Alignment.center,
+                  child: logo,
+                  width: 150,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(75.0),
+                    color: Colors.white,
+                    border: Border.all(
+                      color: Colors.grey[200],
+                      width: 2,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 40,),
               Container(
                 padding: EdgeInsets.all(5.0),
                 decoration: new BoxDecoration(
