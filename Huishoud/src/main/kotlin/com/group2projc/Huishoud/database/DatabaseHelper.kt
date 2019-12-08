@@ -75,7 +75,7 @@ class DatabaseHelper(url: String) {
     object Products: Table() {
         val groupid = reference("groupid",Groups.id).primaryKey()
         val name = varchar("name", 50).primaryKey()
-        val price = float("price")
+        val price = double("price")
     }
 
 
@@ -481,7 +481,7 @@ class DatabaseHelper(url: String) {
         return out
     }
 
-    fun addProduct(gid:Int,name:String,price:Float):DatabaseHelper{
+    fun addProduct(gid:Int,name:String,price:Double):DatabaseHelper{
         transaction(db) {
             Products.insert {
                 it[Products.groupid] = gid
