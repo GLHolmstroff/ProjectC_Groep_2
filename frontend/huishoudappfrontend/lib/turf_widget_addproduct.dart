@@ -1,4 +1,7 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:huishoudappfrontend/Objects.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:huishoudappfrontend/turf_widget_edit.dart';
@@ -13,9 +16,35 @@ class TurfWidgetAddProduct extends StatefulWidget {
 }
 
 class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
+  String _productName;
+  // Float _productPrice;
+
+
+  Future<void> sentProductData() async {
+    int gid = CurrentUser().groupId;
+    String name = _productName;
+    Float price = 1 as Float; 
+
+    print(gid);
+    print(name);
+    print(price);
+
+    final Response res = await get(
+        "http://10.0.2.2:8080/addProduct?gid=$gid&name=$name&price=$price",);
+
+    if (res.statusCode == 200) {
+      // If server returns an OK response, parse the JSON.
+      print('Product added');
+    } else {
+      print(res.statusCode);
+      
+    }
+  }
+
   Widget build(BuildContext context) {
     final inputProductName = TextFormField(
       keyboardType: TextInputType.text,
+      onSaved: (value) => _productName = value,
       decoration: InputDecoration(
           hintText: 'Naam van het product',
           contentPadding: const EdgeInsets.all(15.0),
@@ -28,26 +57,29 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
               borderSide: BorderSide(color: Design.rood))),
     );
 
-    final inputProductPrice = TextFormField(
-      keyboardType: TextInputType.text,
-      decoration: InputDecoration(
-          hintText: '€',
-          contentPadding: const EdgeInsets.all(15.0),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(32.0),
-            borderSide: BorderSide(color: Design.rood),
-          ),
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(32.0),
-              borderSide: BorderSide(color: Design.rood))),
-    );
+    // final inputProductPrice = TextFormField(
+    //   keyboardType: TextInputType.number,
+    //   onSaved: (value) => _productPrice = value as Float,
+    //   decoration: InputDecoration(
+    //       hintText: '€',
+    //       contentPadding: const EdgeInsets.all(15.0),
+    //       focusedBorder: OutlineInputBorder(
+    //         borderRadius: BorderRadius.circular(32.0),
+    //         borderSide: BorderSide(color: Design.rood),
+    //       ),
+    //       enabledBorder: OutlineInputBorder(
+    //           borderRadius: BorderRadius.circular(32.0),
+    //           borderSide: BorderSide(color: Design.rood))),
+    // );
 
     final addProductButton = Padding(
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: RaisedButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        onPressed: () {
-          print('product toegevoegd');
+        onPressed: (){
+          sentProductData();
+          print('pressed');
+          
         },
         padding: EdgeInsets.all(12),
         color: Colors.orange[700],
@@ -75,8 +107,10 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
         children: <Widget>[
           SizedBox(height: 50),
           inputProductName,
-          SizedBox(height: 10,),
-          inputProductPrice,
+          SizedBox(
+            height: 10,
+          ),
+          // inputProductPrice,
           SizedBox(height: 20),
           addProductButton
         ],
