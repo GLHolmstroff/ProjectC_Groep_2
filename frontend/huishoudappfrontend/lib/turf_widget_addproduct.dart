@@ -18,15 +18,16 @@ class TurfWidgetAddProduct extends StatefulWidget {
 class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
   final formKey = GlobalKey<FormState>();
   String _productName;
-  double _productPrice;
+  String _productPrice;
 
   
 
   Future<void> sentProductData() async {
     int gid = CurrentUser().groupId;
     String name = _productName;
-    double price = 10;
-
+    String price = _productPrice;
+    print(name);
+    print(price);
     formKey.currentState.save();
 
     final Response res = await get(
@@ -64,7 +65,7 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
 
     final inputProductPrice = TextFormField(
       keyboardType: TextInputType.number,
-      onSaved: (value) => _productPrice = value as double,
+      onSaved: (value) => _productPrice = value,
       decoration: InputDecoration(
           hintText: '€',
           contentPadding: const EdgeInsets.all(15.0),
