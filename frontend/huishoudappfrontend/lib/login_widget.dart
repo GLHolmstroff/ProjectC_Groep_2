@@ -23,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
   final formKey1 = GlobalKey<FormState>();
 
+  bool _obscureText = true;
   String _email, _password;
   FormType _formType = FormType.login;
 
@@ -108,6 +109,12 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
   void _showDialog(String type) {
     // flutter defined function
     showDialog(
@@ -124,23 +131,38 @@ class _LoginPageState extends State<LoginPage> {
                 validator: EmailValidator.validate,
                 onSaved: (value) => _email = value,
                 decoration: InputDecoration(
-                  hintText: 'Jouw email',
-                  contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32.0)),
-                ),
+                    hintText: 'Jouw email',
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(32.0),
+                      borderSide: BorderSide(
+                        color: Colors.orange[700],
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(32.0),
+                      borderSide: BorderSide(color: Colors.grey),
+                    )),
               ),
             ),
           ),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
-              child: new Text("Verstuur"),
+              child: new Text(
+                "Verstuur",
+                style: TextStyle(
+                  color: Colors.orange[700],
+                ),
+              ),
               onPressed: () {
                 _sendChangePasswordEmail();
               },
             ),
           ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32.0),
+          ),
         );
       },
     );
@@ -149,8 +171,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     // Widget variables
-    final logo = Image.asset(
-      'images/testlogoapp.png',
+    final logo = Image(
+      image: AssetImage('images/beerphoto2.png'),
       width: 150,
       height: 180,
     );
@@ -162,7 +184,14 @@ class _LoginPageState extends State<LoginPage> {
       decoration: InputDecoration(
         hintText: 'Email',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32.0),
+          borderSide: BorderSide(color: Colors.orange[700]),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32.0),
+          borderSide: BorderSide(color: Colors.grey),
+        ),
       ),
     );
 
@@ -170,10 +199,26 @@ class _LoginPageState extends State<LoginPage> {
       keyboardType: TextInputType.visiblePassword,
       validator: PasswordValidator.validate,
       onSaved: (value) => _password = value,
+      obscureText: _obscureText,
       decoration: InputDecoration(
         hintText: 'Wachtwoord',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.orange[700]),
+          borderRadius: BorderRadius.circular(32.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32.0),
+          borderSide: BorderSide(color: Colors.grey),
+        ),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _obscureText ? Icons.visibility : Icons.visibility_off,
+            semanticLabel: _obscureText ? 'hide password' : 'show password',
+            color: Colors.orange[700],
+          ),
+          onPressed: _toggle,
+        ),
       ),
     );
 
@@ -183,8 +228,14 @@ class _LoginPageState extends State<LoginPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         onPressed: submit,
         padding: EdgeInsets.all(12),
-        color: Colors.lightBlueAccent,
-        child: Text('Log In', style: TextStyle(color: Colors.white)),
+        color: Colors.orange[700],
+        child: Text(
+          'Log In',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
 
@@ -208,30 +259,58 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
 
-    final signIn = FlatButton(
+    /*final signIn = FlatButton(
       onPressed: () {
         Navigator.of(context).pushNamed(CreateAccount.tag);
       },
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      padding: EdgeInsets.all(12),
       child: Text(
         'Account aanmaken',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 17,
+          color: Colors.white,
+        ),
+      ),
+      color: Colors.orange[700],
+    );*/
+
+    final createAccount = Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        onPressed: () {
+          Navigator.of(context).pushNamed(CreateAccount.tag);
+        },
+        padding: EdgeInsets.all(12),
+        color: Colors.orange[700],
+        child: Text(
+          'Account aanmaken',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
 
-    final forgotPassword = FlatButton(
-      onPressed: () {
-        _showDialog("Stuur reset email");
-      },
-      child: Text(
-        'Wachtwoord vergeten',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 17,
+    final forgotPassword = Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        onPressed: () {
+          _showDialog("Stuur reset email");
+        },
+        padding: EdgeInsets.all(12),
+        color: Colors.orange[700],
+        child: Text(
+          'Wachtwoord vergeten?',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -241,26 +320,47 @@ class _LoginPageState extends State<LoginPage> {
         child: Form(
           key: formKey,
           child: ListView(
-            padding: EdgeInsets.only(left: 40.0, right: 40.0),
+            padding: EdgeInsets.only(left: 20.0, right: 20.0),
             children: <Widget>[
-              SizedBox(height: 70),
+              SizedBox(height: 60),
               logo,
-              SizedBox(height: 50),
-              email,
-              SizedBox(height: 10),
-              password,
-              SizedBox(height: 10),
-              loginButton,
-              googleLogIn,
-              SizedBox(height: 10),
-              forgotPassword,
-              SizedBox(height: 40),
-              signIn,
+              Container(
+                padding: EdgeInsets.all(5.0),
+                decoration: new BoxDecoration(
+                  borderRadius: BorderRadius.circular(32.0),
+                  border: Border.all(
+                    color: Colors.grey[200],
+                    width: 2.0,
+                  ),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 50),
+                    email,
+                    SizedBox(height: 10),
+                    password,
+                    SizedBox(height: 10),
+                    loginButton,
+                    googleLogIn,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        forgotPassword,
+                        SizedBox(
+                          width: 1,
+                        ),
+                        createAccount,
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
       ),
-      backgroundColor: Colors.blue[50],
+      backgroundColor: Colors.grey[100],
     );
   }
 }

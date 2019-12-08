@@ -66,50 +66,72 @@ class Home_widget_state extends State<Home_widget> {
       addUserToGroupButton = new Container();
     }
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          FutureBuilder<User>(
-            future: getUser(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text("Welcome, " + snapshot.data.displayName);
-              } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
-              }
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            FutureBuilder<User>(
+                future: getUser(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Text("Welcome, " + snapshot.data.displayName);
+                  } else if (snapshot.hasError) {
+                    return Text("${snapshot.error}");
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                }),
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  FutureBuilder<User>(
+                    future: getUser(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Text("Welcome, " + snapshot.data.displayName);
+                      } else if (snapshot.hasError) {
+                        return Text("${snapshot.error}");
+                      }
+                      // By default, show a loading spinner.
+                      return CircularProgressIndicator();
+                    },
+                  ),
+                  FlatButton(
+                    child: Text("Go to Beer"),
+                    onPressed: () {
+                      CurrentUser currentUser = CurrentUser();
 
-              // By default, show a loading spinner.
-              return CircularProgressIndicator();
-            },
-          ),
-          FlatButton(
-            child: Text("Go to Beer"),
-            onPressed: () {
-              CurrentUser currentUser = CurrentUser();
-
-              //   Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //         builder: (context) =>
-              //             BeerPage(currentUser: currentUser),
-              //       ));
-            },
-          ),
-          FlatButton(
-            child: Text("Go to group"),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => GroupWidget(),
-                ),
-              );
-            },
-          ),
-          addUserToGroupButton,
-          grafiek,
-        ],
+                      //   Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //         builder: (context) =>
+                      //             BeerPage(currentUser: currentUser),
+                      //       ));
+                    },
+                  ),
+                  FlatButton(
+                    child: Text("Go to group"),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => GroupWidget(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+            addUserToGroupButton,
+            grafiek,
+          ],
+        ),
       ),
     );
   }
