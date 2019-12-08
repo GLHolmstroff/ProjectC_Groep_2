@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/Objects.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
+import 'package:huishoudappfrontend/turf_widget.dart';
 import 'package:huishoudappfrontend/turf_widget_edit.dart';
 
 import 'design.dart';
@@ -19,8 +20,6 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
   final formKey = GlobalKey<FormState>();
   String _productName;
   String _productPrice;
-
-  
 
   Future<void> sentProductData() async {
     int gid = CurrentUser().groupId;
@@ -44,7 +43,6 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
   }
 
   Widget build(BuildContext context) {
-
     final inputProductName = TextFormField(
       keyboardType: TextInputType.text,
       onSaved: (value) => _productName = value,
@@ -59,9 +57,6 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
               borderRadius: BorderRadius.circular(32.0),
               borderSide: BorderSide(color: Design.rood))),
     );
-    
-    
-
 
     final inputProductPrice = TextFormField(
       keyboardType: TextInputType.number,
@@ -78,15 +73,14 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
               borderSide: BorderSide(color: Design.rood))),
     );
 
-   
-
     final addProductButton = Padding(
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: RaisedButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         onPressed: () {
           sentProductData();
-          
+          // Navigator.push(context,
+          //     MaterialPageRoute(builder: (context) => Turfwidget()));
         },
         padding: EdgeInsets.all(12),
         color: Colors.orange[700],
@@ -101,30 +95,35 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Design.rood,
-        title: Center(
-          child: Text(
-            "Producten toevoegen",
-            style: TextStyle(fontWeight: FontWeight.bold),
+        appBar: AppBar(
+          backgroundColor: Design.rood,
+          title: Center(
+            child: Text(
+              "Producten toevoegen",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ),
-      ),
-      body: Center(
-        child: Form(
-          key: formKey,
-          child: Column(
-            children: <Widget>[
-              SizedBox(height: 30,),
-              inputProductName,
-              SizedBox(height: 10,),
-              inputProductPrice,
-              SizedBox(height: 20,),
-              addProductButton
-            ],
+        body: Center(
+          child: Form(
+            key: formKey,
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 30,
+                ),
+                inputProductName,
+                SizedBox(
+                  height: 10,
+                ),
+                inputProductPrice,
+                SizedBox(
+                  height: 20,
+                ),
+                addProductButton
+              ],
+            ),
           ),
-        ),
-      )
-    );
+        ));
   }
 }
