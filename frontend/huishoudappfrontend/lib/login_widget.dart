@@ -7,6 +7,7 @@ import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/createaccount_widget.dart';
+import 'package:toast/toast.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
@@ -68,16 +69,17 @@ class _LoginPageState extends State<LoginPage> {
           }
           print('Signed in $userId');
           // Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
-        } else {
-          String userId = await auth.createUserWithEmailAndPassword(
-            _email,
-            _password,
-          );
-
-          print('Signed in $userId');
         }
       } catch (e) {
-        print(e);
+        print('deze $e');
+        if (e.toString().contains("The password is invalid")) {
+          Toast.show(
+            "Wachtwoord ongeldig",
+            context,
+            duration: 2,
+            gravity: Toast.CENTER,
+          );
+        }
       }
     }
   }

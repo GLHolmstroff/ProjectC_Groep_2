@@ -79,10 +79,18 @@ class _CreateAccountState extends State<CreateAccount> {
           }
 
           print('Registered in $userId');
-          Toast.show("account aangemaakt", context);
+          Toast.show(
+            "account aangemaakt",
+            context,
+            duration: 2,
+          );
           Navigator.pop(context);
         } else {
-          Toast.show('Wachtwoorden komen niet overeen', context);
+          Toast.show(
+            'Wachtwoorden komen niet overeen',
+            context,
+            duration: 2,
+          );
           print("Account not created due to passwords incorrection");
         }
       } catch (e) {
@@ -221,7 +229,9 @@ class _CreateAccountState extends State<CreateAccount> {
             children: <Widget>[
               SizedBox(height: 70),
               registerText,
-              SizedBox(height: 30,),
+              SizedBox(
+                height: 30,
+              ),
               Container(
                 padding: EdgeInsets.all(5.0),
                 decoration: new BoxDecoration(
