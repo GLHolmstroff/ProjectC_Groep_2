@@ -35,8 +35,8 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
     if (res.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       print('Product added');
-      print(name);
-      print(price);
+      print('Naam van het product: ' + name);
+      print('Prijs van het product: €' + price);
     } else {
       print(res.statusCode);
     }
@@ -79,8 +79,6 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         onPressed: () {
           sentProductData();
-          // Navigator.push(context,
-          //     MaterialPageRoute(builder: (context) => Turfwidget()));
         },
         padding: EdgeInsets.all(12),
         color: Colors.orange[700],
