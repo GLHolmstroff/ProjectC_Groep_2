@@ -384,17 +384,18 @@ class DatabaseHelper(url: String) {
         return out
     }
 
-    fun getUserInfoInGroup(gid: Int) : HashMap<String, HashMap<String, String>> {
-        var out = HashMap<String, HashMap<String, String>>()
+    fun getUserInfoInGroup(gid: Int) : ArrayList<HashMap<String, String>> {
+        var out = ArrayList<HashMap<String, String>>()
+        var user = HashMap<String, String>()
 
         transaction(db) {
             Users.select { (Users.groupid eq gid) }.forEach{
-                var userid = it[Users.id]
+                user["uid"] = it[Users.id]
+                user["displayname"] = it[Users.displayname]
+                user["picturelink"] = it[Users.picturelink]
 
-                var data = HashMap<String, String>()
-                data["displayname"] = it[Users.displayname]
+                out.add(user)
 
-                out[userid] = data
             }
         }
         return out

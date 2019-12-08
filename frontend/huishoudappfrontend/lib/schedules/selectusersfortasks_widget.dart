@@ -18,14 +18,14 @@ class _SelectUsersForTasksState extends State<SelectUsersForTasks> {
   static CurrentUser user = CurrentUser();
   String groupId = user.groupId.toString();
 
-  List<String> usernames = [];
+  List userData = [];
 
   Future<void> getPicUsernameUsers() async {
     final Response res = await get(
         "http://10.0.2.2:8080/getUserInfoInGroup?gid=$groupId",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
-      print(json.decode(res.body));
+      userData = json.decode(res.body);
     } else {
       print(res.statusCode.toString());
       print('Could not find group');
@@ -42,7 +42,7 @@ class _SelectUsersForTasksState extends State<SelectUsersForTasks> {
           padding: const EdgeInsets.all(2.0),
           child: ListTile(
             leading: Icon(Icons.account_circle),
-            title: Text("Username"),
+            title: Text(userData[index]["displayname"]),
             trailing: Icon(Icons.add_circle),
             onTap: () {
               print(index);
@@ -94,7 +94,7 @@ class _SelectUsersForTasksState extends State<SelectUsersForTasks> {
               width: MediaQuery.of(context).size.width * 0.9,
               child: ListView.builder(
                 padding: const EdgeInsets.all(8),
-                itemCount: 10,
+                itemCount: userData.length,
                 itemBuilder: (BuildContext context, int index) =>
                     usersCard(context, index),
               ),
