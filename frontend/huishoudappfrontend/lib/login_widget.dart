@@ -131,23 +131,38 @@ class _LoginPageState extends State<LoginPage> {
                 validator: EmailValidator.validate,
                 onSaved: (value) => _email = value,
                 decoration: InputDecoration(
-                  hintText: 'Jouw email',
-                  contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32.0)),
-                ),
+                    hintText: 'Jouw email',
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(32.0),
+                      borderSide: BorderSide(
+                        color: Colors.orange[700],
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(32.0),
+                      borderSide: BorderSide(color: Colors.grey),
+                    )),
               ),
             ),
           ),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
-              child: new Text("Verstuur"),
+              child: new Text(
+                "Verstuur",
+                style: TextStyle(
+                  color: Colors.orange[700],
+                ),
+              ),
               onPressed: () {
                 _sendChangePasswordEmail();
               },
             ),
           ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32.0),
+          ),
         );
       },
     );
@@ -305,7 +320,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Form(
           key: formKey,
           child: ListView(
-            padding: EdgeInsets.only(left: 40.0, right: 40.0),
+            padding: EdgeInsets.only(left: 20.0, right: 20.0),
             children: <Widget>[
               SizedBox(height: 60),
               logo,
@@ -330,7 +345,13 @@ class _LoginPageState extends State<LoginPage> {
                     googleLogIn,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[forgotPassword, createAccount],
+                      children: <Widget>[
+                        forgotPassword,
+                        SizedBox(
+                          width: 1,
+                        ),
+                        createAccount,
+                      ],
                     ),
                   ],
                 ),
