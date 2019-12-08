@@ -26,10 +26,14 @@ class EmailValidator {
 
 class PasswordValidator {
   static String validate(String value) {
+    if (value.isEmpty) {
+      return "Dit veld mag niet leeg zijn";
+    }
+
     if (value.length < 6) {
       return "Wachtwoord is te kort";
     }
-    return value.isEmpty ? "Dit veld mag niet leeg zijn" : null;
+    return  null;
   }
 }
 
