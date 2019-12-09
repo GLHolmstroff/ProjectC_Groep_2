@@ -23,11 +23,12 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
 
   Future<void> sentProductData() async {
     int gid = CurrentUser().groupId;
+    formKey.currentState.save();
     String name = _productName;
     String price = _productPrice;
     print(name);
     print(price);
-    formKey.currentState.save();
+    
 
     final Response res = await get(
         "http://10.0.2.2:8080/addProduct?gid=$gid&name=$name&price=$price");
@@ -45,7 +46,11 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
   Widget build(BuildContext context) {
     final inputProductName = TextFormField(
       keyboardType: TextInputType.text,
-      onSaved: (value) => _productName = value,
+      onSaved: (value) {
+        setState(() {
+          _productName = value;
+        });
+      },
       decoration: InputDecoration(
           hintText: 'Naam van het product',
           contentPadding: const EdgeInsets.all(15.0),
@@ -60,7 +65,11 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
 
     final inputProductPrice = TextFormField(
       keyboardType: TextInputType.number,
-      onSaved: (value) => _productPrice = value,
+      onSaved: (value) {
+        setState(() {
+          _productPrice = value;
+        });
+      },
       decoration: InputDecoration(
           hintText: '€',
           contentPadding: const EdgeInsets.all(15.0),
@@ -79,7 +88,11 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         onPressed: () {
           sentProductData();
-          
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => new Turfwidget(),
+              ));
         },
         padding: EdgeInsets.all(12),
         color: Colors.orange[700],
