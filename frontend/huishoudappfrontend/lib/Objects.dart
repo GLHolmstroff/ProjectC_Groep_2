@@ -212,46 +212,19 @@ class House {
 
 class BeerTally {
   //TODO: Link with group
-  final Map<String, int> count;
-  final Map<String, String> pics;
+  final List<int> count;
   final String product;
 
-  BeerTally({this.count, this.pics, this.product});
+  BeerTally({this.count, this.product});
 
-  Map<String, int> getCount() {
+  List<int> getCount() {
     return this.count;
-  }
-
-  List<Map<String, int>> getCountAsList() {
-    List<Map<String, int>> out = List<Map<String, int>>();
-    this.count.forEach((k, v) {
-      Map<String, int> single = Map<String, int>();
-      single[k] = v;
-      out.add(single);
-    });
-
-    return out;
-  }
-
-  Map<String, String> getPics() {
-    return this.pics;
-  }
-
-  List<Map<String, String>> getPicsAsList() {
-    List<Map<String, String>> out = List<Map<String, String>>();
-    this.pics.forEach((k, v) {
-      Map<String, String> single = Map<String, String>();
-      single[k] = v;
-      out.add(single);
-    });
-
-    return out;
   }
 
   static Future<BeerTally> getData(int gid, String product) async {
     BeerTally beer;
     final Response res = await get(
-        "http://10.0.2.2:8080/getTallyByName?gid=$gid&product=$product",
+        "http://10.0.2.2:8080/getTally?gid=$gid&product=$product",
         headers: {'Content-Type': 'application/json'});
 
     if (res.statusCode == 200) {
@@ -265,19 +238,16 @@ class BeerTally {
   }
 
   factory BeerTally.fromJson(Map<String, dynamic> json) {
-    Map<String, int> count = new Map<String, int>();
-    Map<String, String> pics = new Map<String, String>();
-    json.forEach((k, v) {
-      count[k] = v["count"];
-      pics[k] = v["picture"];
-    });
-    return BeerTally(count: count, pics: pics);
+    List<int> count = new List<int>();
+    String product = json["product"];
+    for(int i = 0; i < json.length - 1; i++){
+      count.add(json["$i"]["count"]);
+    }
+    return BeerTally(count: count, product: product);
   }
 
   String toString() {
-    String out = "";
-    this.count.forEach(
-        (k, v) => out += k + " drank " + v.toString() + " beers" + "\n");
+    String out = "TODO:REMAKE TOSTRING";
     return out;
   }
 }
