@@ -199,176 +199,106 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       itemCount: pics.length,
       itemBuilder: (BuildContext context, int index) {
         return new Card(
-          color: Design.orange2,
+          elevation: 5,
+            color: Design.orange2,
             child: new GridTile(
                 footer: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                  Container(
-                    width: 40,
-                    height: 40,
-                    margin: EdgeInsets.all(1),
-                    padding: EdgeInsets.all(1),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(180),
-                      color: Colors.black,
-                      border: Border.all(
-                        width: 1
-                      )
-                    ),
-
-                  child: IconButton(
-                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-              
-                      icon: Icon(
-                        Icons.add,
-                        color: Colors.green,
-                        size: 35,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          sentData[index].numberofbeers += 1;
-                        });
-                      })),
-                  Container( 
-                    width: 40,
-                    height: 40,
-                    margin: EdgeInsets.all(5),
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(180),
-                      color: Colors.white,
-                      border: Border.all(
-                        width: 1
-                      )
-                    ),
-                    child: Text(sentData[index].numberofbeers.toString(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20),
-                    )),
-                  Container(
-                    width: 40,
-                    height: 40,
-                    margin: EdgeInsets.all(1),
-                    padding: EdgeInsets.all(1),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(180),
-                      color: Colors.black,
-                      border: Border.all(
-                        width: 1
-                      )
-                    ),
-                  child: IconButton(
-                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-                    icon: Icon(
-                      Icons.remove,
-                      color: Colors.red,
-                      size: 35,
-                    
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        if (sentData[index].numberofbeers == 0) {
-                          print('Can' 't remove any more beers');
-                        } else {
-                          sentData[index].numberofbeers -= 1;
-                        }
-                      });
-                    },
-                  )),
-                ]),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                          width: 40,
+                          height: 40,
+                          margin: EdgeInsets.all(1),
+                          padding: EdgeInsets.all(1),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(180),
+                              color: Colors.black,
+                              border: Border.all(width: 1)),
+                          child: IconButton(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 0),
+                              icon: Icon(
+                                Icons.add,
+                                color: Colors.green,
+                                size: 35,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  sentData[index].numberofbeers += 1;
+                                });
+                              })),
+                      Container(
+                          width: 40,
+                          height: 40,
+                          margin: EdgeInsets.all(5),
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(180),
+                              color: Colors.white,
+                              border: Border.all(width: 1)),
+                          child: Text(
+                            sentData[index].numberofbeers.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          )),
+                      Container(
+                          width: 40,
+                          height: 40,
+                          margin: EdgeInsets.all(1),
+                          padding: EdgeInsets.all(1),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(180),
+                              color: Colors.black,
+                              border: Border.all(width: 1)),
+                          child: IconButton(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 0, horizontal: 0),
+                            icon: Icon(
+                              Icons.remove,
+                              color: Colors.red,
+                              size: 35,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                if (sentData[index].numberofbeers == 0) {
+                                  print('Can' 't remove any more beers');
+                                } else {
+                                  sentData[index].numberofbeers -= 1;
+                                }
+                              });
+                            },
+                          )),
+                    ]),
                 child: Container(
                   width: 150,
                   height: 150,
                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 90),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        pics[index].imageUrl,
+                      color: Colors.white,
+                      image: DecorationImage( 
+                        image: NetworkImage(
+                          pics[index].imageUrl,
+                        ),
+                        fit: BoxFit.cover,
                       ),
-                      fit: BoxFit.cover,
-                    ),
-                    borderRadius: BorderRadius.horizontal(),
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 4
-                    )
-                    
-                  ),
-                  
+                      borderRadius: BorderRadius.horizontal(),
+                      border: Border.all(color: Colors.black, width: 4)),
                 ),
-                header: 
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 120,horizontal: 0),
+                header: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 120, horizontal: 0),
                   child: Text(
-                  names[index],
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                  
+                    names[index],
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
-
-                )
-                  
-                  
-                  
-                
-                ));
+                )));
       },
       gridDelegate:
           new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
     );
   }
-
-  // ListView createListTile(int gid) {      //deze functie veranderen naar gridview
-  //   return ListView.builder(
-  //     addAutomaticKeepAlives: true,
-  //     itemCount: pics.length,
-  //     itemBuilder: (context, index) {
-  //       return ListTile(
-  //         leading: SizedBox(
-  //           width: MediaQuery.of(context).size.width * .15,
-  //           child: FittedBox(
-  //             child: pics[index],
-  //             fit: BoxFit.fill,
-  //           ),
-  //         ),
-  //         title: Text(names[index]),
-  //         trailing: Row(
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: <Widget>[
-  //             IconButton(
-  //                 icon: Icon(
-  //                   Icons.add,
-  //                   color: Colors.green,
-  //                 ),
-  //                 onPressed: () {
-  //                   setState(() {
-  //                     sentData[index].numberofbeers += 1;
-  //                   });
-  //                 }),
-  //             IconButton(
-  //               icon: Icon(
-  //                 Icons.remove,
-  //                 color: Colors.red,
-  //               ),
-  //               onPressed: () {
-  //                 setState(() {
-  //                   if (sentData[index].numberofbeers == 0) {
-  //                     print('Can' 't remove any more beers');
-  //                   } else {
-  //                     sentData[index].numberofbeers -= 1;
-  //                   }
-  //                 });
-  //               },
-  //             ),
-  //             Text(sentData[index].numberofbeers.toString())
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   DropdownButton dropDown() {
     var dropdownButton = DropdownButton(
@@ -430,8 +360,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                         .groupId), //functie neerzetten die de gridview aanmaakt
                   ),
                   //addProducts(),
-                  buildButtons(), 
-                  
+                  buildButtons(),
                 ])
               ]));
         } else if (snapshot.hasError) {
