@@ -16,7 +16,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
   Future<User> getUser() async {
     String uid = await Auth().currentUser();
     User currentUser;
-    final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
+    final Response res = await get("http://seprojects.nl:8080/authCurrent?uid=$uid",
         headers: {'Content-Type': 'application/json'});
 
     if (res.statusCode == 200) {
