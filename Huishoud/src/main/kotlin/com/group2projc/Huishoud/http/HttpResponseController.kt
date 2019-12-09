@@ -148,6 +148,16 @@ class HttpResponseController {
 
     }
 
+    @RequestMapping("/setGroupName")
+    fun setGroupName(@RequestParam(value="gid", defaultValue = "")gid:Int,
+                        @RequestParam(value="newName", defaultValue = "")newName:String):HashMap<String,Any?> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").setGroupName(gid,newName);
+        return map;
+
+    }
+
+
+
     @RequestMapping("/initDatabase")
     fun initDB():HashMap<String,String> {
         val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")

@@ -7,13 +7,12 @@ import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.mutation
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.targetuserid
 import com.group2projc.Huishoud.database.DatabaseHelper.Users.displayname
 import com.group2projc.Huishoud.database.DatabaseHelper.Users.id
-
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDate
-import java.util.Random
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Random
 
 class DatabaseHelper(url: String) {
     //Singleton pattern for Database connection, Multiple connect calls will cause memory leaks.
@@ -199,6 +198,19 @@ class DatabaseHelper(url: String) {
             }
         }
         return out
+    }
+
+    fun setGroupName(gid: Int, newName: String): HashMap<String, Any?>{
+        var out = HashMap<String, Any?>()
+        out["Succes"] = 0;
+        transaction(db) {
+            Groups.update({ Groups.id eq gid }) {
+                it[Groups.name] = newName
+                out["Succes"] = 1
+            }
+
+        }
+        return out;
     }
 
     fun addUserToGroup(uid: String, gid: Int, makeUserAdmin: Boolean = false): DatabaseHelper {

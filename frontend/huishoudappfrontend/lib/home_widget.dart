@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:huishoudappfrontend/groupgrafiek.dart';
+import 'package:huishoudappfrontend/groupmanagement/admin_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/invitecode_widget.dart';
 import 'Objects.dart';
@@ -26,11 +27,34 @@ class Home_widget extends StatefulWidget {
 class Home_widget_state extends State<Home_widget> {
   String _userinfo = Home_widget.currentUser.toString();
   var currentUser = CurrentUser();
+  var userhouseName;
+  var appBarActions = <Widget>[];
+
+  void initState() {
+    if (currentUser.group_permission == "admin") {
+      appBarActions.add(IconButton(
+        icon: Icon(
+          Icons.edit,
+          color: Colors.white,
+        ),
+        onPressed: _toAdminWidget,
+      ));
+    }
+    initActual();
+  }
+
+  Future<void> initActual() async {
+    String temphouse = (await House.getCurrentHouse()).houseName;
+
+    setState(() {
+      userhouseName = temphouse;
+    });
+  }
 
   Future<User> getUser() async {
     String uid = await Auth().currentUser();
     User currentUser;
-    final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
+    final Response res = await get("http://seprojects.nl:8080/authCurrent?uid=$uid",
         headers: {'Content-Type': 'application/json'});
     print(res.statusCode);
     if (res.statusCode == 200) {
@@ -46,6 +70,14 @@ class Home_widget_state extends State<Home_widget> {
     setState(() {
       _userinfo = newinfo;
     });
+  }
+
+  void _toAdminWidget() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Admin_widget(),
+        ));
   }
 
   @override
@@ -68,6 +100,13 @@ class Home_widget_state extends State<Home_widget> {
 
     return Scaffold(
       appBar: AppBar(
+        title: Text(userhouseName),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: _toAdminWidget,
+          )
+        ],
         backgroundColor: Colors.red,
       ),
       body: Center(
