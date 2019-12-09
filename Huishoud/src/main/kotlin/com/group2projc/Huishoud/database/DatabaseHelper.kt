@@ -7,13 +7,12 @@ import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.mutation
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.targetuserid
 import com.group2projc.Huishoud.database.DatabaseHelper.Users.displayname
 import com.group2projc.Huishoud.database.DatabaseHelper.Users.id
-
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDate
-import java.util.Random
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Random
 
 class DatabaseHelper(url: String) {
     //Singleton pattern for Database connection, Multiple connect calls will cause memory leaks.
@@ -43,23 +42,23 @@ class DatabaseHelper(url: String) {
 
     object GroupPermissions : Table() {
         val groupid = reference("groupid", Groups.id).primaryKey()
-        val userid = reference("userid", Users.id).primaryKey()
+        val userid = reference("userid", id).primaryKey()
         val permission = varchar("permission", 10)
     }
 
     object Schedules : Table() {
         val groupid = reference("groupid", Groups.id).primaryKey()
-        val useridto = reference("useridto", Users.id).primaryKey()
+        val useridto = reference("useridto", id).primaryKey()
         val datedue = varchar("datetime", 20).primaryKey()
-        val useridby = reference("useridby", Users.id)
+        val useridby = reference("useridby", id)
         val description = varchar("description", 50)
     }
 
     object BeerTallies : Table() {
         val groupid = reference("groupid", Groups.id).primaryKey()
-        val authorid = reference("authorid", Users.id).primaryKey()
+        val authorid = reference("authorid", id).primaryKey()
         val date = varchar("date", 25).primaryKey()
-        val targetuserid = reference("targetid", Users.id)
+        val targetuserid = reference("targetid", id)
         val mutation = integer("mutation")
     }
 
@@ -137,7 +136,7 @@ class DatabaseHelper(url: String) {
     fun registerFireBaseUser(t: String, n: String): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
-            val query: Query = Users.select { Users.id eq t }
+            val query: Query = Users.select { id eq t }
             if (query.count() == 0) {
                 Users.insert {
                     it[id] = t
@@ -155,8 +154,8 @@ class DatabaseHelper(url: String) {
     fun getUser(uid: String): HashMap<String, Any?> {
         var out = HashMap<String, Any?>()
         transaction(db) {
-            Users.select({ Users.id eq uid }).forEach {
-                out["uid"] = it[Users.id]
+            Users.select({ id eq uid }).forEach {
+                out["uid"] = it[id]
                 out["groupid"] = it[Users.groupid]
                 out["global_permissions"] = it[Users.global_permissions]
                 out["display_name"] = it[Users.displayname]
@@ -172,7 +171,7 @@ class DatabaseHelper(url: String) {
 
     fun userUpdateDisplayName(uid: String, displayname1: String) : DatabaseHelper {
         transaction(db) {
-            Users.update({ Users.id eq uid}){
+            Users.update({ id eq uid}){
                 it[displayname] = displayname1
             }
         }
@@ -181,7 +180,7 @@ class DatabaseHelper(url: String) {
 
     fun userUpdatePicture(uid:String, picturePath: String) : DatabaseHelper {
         transaction(db) {
-            Users.update({ Users.id eq uid}){
+            Users.update({ id eq uid}){
                 it[picturelink] = picturePath
             }
         }
@@ -208,7 +207,7 @@ class DatabaseHelper(url: String) {
             Groups.select { Groups.id eq gid }.forEach {
                 group = it[Groups.id]
             }
-            Users.update({ Users.id eq uid }) {
+            Users.update({ id eq uid }) {
                 it[groupid] = group
             }
 
@@ -375,7 +374,7 @@ class DatabaseHelper(url: String) {
         transaction(db) {
             var i = 0
             Users.select { (Users.groupid eq gid) }.forEach {
-                out["UserId${i}"] = it[Users.id]
+                out["UserId${i}"] = it[id]
                 i++
             }
         }
@@ -473,6 +472,19 @@ class DatabaseHelper(url: String) {
         return out;
     }
 
+
+
+
+    fun createEmptyBeerEntry(){
+
+        transaction(db){
+            addLogger(StdOutSqlLogger)
+            Users.select{ Users.groupid.isNotNull()}.forEach{
+
+                it[Users.groupid]?.let { it1 -> createBeerEntry(it1,it[id],it[id],0) }
+            }
+            }
+        }
 }
 
 fun DatabaseHelper.createGroup(n: String, uid: String): DatabaseHelper {

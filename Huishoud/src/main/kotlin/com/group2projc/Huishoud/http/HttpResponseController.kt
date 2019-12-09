@@ -160,5 +160,9 @@ class HttpResponseController {
         HuishoudApplication.shutDown()
     }
 
+    @RequestMapping("/emptyBeerEntry")
+    fun emptyBeerEntry() {
+        DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").createEmptyBeerEntry();
+    }
 
 }
