@@ -161,7 +161,7 @@ class HttpResponseController {
     @RequestMapping("/addProduct")
     fun joinGroupByCode(@RequestParam(value="gid", defaultValue = "")gid:Int,
                         @RequestParam(value="name", defaultValue = "")name:String,
-                        @RequestParam(value="price",defaultValue = "")price:Float):HttpResponse {
+                        @RequestParam(value="price",defaultValue = "")price:Double):HttpResponse {
         val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").addProduct(gid,name,price);
         return  HttpResponse(counter.incrementAndGet().toInt(),
                 template + gid);

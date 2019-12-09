@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/invitecode_widget.dart';
 import 'Objects.dart';
@@ -71,7 +72,8 @@ class Home_widget_state extends State<Home_widget>{
       addUserToGroupButton = new Container();
     }
     
-    return 
+    return
+    Scaffold(appBar: AppBar(backgroundColor: Design.rood,),body: 
       Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -118,7 +120,7 @@ class Home_widget_state extends State<Home_widget>{
                 addUserToGroupButton
           ],
         ),
-      );
+      ));
       
   }
 

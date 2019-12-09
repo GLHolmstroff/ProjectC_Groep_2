@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
+import 'package:huishoudappfrontend/turf_widget_addproduct.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:huishoudappfrontend/turf_widget_admin.dart';
@@ -52,7 +53,7 @@ class _Turfwidget extends State<Turfwidget> {
   void initActual() async {
     List<Product> products = await Product.getData(CurrentUser().groupId);
     setState(() {
-      for(var product in products){
+      for (var product in products) {
         turfItems.add(product.name);
       }
       turfItems.sort();
@@ -66,7 +67,6 @@ class _Turfwidget extends State<Turfwidget> {
         picIDs.add(namePic['picture']);
         names.add(namePic['name']);
       }
-      
     });
 
     BeerTally beer = await BeerTally.getData(CurrentUser().groupId, _currentItemSelected);
@@ -86,7 +86,7 @@ class _Turfwidget extends State<Turfwidget> {
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
     List<CachedNetworkImage> images = [];
     print("Picture length: ${picIDs.length}");
-    
+  
     for (var pic in picIDs) {
       print("Loading image${picIDs.indexOf(pic)}");
       images.add(new CachedNetworkImage(
@@ -144,6 +144,23 @@ class _Turfwidget extends State<Turfwidget> {
       receivedData = receivedData;
       sentData = sentData;
     });
+
+
+  FlatButton addProducts() {
+    if (CurrentUser().group_permission == 'groupAdmin') {
+      FlatButton addproduct = FlatButton(
+        child: Text("Producten toevoegen"),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => new TurfWidgetAddProduct(),
+            ));
+        },
+      );
+      return addproduct;
+    }
+
   }
 
   int getMutation(index) {
@@ -182,14 +199,6 @@ class _Turfwidget extends State<Turfwidget> {
         }
       });
     }
-  }
-
-  Text loadData(index){
-    
-    if (_currentItemSelected == turfItems[0]){
-      return Text(sentData[index].numberofbeers.toString()); 
-    }
-    else return (Text('0'));
   }
 
   ListView createListTile(int gid) {
@@ -250,6 +259,7 @@ class _Turfwidget extends State<Turfwidget> {
           child: Center(
             child: Text(
               dropDownString,
+              style: TextStyle(fontSize: 25, color: Design.rood,),
             ),
           ),
         );
@@ -258,15 +268,19 @@ class _Turfwidget extends State<Turfwidget> {
         this._currentItemSelected = newValue;
         switchProduct();
       }),
+    
       value: _currentItemSelected,
       isExpanded: true,
+      icon: Icon(Icons.more_horiz),
+      iconEnabledColor: Design.rood,
+      iconSize: 40,
+      
     );
+
     DropdownButton dropdown = dropdownButton;
 
     return dropdown;
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -290,10 +304,11 @@ class _Turfwidget extends State<Turfwidget> {
                 ),
                 Column(children: <Widget>[
                   Container(
-                    height: MediaQuery.of(context).size.height * .6,
+                    height: MediaQuery.of(context).size.height * .5,
                     padding: const EdgeInsets.only(top: 10),
                     child: createListTile(snapshot.data.groupId),
                   ),
+                  addProducts(),
                   buildButtons(),
                 ])
               ]));
