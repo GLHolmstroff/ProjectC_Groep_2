@@ -227,23 +227,29 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                     },
                   ),
                 ]),
-                child: Container(
-                    width: 150,
-                    height: 150,
-                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 70),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            pics[index].imageUrl,
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.horizontal(),
-                        border: Border.all(
-                          color: Design.orange2,
-                          width: 1.0,
-                        )))));
+                header: Container(
+                  width: 150,
+                  height: 150,
+                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 70),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    image: DecorationImage(
+                      image: NetworkImage(
+                        pics[index].imageUrl,
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                    borderRadius: BorderRadius.horizontal(),
+                    border: Border.all(
+                      color: Design.orange2,
+                      width: 1.0,
+                    ),
+                  ),
+                  
+                ),
+                child: Text(names[index]),
+                
+                ));
       },
       gridDelegate:
           new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
