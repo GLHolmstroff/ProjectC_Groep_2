@@ -74,6 +74,7 @@ class CurrentUser extends BaseUser {
       lst.add(ConsumeData(k1, v1))
     )
     );
+    
     return lst;
   }
 

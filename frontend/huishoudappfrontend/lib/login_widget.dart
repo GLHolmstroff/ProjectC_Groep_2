@@ -243,7 +243,7 @@ class _LoginPageState extends State<LoginPage> {
 
     final googleLogIn = SignInButton(
       Buttons.Google,
-      text: 'Log in met je Google account',
+      text: 'Log in Google',
       onPressed: () async {
         try {
           final _auth = Provider.of(context).auth;
@@ -322,7 +322,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Form(
           key: formKey,
           child: ListView(
-            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+            padding: EdgeInsets.only(left: 10.0, right: 10.0),
             children: <Widget>[
               SizedBox(height: 60),
               Center(

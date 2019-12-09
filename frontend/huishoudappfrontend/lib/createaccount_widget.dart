@@ -90,6 +90,7 @@ class _CreateAccountState extends State<CreateAccount> {
             'Wachtwoorden komen niet overeen',
             context,
             duration: 2,
+            gravity: Toast.CENTER,
           );
           print("Account not created due to passwords incorrection");
         }
