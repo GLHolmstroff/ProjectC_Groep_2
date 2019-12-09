@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/home_widget.dart';
 import 'package:huishoudappfrontend/turf_widget.dart';
+import 'package:huishoudappfrontend/turf_widget_gridview.dart';
 import 'profile.dart';
 import 'package:huishoudappfrontend/schoonmaakrooster/schoonmaakrooster_widget.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -27,7 +28,7 @@ class HomePageState extends State<HomePage> {
   final List<Widget> _children = [
     Home_widget(),
     SchoonmaakPage(),
-    Turfwidget(),
+    TurfwidgetGrid(),
     Profilepage()
   ];
 
@@ -44,7 +45,7 @@ class HomePageState extends State<HomePage> {
     setState(() => [
           Home_widget(),
           PlaceholderWidget(Colors.deepOrange),
-          Turfwidget(),
+          TurfwidgetGrid(),
           Profilepage()
         ]);
   }
