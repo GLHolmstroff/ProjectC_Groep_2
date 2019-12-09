@@ -508,7 +508,7 @@ fun DatabaseHelper.createGroup(n: String, uid: String): DatabaseHelper {
             it[name] = n
         }
         addUserToGroup(uid, group[DatabaseHelper.Groups.id], makeUserAdmin = true)
-        addProduct(group[DatabaseHelper.Groups.id],"bier",1.0f)
+        addProduct(group[DatabaseHelper.Groups.id],"bier",1.0)
     }
     return this
 }

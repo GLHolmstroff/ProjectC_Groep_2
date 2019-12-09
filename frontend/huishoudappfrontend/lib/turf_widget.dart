@@ -145,6 +145,8 @@ class _Turfwidget extends State<Turfwidget> {
       sentData = sentData;
     });
 
+  }
+
 
   FlatButton addProducts() {
     if (CurrentUser().group_permission == 'groupAdmin') {
