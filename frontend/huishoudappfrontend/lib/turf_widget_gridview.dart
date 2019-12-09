@@ -142,6 +142,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
     if (CurrentUser().group_permission == 'groupAdmin') {
       FlatButton addproduct = FlatButton(
         child: Text("Producten toevoegen"),
+        padding: EdgeInsets.symmetric(vertical: 80, horizontal: 100),
         onPressed: () {
           Navigator.push(
               context,
@@ -198,12 +199,25 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       itemCount: pics.length,
       itemBuilder: (BuildContext context, int index) {
         return new Card(
+          color: Design.orange2,
             child: new GridTile(
                 footer: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                  
-                  IconButton(
+                  Container(
+                    width: 40,
+                    height: 40,
+                    margin: EdgeInsets.all(1),
+                    padding: EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(180),
+                      color: Colors.black,
+                      border: Border.all(
+                        width: 1
+                      )
+                    ),
+
+                  child: IconButton(
                     padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
               
                       icon: Icon(
@@ -215,22 +229,36 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                         setState(() {
                           sentData[index].numberofbeers += 1;
                         });
-                      }),
+                      })),
                   Container( 
+                    width: 40,
+                    height: 40,
                     margin: EdgeInsets.all(5),
                     padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(180),
-                      color: Colors.transparent,
+                      color: Colors.white,
                       border: Border.all(
                         width: 1
                       )
                     ),
                     child: Text(sentData[index].numberofbeers.toString(),
+                    textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 20),
                     )),
-
-                  IconButton(
+                  Container(
+                    width: 40,
+                    height: 40,
+                    margin: EdgeInsets.all(1),
+                    padding: EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(180),
+                      color: Colors.black,
+                      border: Border.all(
+                        width: 1
+                      )
+                    ),
+                  child: IconButton(
                     padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
                     icon: Icon(
                       Icons.remove,
@@ -247,7 +275,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                         }
                       });
                     },
-                  ),
+                  )),
                 ]),
                 child: Container(
                   width: 150,
@@ -262,13 +290,17 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.horizontal(),
+                    border: Border.all(
+                      color: Colors.black,
+                      width: 4
+                    )
                     
                   ),
                   
                 ),
                 header: 
                 Container(
-                  padding: const EdgeInsets.symmetric(vertical: 110,horizontal: 60),
+                  padding: const EdgeInsets.symmetric(vertical: 120,horizontal: 0),
                   child: Text(
                   names[index],
                   textAlign: TextAlign.center,
@@ -392,13 +424,14 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                 ),
                 Column(children: <Widget>[
                   Container(
-                    height: MediaQuery.of(context).size.height * .5,
+                    height: MediaQuery.of(context).size.height * .62,
                     padding: const EdgeInsets.only(top: 10),
                     child: createGridView(snapshot.data
                         .groupId), //functie neerzetten die de gridview aanmaakt
                   ),
-                  addProducts(),
-                  buildButtons(),
+                  //addProducts(),
+                  buildButtons(), 
+                  
                 ])
               ]));
         } else if (snapshot.hasError) {
