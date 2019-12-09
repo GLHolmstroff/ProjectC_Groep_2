@@ -192,19 +192,58 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
     }
   }
 
-  GridTile layoutGridTile(){
-    padding: 
-
-  }
-
   GridView createGridView(int gid) {
     return GridView.builder(
       addAutomaticKeepAlives: true,
       itemCount: pics.length,
       itemBuilder: (BuildContext context, int index) {
         return new Card(
-            child:
-                new GridTile(footer: Text(names[index]), child: pics[index]));
+            child: new GridTile(
+                footer: Row(children: <Widget>[
+                  IconButton(
+                      icon: Icon(
+                        Icons.add,
+                        color: Colors.green,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          sentData[index].numberofbeers += 1;
+                        });
+                      }),
+                  Text(sentData[index].numberofbeers.toString()),
+                  IconButton(
+                    icon: Icon(
+                      Icons.remove,
+                      color: Colors.red,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        if (sentData[index].numberofbeers == 0) {
+                          print('Can' 't remove any more beers');
+                        } else {
+                          sentData[index].numberofbeers -= 1;
+                        }
+                      });
+                    },
+                  ),
+                ]),
+                child: Container(
+                    width: 150,
+                    height: 150,
+                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 70),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            pics[index].imageUrl,
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                        borderRadius: BorderRadius.horizontal(),
+                        border: Border.all(
+                          color: Design.orange2,
+                          width: 1.0,
+                        )))));
       },
       gridDelegate:
           new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
