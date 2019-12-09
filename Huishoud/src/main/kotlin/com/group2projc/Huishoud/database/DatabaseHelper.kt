@@ -48,7 +48,7 @@ class DatabaseHelper(url: String) {
     }
 
     object Schedules : Table() {
-        val taskid = integer("taskid").primaryKey()
+        val taskid = integer("taskid").primaryKey().autoIncrement()
         val groupid = reference("groupid", Groups.id)
         val userid = reference("userid", Users.id)
         val taskname = varchar("taskname", 25)
@@ -386,10 +386,10 @@ class DatabaseHelper(url: String) {
 
     fun getUserInfoInGroup(gid: Int) : ArrayList<HashMap<String, String>> {
         var out = ArrayList<HashMap<String, String>>()
-        var user = HashMap<String, String>()
 
         transaction(db) {
             Users.select { (Users.groupid eq gid) }.forEach{
+                var user = HashMap<String, String>()
                 user["uid"] = it[Users.id]
                 user["displayname"] = it[Users.displayname]
                 user["picturelink"] = it[Users.picturelink]

@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/Objects.dart';
@@ -8,6 +10,10 @@ import 'package:intl/intl.dart';
 
 class AdminTaskAdder extends StatefulWidget {
   static String tag = "admintaskadder_widget";
+
+  final List schedule;
+
+  const AdminTaskAdder({Key key, this.schedule}) : super(key: key);
 
   @override
   AdminTaskAdderState createState() => AdminTaskAdderState();
@@ -42,9 +48,8 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
           padding: const EdgeInsets.all(2.0),
           child: ListTile(
             leading: Icon(Icons.account_circle),
-            title: Text("Username"),
-            trailing: Icon(Icons.cancel),
-            onTap: () {/* Add user to list of selectedUsers*/},
+            title: Text(widget.schedule[index]["displayname"]),
+            onTap: () {},
           ),
         ),
       ),
@@ -78,6 +83,26 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
           ),
         ));
 
+    Widget buildListview() {
+      if (!(widget.schedule == null)) {
+        print("Listview taken-toewijzen is builded");
+        if (widget.schedule.length == 0) {
+          return Center(
+            child: Text("Nog geen personen geselecteerd!"),
+          );
+        }
+        return new ListView.builder(
+          padding: const EdgeInsets.all(8),
+          itemCount: widget.schedule.length,
+          itemBuilder: (BuildContext context, int index) =>
+              usersCard(context, index),
+        );
+      }
+      return Center(
+        child: Text("Nog geen personen geselecteerd!"),
+      );
+    }
+
     final selectedUsersWidget = Column(
       children: <Widget>[
         Row(
@@ -99,17 +124,10 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
             )
           ],
         ),
-        Container(
-          height: 135,
-          width: MediaQuery.of(context).size.width * 0.75,
-          child: ListView.builder(
-            padding: const EdgeInsets.all(8),
-            itemCount: 4,
-            itemBuilder: (BuildContext context, int index) =>
-                usersCard(context, index),
-          ),
-        ),
-        //TO DO Widget which shows all selected users in a listview with tiles
+        new Container(
+            height: 135,
+            width: MediaQuery.of(context).size.width * 0.75,
+            child: buildListview()),
       ],
     );
 

@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:huishoudappfrontend/Objects.dart' as prefix0;
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/profile.dart';
 import 'admintaskadder_widget.dart';
@@ -18,36 +19,49 @@ class _SelectUsersForTasksState extends State<SelectUsersForTasks> {
   static CurrentUser user = CurrentUser();
   String groupId = user.groupId.toString();
 
-  List userData = [];
+  List savedUsers = [];
 
   Future<void> getPicUsernameUsers() async {
     final Response res = await get(
         "http://10.0.2.2:8080/getUserInfoInGroup?gid=$groupId",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
-      userData = json.decode(res.body);
+      return json.decode(res.body);
     } else {
       print(res.statusCode.toString());
-      print('Could not find group');
+      print("BAD RETURN");
     }
   }
 
-  //List<int> indexSelectedUsers = [];
+  void addToList(var info) {
+    var checker = true;
+    savedUsers.forEach((user) {
+      if (info["uid"] == user["uid"]) {
+        checker = false;
+      }
+    });
 
-  Widget usersCard(BuildContext context, int index) {
+    if (checker) {
+      savedUsers.add(info);
+      print(savedUsers);
+    } else {
+      print("User already selected!");
+    }
+  }
+
+  Widget usersCard(BuildContext context, int index, var data) {
     return new Container(
       child: Card(
         elevation: 2.5,
         child: Padding(
           padding: const EdgeInsets.all(2.0),
           child: ListTile(
-            leading: Icon(Icons.account_circle),
-            title: Text(userData[index]["displayname"]),
-            trailing: Icon(Icons.add_circle),
-            onTap: () {
-              print(index);
-            },
-          ),
+              leading: Icon(Icons.account_circle),
+              title: Text(data[index]["displayname"]),
+              trailing: Icon(Icons.add_circle),
+              onTap: () {
+                addToList(data[index]);
+              }),
         ),
       ),
     );
@@ -69,10 +83,35 @@ class _SelectUsersForTasksState extends State<SelectUsersForTasks> {
           boxShadow: [BoxShadow(color: Design.orange2, blurRadius: 15.0)]),
     );
 
+    final userCards = Container(
+      height: 400,
+      width: MediaQuery.of(context).size.width * 0.85,
+      child: FutureBuilder(
+        future: getPicUsernameUsers(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var data = snapshot.data;
+            return ListView.builder(
+              padding: const EdgeInsets.all(8),
+              itemCount: data.length,
+              itemBuilder: (BuildContext context, int index) =>
+                  usersCard(context, index, data),
+            );
+          }
+          return Container(
+            child: Text("Er is iets verkeerd gegaan..."),
+          );
+        },
+      ),
+    );
+
     final readyButton = RaisedButton(
       onPressed: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => new AdminTaskAdder()));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    new AdminTaskAdder(schedule: savedUsers)));
       },
       child: Text(
         "Gereed",
@@ -89,16 +128,7 @@ class _SelectUsersForTasksState extends State<SelectUsersForTasks> {
           children: <Widget>[
             titleWidget,
             SizedBox(height: 35),
-            Container(
-              height: 400,
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: ListView.builder(
-                padding: const EdgeInsets.all(8),
-                itemCount: userData.length,
-                itemBuilder: (BuildContext context, int index) =>
-                    usersCard(context, index),
-              ),
-            ),
+            userCards,
             SizedBox(height: 50),
             readyButton
           ],
