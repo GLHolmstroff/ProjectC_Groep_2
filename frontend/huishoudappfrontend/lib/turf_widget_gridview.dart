@@ -198,6 +198,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       addAutomaticKeepAlives: true,
       itemCount: pics.length,
       itemBuilder: (BuildContext context, int index) {
+        if (pics[index].imageUrl != null){
         return new Card(
           elevation: 5,
             color: Design.orange2,
@@ -293,7 +294,8 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
-                )));
+                )));}
+                else 
       },
       gridDelegate:
           new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
