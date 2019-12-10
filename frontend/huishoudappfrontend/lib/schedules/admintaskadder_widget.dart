@@ -7,6 +7,10 @@ import 'package:huishoudappfrontend/groupmanagement/title_widget.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/schedules/selectusersfortasks_widget.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert';
+import 'package:http/http.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'schoonmaakrooster_widget.dart';
 
 class AdminTaskAdder extends StatefulWidget {
   static String tag = "admintaskadder_widget";
@@ -20,13 +24,15 @@ class AdminTaskAdder extends StatefulWidget {
 }
 
 class AdminTaskAdderState extends State<AdminTaskAdder> {
-  static String taskName, taskDescription;
+  final formKey = GlobalKey<FormState>();
+
+  String _taskName;
+  String _taskDescription;
 
   int currentGroup = CurrentUser().groupId.toInt();
 
   DateTime dateSelected = DateTime.now();
-
-  String chosenPerson = "Kies";
+  String savedDate = "";
 
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -37,7 +43,37 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
     if (picked != null && picked != dateSelected)
       setState(() {
         dateSelected = picked;
+        savedDate = DateFormat('dd-MM-yyyy').format(picked);
       });
+  }
+
+  bool saveStates() {
+    if (formKey.currentState.validate()) {
+      formKey.currentState.save();
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> createSchedule() async {
+    if (widget.schedule.length > 0) {
+      if (saveStates()) {
+        widget.schedule.forEach((user) async {
+          String uid = user["uid"];
+          final response = await get(
+              "http://10.0.2.2:8080/insertSchedule?gid=$currentGroup&userid=$uid&taskname=$_taskName&description=$_taskDescription&datedue=$savedDate",
+              headers: {'Content-Type': 'application/json'});
+          if (response.statusCode == 200) {
+            Fluttertoast.showToast(msg: "Taak is toegevoegd!");
+            print("Schedule added");
+          } else {
+            print(response.statusCode.toString());
+          }
+        });
+      }
+    } else {
+      Fluttertoast.showToast(msg: "Selecteer minimaal 1 persoon");
+    }
   }
 
   Widget usersCard(BuildContext context, int index) {
@@ -73,7 +109,7 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
 
     final taskNameWidget = TextFormField(
         textAlign: TextAlign.center,
-        onSaved: (value) => taskName = value,
+        onSaved: (value) => _taskName = value,
         decoration: InputDecoration(
           hintText: "Taak naam",
           hintStyle:
@@ -162,7 +198,7 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
     final descriptionInputWidget = Container(
       height: 100,
       child: TextFormField(
-          onSaved: (value) => taskDescription = value,
+          onSaved: (value) => _taskDescription = value,
           keyboardType: TextInputType.multiline,
           maxLines: 5,
           decoration: InputDecoration(
@@ -180,38 +216,43 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
           borderRadius: BorderRadius.circular(36.0),
           side: BorderSide(color: Design.orange2)),
       onPressed: () {
-        /* Functie schrijven die informatie naar de backend stuurt*/
+        createSchedule();
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => SchoonmaakPage()));
       },
     );
 
     return Scaffold(
       body: Center(
-        child: Column(
-          children: <Widget>[
-            titleWidget,
-            Flexible(
-              child: Container(
-                alignment: Alignment(-1.0, 0),
-                width: 350,
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(height: 35),
-                    taskNameWidget,
-                    SizedBox(height: 25),
-                    selectedUsersWidget,
-                    SizedBox(height: 20),
-                    selectDateWidget,
-                    SizedBox(height: 20),
-                    textDescriptionWidget,
-                    SizedBox(height: 5),
-                    descriptionInputWidget,
-                    SizedBox(height: 15),
-                    addTaskButtonWidget
-                  ],
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: <Widget>[
+              titleWidget,
+              Flexible(
+                child: Container(
+                  alignment: Alignment(-1.0, 0),
+                  width: 350,
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(height: 35),
+                      taskNameWidget,
+                      SizedBox(height: 25),
+                      selectedUsersWidget,
+                      SizedBox(height: 20),
+                      selectDateWidget,
+                      SizedBox(height: 20),
+                      textDescriptionWidget,
+                      SizedBox(height: 5),
+                      descriptionInputWidget,
+                      SizedBox(height: 15),
+                      addTaskButtonWidget
+                    ],
+                  ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

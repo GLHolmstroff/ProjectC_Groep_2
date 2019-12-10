@@ -5,6 +5,7 @@ import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.date
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.groupid
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.mutation
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.targetuserid
+import com.group2projc.Huishoud.database.DatabaseHelper.InviteCodes.code
 import com.group2projc.Huishoud.database.DatabaseHelper.Users.displayname
 import com.group2projc.Huishoud.database.DatabaseHelper.Users.id
 
@@ -401,6 +402,23 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+    fun makeSchedule(gid: Int, uid: String, taskName: String, taskDescription: String, dateDue: String) : DatabaseHelper {
+        transaction(db) {
+            addLogger(StdOutSqlLogger)
+
+            Schedules.insert {
+                it[groupid] = gid
+                it[userid] = uid
+                it[taskname] = taskName
+                it[description] = taskDescription
+                it[datedue] = dateDue
+                it[done] = 0
+                }
+            }
+        return this@DatabaseHelper
+    }
+
+
     fun createInviteCode(): Int {
 
         var random = Random();
@@ -419,7 +437,7 @@ class DatabaseHelper(url: String) {
             var key = createInviteCode();
             var alreadyInUse = false;
             transaction(db) {
-                InviteCodes.select { (InviteCodes.code eq key) }.forEach {
+                DatabaseHelper.InviteCodes.select { (DatabaseHelper.InviteCodes.code eq key) }.forEach {
                     alreadyInUse = true;
                 }
             }
@@ -431,7 +449,7 @@ class DatabaseHelper(url: String) {
         }
 
         transaction(db) {
-            InviteCodes.insert {
+            DatabaseHelper.InviteCodes.insert {
                 it[groupid] = gid;
                 it[code] = finalKey;
             }
@@ -443,13 +461,13 @@ class DatabaseHelper(url: String) {
         var groupid : Int? = null;
         var out = HashMap<String, String>()
         transaction(db) {
-            InviteCodes.select {(InviteCodes.code eq ic)}.forEach{
-                groupid = it[InviteCodes.groupid];
+            DatabaseHelper.InviteCodes.select {(DatabaseHelper.InviteCodes.code eq ic)}.forEach{
+                groupid = it[DatabaseHelper.InviteCodes.groupid];
             }
         }
         if(groupid != null) {
             transaction(db) {
-                InviteCodes.deleteWhere {(InviteCodes.code eq ic)}
+                DatabaseHelper.InviteCodes.deleteWhere {(DatabaseHelper.InviteCodes.code eq ic)}
             }
             addUserToGroup(uid, groupid!!);
             out["result"] = "Succes";

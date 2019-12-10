@@ -2,6 +2,7 @@ package com.group2projc.Huishoud.http
 
 import com.group2projc.Huishoud.HuishoudApplication
 import com.group2projc.Huishoud.database.DatabaseHelper
+import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.mutation
 import com.group2projc.Huishoud.database.createGroup
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -67,6 +68,18 @@ class HttpResponseController {
         val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
                 .getUserInfoInGroup(gid)
         return map
+    }
+
+    @RequestMapping("/insertSchedule")
+    fun updateTallyEntry(   @RequestParam(value = "gid", defaultValue = "") gid: Int,
+                            @RequestParam(value= "userid", defaultValue = "") userid: String,
+                            @RequestParam(value= "taskname", defaultValue = "") taskname: String,
+                            @RequestParam(value= "description", defaultValue = "") description: String,
+                            @RequestParam(value = "datedue", defaultValue = "") datedue: String): HttpResponse {
+        val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .makeSchedule(gid, userid, taskname, description, datedue)
+        return HttpResponse(counter.incrementAndGet().toInt(),
+                template + gid)
     }
 
 
