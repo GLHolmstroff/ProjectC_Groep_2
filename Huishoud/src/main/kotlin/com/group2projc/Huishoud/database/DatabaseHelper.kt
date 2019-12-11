@@ -402,6 +402,24 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+    fun getUserTasks(uid: String) : ArrayList<HashMap<String, Any>> {
+        var out = ArrayList<HashMap<String, Any>>()
+
+        transaction(db) {
+            Schedules.select { (Schedules.userid eq uid) }.forEach{
+                var task = HashMap<String, Any>()
+                task["taskid"] = it[Schedules.taskid]
+                task["taskname"] = it[Schedules.taskname]
+                task["description"] = it[Schedules.description]
+                task["datedue"] = it[Schedules.datedue]
+                task["done"] = it[Schedules.done]
+
+                out.add(task)
+            }
+        }
+        return out
+    }
+
     fun makeSchedule(gid: Int, uid: String, taskName: String, taskDescription: String, dateDue: String) : DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)

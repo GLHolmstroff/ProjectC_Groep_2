@@ -70,6 +70,13 @@ class HttpResponseController {
         return map
     }
 
+    @RequestMapping("/getUserTasks")
+    fun getUserTasks(@RequestParam(value = "uid", defaultValue = "") uid: String): ArrayList<HashMap<String, Any>> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .getUserTasks(uid)
+        return map
+    }
+
     @RequestMapping("/insertSchedule")
     fun updateTallyEntry(   @RequestParam(value = "gid", defaultValue = "") gid: Int,
                             @RequestParam(value= "userid", defaultValue = "") userid: String,

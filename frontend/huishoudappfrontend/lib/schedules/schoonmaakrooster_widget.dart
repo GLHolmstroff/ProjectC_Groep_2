@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:huishoudappfrontend/design.dart';
 import '../profile.dart';
 import '../Objects.dart';
 import 'package:http/http.dart';
@@ -6,6 +7,8 @@ import 'package:huishoudappfrontend/setup/auth.dart';
 import 'dart:convert';
 import 'package:toast/toast.dart';
 import 'admintaskadder_widget.dart';
+import 'dart:convert';
+import 'package:http/http.dart';
 
 class SchoonmaakPage extends StatefulWidget {
   static String tag = "schoonmaakrooster_widget";
@@ -15,8 +18,10 @@ class SchoonmaakPage extends StatefulWidget {
 }
 
 class _SchoonmaakPageState extends State<SchoonmaakPage> {
-  String userName = CurrentUser().displayName.toString();
-  String userPermissions = CurrentUser().group_permission.toString();
+  static CurrentUser user = CurrentUser();
+
+  String uid = user.userId.toString();
+  String userPermissions = user.group_permission.toString();
 
   String getButtonText() {
     if (userPermissions == "groupAdmin") {
@@ -26,42 +31,19 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
     }
   }
 
-  List getCleaningJobs() {
-    // TODO: Func moet een list returnen die alle schoonmaak taken returnt van een user
+  Future<void> getUserTasks() async {
+    final Response res = await get("http://10.0.2.2:8080/getUserTasks?uid=$uid",
+        headers: {'Content-Type': 'application/json'});
+    if (res.statusCode == 200) {
+      return json.decode(res.body);
+    } else {
+      print(res.statusCode.toString());
+      print("BAD RETURN");
+    }
   }
 
-  List testList = [
-    "Afwas doen",
-    "Badkamer schoonmaken",
-    "Boodschappen doen",
-    "Boodschappen doen",
-    "Afwas doen",
-    "Badkamer schoonmaken",
-    "Boodschappen doen",
-    "Boodschappen doen",
-    "Afwas doen",
-    "Badkamer schoonmaken",
-    "Boodschappen doen",
-    "Boodschappen doen",
-  ];
-
-  List testData = [
-    "18-11-2019",
-    "20-11-2019",
-    "25-12-2019",
-    "25-12-2019",
-    "18-11-2019",
-    "20-11-2019",
-    "25-12-2019",
-    "25-12-2019",
-    "18-11-2019",
-    "20-11-2019",
-    "25-12-2019",
-    "25-12-2019"
-  ];
-
   // Cards worden gebruikt in de listview als items, hier heb ik mijn eigen card gemaakt met de klusnaam en verloopdatum
-  Widget cleaningCard(BuildContext context, int index) {
+  Widget taskCard(BuildContext context, int index, var data) {
     return new Container(
         child: Card(
       elevation: 3,
@@ -69,9 +51,9 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
         padding: const EdgeInsets.all(15.0),
         child: Row(
           children: <Widget>[
-            Text(testList[index]),
+            Text(data[index]["taskname"]),
             Spacer(),
-            Text(testData[index])
+            Text(data[index]["datedue"])
           ],
         ),
       ),
@@ -98,59 +80,68 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
 
   @override
   Widget build(BuildContext context) {
-    final taskHeader = Text(
-      "Jouw taken",
-      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+    final taskCardsListHeader = Container(
+      height: 60,
+      child: Text(
+        "Jouw taken",
+        style: TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white),
+      ),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+          color: Design.orange2,
+          boxShadow: [BoxShadow(color: Design.orange2, blurRadius: 5.0)]),
     );
 
-    final checkHousemates = Text(
-      "Goedkeuren huisgenoten",
-      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+    final taskCardsList = Container(
+      height: 225,
+      width: MediaQuery.of(context).size.width * 0.85,
+      child: FutureBuilder(
+        future: getUserTasks(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var data = snapshot.data;
+            return ListView.builder(
+              padding: const EdgeInsets.all(8),
+              itemCount: data.length,
+              itemBuilder: (BuildContext context, int index) =>
+                  taskCard(context, index, data),
+            );
+          }
+          return Container(
+            child: Text("Er is iets verkeerd gegaan..."),
+          );
+        },
+      ),
+    );
+
+    final checkHousematesListHeader = Container(
+      height: 60,
+      child: Text(
+        "goedkeuren huisgenoten",
+        style: TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white),
+      ),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+          color: Design.orange2,
+          boxShadow: [BoxShadow(color: Design.orange2, blurRadius: 5.0)]),
     );
 
     return Center(
       child: Column(
         children: <Widget>[
+          taskCardsListHeader,
+          taskCardsList,
+          checkHousematesListHeader,
           Container(
-            height: 275,
+            height: 225,
             width: MediaQuery.of(context).size.width,
-            color: Colors.orange[900],
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 10),
-                taskHeader,
-                Container(
-                  height: 225,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(8),
-                    itemCount: testList.length,
-                    itemBuilder: (BuildContext context, int index) =>
-                        cleaningCard(context, index),
-                  ),
-                )
-              ],
-            ),
-          ),
-          Container(
-            height: 275,
-            width: MediaQuery.of(context).size.width,
-            color: Colors.orange[800],
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 10),
-                checkHousemates,
-                Container(
-                  height: 225,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(8),
-                    itemCount: 10,
-                    itemBuilder: (BuildContext context, int index) =>
-                        checkHousemateCard(context, index),
-                  ),
-                )
-              ],
+            child: ListView.builder(
+              padding: const EdgeInsets.all(8),
+              itemCount: 10,
+              itemBuilder: (BuildContext context, int index) =>
+                  checkHousemateCard(context, index),
             ),
           ),
           Expanded(
