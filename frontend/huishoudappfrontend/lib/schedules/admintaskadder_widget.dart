@@ -56,23 +56,33 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
   }
 
   Future<void> createSchedule() async {
-    if (widget.schedule.length > 0) {
-      if (saveStates()) {
-        widget.schedule.forEach((user) async {
-          String uid = user["uid"];
-          final response = await get(
-              "http://10.0.2.2:8080/insertSchedule?gid=$currentGroup&userid=$uid&taskname=$_taskName&description=$_taskDescription&datedue=$savedDate",
-              headers: {'Content-Type': 'application/json'});
-          if (response.statusCode == 200) {
-            Fluttertoast.showToast(msg: "Taak is toegevoegd!");
-            print("Schedule added");
+    if (!(widget.schedule == null)) {
+      if (widget.schedule.length > 0) {
+        if (saveStates()) {
+          if (_taskName.length > 0 && savedDate.toString().length > 0) {
+            widget.schedule.forEach((user) async {
+              String uid = user["uid"];
+              final response = await get(
+                  "http://10.0.2.2:8080/insertSchedule?gid=$currentGroup&userid=$uid&taskname=$_taskName&description=$_taskDescription&datedue=$savedDate",
+                  headers: {'Content-Type': 'application/json'});
+              if (response.statusCode == 200) {
+                Fluttertoast.showToast(msg: "Taak is toegevoegd!");
+                print("Schedule added");
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SchoonmaakPage()));
+              } else {
+                print(response.statusCode.toString());
+                Fluttertoast.showToast(msg: "Er is iets mis gegaan...");
+              }
+            });
           } else {
-            print(response.statusCode.toString());
+            Fluttertoast.showToast(msg: "Vul alle velden in!");
           }
-        });
+        }
       }
     } else {
       Fluttertoast.showToast(msg: "Selecteer minimaal 1 persoon");
+      print("SCHEDULE NOT CREATED");
     }
   }
 
@@ -217,8 +227,6 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
           side: BorderSide(color: Design.orange2)),
       onPressed: () {
         createSchedule();
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => SchoonmaakPage()));
       },
     );
 

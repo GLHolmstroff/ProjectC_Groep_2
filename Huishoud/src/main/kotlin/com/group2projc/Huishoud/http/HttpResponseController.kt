@@ -77,6 +77,13 @@ class HttpResponseController {
         return map
     }
 
+    @RequestMapping("/getHousematesChecks")
+    fun getHousematesChecks(@RequestParam(value = "gid", defaultValue = "") gid: Int): ArrayList<HashMap<String, Any>> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .getHousematesChecks(gid)
+        return map
+    }
+
     @RequestMapping("/insertSchedule")
     fun updateTallyEntry(   @RequestParam(value = "gid", defaultValue = "") gid: Int,
                             @RequestParam(value= "userid", defaultValue = "") userid: String,
