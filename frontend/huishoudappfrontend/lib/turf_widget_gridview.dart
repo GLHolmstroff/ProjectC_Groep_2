@@ -198,10 +198,9 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       addAutomaticKeepAlives: true,
       itemCount: pics.length,
       itemBuilder: (BuildContext context, int index) {
-        if (pics[index].imageUrl != null){
         return new Card(
-          elevation: 5,
-            color: Design.orange2,
+          elevation: 10,
+            // color: Colors.black,
             child: new GridTile(
                 footer: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -284,7 +283,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                         fit: BoxFit.cover,
                       ),
                       borderRadius: BorderRadius.horizontal(),
-                      border: Border.all(color: Colors.black, width: 4)),
+                      border: Border.all(color: Colors.black, width: 2)),
                 ),
                 header: Container(
                   padding:
@@ -294,8 +293,8 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
-                )));}
-                else 
+                )));
+                
       },
       gridDelegate:
           new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
@@ -361,7 +360,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                     child: createGridView(snapshot.data
                         .groupId), //functie neerzetten die de gridview aanmaakt
                   ),
-                  //addProducts(),
+                  addProducts(),
                   buildButtons(),
                 ])
               ]));
