@@ -78,9 +78,10 @@ class HttpResponseController {
     }
 
     @RequestMapping("/getHousematesChecks")
-    fun getHousematesChecks(@RequestParam(value = "gid", defaultValue = "") gid: Int): ArrayList<HashMap<String, Any>> {
+    fun getHousematesChecks(@RequestParam(value = "gid", defaultValue = "") gid: Int,
+                            @RequestParam(value = "uid", defaultValue = "") uid: String): ArrayList<HashMap<String, Any>> {
         val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
-                .getHousematesChecks(gid)
+                .getHousematesChecks(gid, uid)
         return map
     }
 
@@ -94,6 +95,14 @@ class HttpResponseController {
                 .makeSchedule(gid, userid, taskname, description, datedue)
         return HttpResponse(counter.incrementAndGet().toInt(),
                 template + gid)
+    }
+
+    @RequestMapping("/makeTaskDone")
+    fun makeTaskDone(@RequestParam(value = "tid", defaultValue = "") tid: Int) : HttpResponse {
+        val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .makeTaskDone(tid)
+        return HttpResponse(counter.incrementAndGet().toInt(),
+                template + tid)
     }
 
 

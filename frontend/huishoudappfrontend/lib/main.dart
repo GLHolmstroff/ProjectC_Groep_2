@@ -18,6 +18,7 @@ import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/validators.dart';
 import 'profile.dart';
+import 'schedules/schoonmaakrooster_widget.dart';
 
 void main() => runApp(MyApp());
 
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
     GroupWidget.tag: (context) => GroupWidget(),
     TurfWidgetAdmin.tag: (context) => TurfWidgetAdmin(),
     TurfWidgetEdit.tag: (context) => TurfWidgetEdit(null),
+    SchoonmaakPage.tag: (context) => SchoonmaakPage()
   };
 
   @override
@@ -65,7 +67,8 @@ class MyHomePage extends StatelessWidget {
     return StreamBuilder<String>(
         stream: auth.onAuthStateChanged,
         builder: (context, AsyncSnapshot<String> snapshot) {
-          if (snapshot.connectionState == ConnectionState.active || snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.active ||
+              snapshot.connectionState == ConnectionState.waiting) {
             if (snapshot.hasData) {
               print("Waiting");
               return FutureBuilder<CurrentUser>(
@@ -81,7 +84,8 @@ class MyHomePage extends StatelessWidget {
                       return Text("${innersnapshot.error}");
                     }
                     // By default, show a loading spinner.
-                    return AnimatedLiquidCustomProgressIndicator(MediaQuery.of(context).size);
+                    return AnimatedLiquidCustomProgressIndicator(
+                        MediaQuery.of(context).size);
                   });
             } else {
               print('to the loginpage');

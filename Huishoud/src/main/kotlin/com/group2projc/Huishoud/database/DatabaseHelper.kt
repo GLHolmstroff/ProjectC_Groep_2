@@ -407,37 +407,50 @@ class DatabaseHelper(url: String) {
 
         transaction(db) {
             Schedules.select { (Schedules.userid eq uid) }.forEach{
-                var task = HashMap<String, Any>()
-                task["taskid"] = it[Schedules.taskid]
-                task["taskname"] = it[Schedules.taskname]
-                task["description"] = it[Schedules.description]
-                task["datedue"] = it[Schedules.datedue]
-                task["done"] = it[Schedules.done]
+                if (it[Schedules.done] == 0) {
+                    var task = HashMap<String, Any>()
+                    task["taskid"] = it[Schedules.taskid]
+                    task["taskname"] = it[Schedules.taskname]
+                    task["description"] = it[Schedules.description]
+                    task["datedue"] = it[Schedules.datedue]
+                    task["done"] = it[Schedules.done]
 
-                out.add(task)
+                    out.add(task)
+                }
             }
         }
         return out
     }
 
-    fun getHousematesChecks(gid: Int) : ArrayList<HashMap<String, Any>> {
+    fun getHousematesChecks(gid: Int, uid: String) : ArrayList<HashMap<String, Any>> {
         var out = ArrayList<HashMap<String, Any>>()
 
         transaction(db) {
             addLogger(StdOutSqlLogger)
             (Schedules innerJoin Users).select { (Schedules.groupid eq gid) and (Schedules.done eq 0)}.forEach{
-                var task = HashMap<String, Any>()
-                task["taskid"] = it[Schedules.taskid]
-                task["displayname"] = it[Users.displayname]
-                task["taskname"] = it[Schedules.taskname]
-                task["description"] = it[Schedules.description]
-                task["datedue"] = it[Schedules.datedue]
-                task["done"] = it[Schedules.done]
+                if (it[Users.id] != uid) {
+                    var task = HashMap<String, Any>()
+                    task["taskid"] = it[Schedules.taskid]
+                    task["displayname"] = it[Users.displayname]
+                    task["taskname"] = it[Schedules.taskname]
+                    task["description"] = it[Schedules.description]
+                    task["datedue"] = it[Schedules.datedue]
+                    task["done"] = it[Schedules.done]
 
-                out.add(task)
+                    out.add(task)
+                }
             }
         }
         return out
+    }
+
+    fun makeTaskDone(tid: Int) : DatabaseHelper {
+        transaction(db) {
+            Schedules.update ({ (Schedules.taskid eq tid) }) {
+                it[done] = 1
+            }
+        }
+        return this@DatabaseHelper
     }
 
     fun makeSchedule(gid: Int, uid: String, taskName: String, taskDescription: String, dateDue: String) : DatabaseHelper {

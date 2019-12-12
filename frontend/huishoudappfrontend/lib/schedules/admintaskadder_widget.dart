@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/Objects.dart';
 import 'package:huishoudappfrontend/groupmanagement/title_widget.dart';
 import 'package:huishoudappfrontend/design.dart';
+import 'package:huishoudappfrontend/page_container.dart';
 import 'package:huishoudappfrontend/schedules/selectusersfortasks_widget.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
@@ -68,8 +69,7 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
               if (response.statusCode == 200) {
                 Fluttertoast.showToast(msg: "Taak is toegevoegd!");
                 print("Schedule added");
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SchoonmaakPage()));
+                Navigator.popAndPushNamed(context, SchoonmaakPage.tag);
               } else {
                 print(response.statusCode.toString());
                 Fluttertoast.showToast(msg: "Er is iets mis gegaan...");

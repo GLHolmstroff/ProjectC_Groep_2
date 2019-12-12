@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/design.dart';
+import 'package:huishoudappfrontend/schedules/clickedOnTask_widget.dart';
 import '../profile.dart';
 import '../Objects.dart';
 import 'package:http/http.dart';
@@ -14,7 +15,9 @@ class SchoonmaakPage extends StatefulWidget {
   static String tag = "schoonmaakrooster_widget";
 
   @override
-  _SchoonmaakPageState createState() => _SchoonmaakPageState();
+  State<StatefulWidget> createState() {
+    return new _SchoonmaakPageState();
+  }
 }
 
 class _SchoonmaakPageState extends State<SchoonmaakPage> {
@@ -37,7 +40,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
 
   Future<void> getHousematesChecks() async {
     final Response res = await get(
-        "http://10.0.2.2:8080/getHousematesChecks?gid=$gid",
+        "http://10.0.2.2:8080/getHousematesChecks?gid=$gid&uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       return json.decode(res.body);
@@ -54,12 +57,16 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
       elevation: 3,
       child: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: Row(
-          children: <Widget>[
-            Text(data[index]["taskname"]),
-            Spacer(),
-            Text(data[index]["datedue"])
-          ],
+        child: ListTile(
+          leading: Text(data[index]["taskname"]),
+          trailing: Text(data[index]["datedue"]),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        new ClickedOnTask(clickedTask: data[index])));
+          },
         ),
       ),
     ));
