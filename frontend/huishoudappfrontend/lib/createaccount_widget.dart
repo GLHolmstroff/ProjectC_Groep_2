@@ -63,11 +63,11 @@ class _CreateAccountState extends State<CreateAccount> {
             _password,
           );
           final response =
-              await get("http://10.0.2.2:8080/authRegister?uid=$userId");
+              await get("http://seprojects.nl:8080/authRegister?uid=$userId");
           if (response.statusCode == 200) {
             print("Succesfully Registered");
             final Response res = await get(
-                "http://10.0.2.2:8080/userUpdateDisplayName?uid=$userId&displayname=$_displayname",
+                "http://seprojects.nl:8080/userUpdateDisplayName?uid=$userId&displayname=$_displayname",
                 headers: {'Content-Type': 'application/json'});
             if (res.statusCode == 200) {
               print('displayname updated');
@@ -90,6 +90,7 @@ class _CreateAccountState extends State<CreateAccount> {
             'Wachtwoorden komen niet overeen',
             context,
             duration: 2,
+            gravity: Toast.CENTER,
           );
           print("Account not created due to passwords incorrection");
         }

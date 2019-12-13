@@ -1,7 +1,9 @@
 import 'dart:convert';
+
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/groupgrafiek.dart';
 import 'package:huishoudappfrontend/groupmanagement/admin_widget.dart';
+
 import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/invitecode_widget.dart';
 import 'Objects.dart';
@@ -10,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:http/http.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'design.dart';
 
 class Home_widget extends StatefulWidget {
   static User currentUser;
@@ -57,8 +61,10 @@ class Home_widget_state extends State<Home_widget> {
   Future<User> getUser() async {
     String uid = await Auth().currentUser();
     User currentUser;
+
     final Response res = await get(
         "http://10.0.2.2:8080/authCurrent?uid=$uid",
+
         headers: {'Content-Type': 'application/json'});
     print(res.statusCode);
     if (res.statusCode == 200) {
@@ -101,6 +107,35 @@ class Home_widget_state extends State<Home_widget> {
       print(currentUser.group_permission);
       addUserToGroupButton = new Container();
     }
+
+
+    FutureBuilder grafiek = FutureBuilder<List<ConsumeDataPerMonthPerUser>>(
+      future: CurrentUser().getGroupConsumeData(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return SfCartesianChart(
+            primaryXAxis: CategoryAxis(),
+            series: <ChartSeries>[
+              BarSeries<ConsumeDataPerMonthPerUser, String>(
+                dataSource: snapshot.data,
+                color: Design.orange2,
+                borderColor: Design.rood,
+                borderWidth: 2,
+                xValueMapper: (ConsumeDataPerMonthPerUser data, _) => data.name,
+                yValueMapper: (ConsumeDataPerMonthPerUser data, _) => data.amount,
+                dataLabelSettings: DataLabelSettings(isVisible: true),
+              )
+            ]
+          );
+        }else if(snapshot.hasError) {
+          print(snapshot.error);
+          return Text("${snapshot.error}");
+
+        }else{
+          return CircularProgressIndicator();
+        }
+      },
+  );
 
     return Scaffold(
       appBar: AppBar(

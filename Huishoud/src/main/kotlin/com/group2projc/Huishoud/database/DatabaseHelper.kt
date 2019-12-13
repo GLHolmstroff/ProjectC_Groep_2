@@ -229,6 +229,21 @@ class DatabaseHelper(url: String) {
                 p = "groupAdmin"
 
             setGroupPermission(gid, uid, p)
+
+        }
+
+        transaction(db) {
+            addLogger(StdOutSqlLogger)
+            val entry = DatabaseHelper.BeerTallies.insert {
+                it[groupid] = gid
+                it[authorid] = uid
+                it[date] = LocalDateTime.now()
+                        .minusDays(1)
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"))
+                        .toString()
+                it[targetuserid] = uid
+                it[BeerTallies.mutation] = 0
+            }
         }
         return this@DatabaseHelper
     }
