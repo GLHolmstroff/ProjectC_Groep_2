@@ -73,6 +73,16 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
     );
   }
 
+  Widget amountApprovals() {
+    return Row(
+      children: <Widget>[
+        Text("Aantal goedkeuringen gekregen:"),
+        Spacer(),
+        Text(widget.clickedTask["approvals"].toString())
+      ],
+    );
+  }
+
   Widget goedkeuren() {
     return Container(
       child: Row(

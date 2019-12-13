@@ -438,6 +438,7 @@ class DatabaseHelper(url: String) {
                     task["description"] = it[Schedules.description]
                     task["datedue"] = it[Schedules.datedue]
                     task["done"] = it[Schedules.done]
+                    task["approvals"] = it[Schedules.approvals]
 
                     out.add(task)
                 }
@@ -457,8 +458,13 @@ class DatabaseHelper(url: String) {
 
     fun approveTask(tid: Int) : DatabaseHelper {
         transaction(db) {
-            Schedules.update ({ (Schedules.taskid eq tid) }) {
-                it[approvals] += 1
+            addLogger(StdOutSqlLogger)
+            var value = 0
+            Schedules.select { Schedules.taskid eq tid }.forEach {
+                value = it[Schedules.approvals]
+            }
+            Schedules.update({ Schedules.taskid eq tid }) {
+                it[approvals] = (value + 1)
             }
         }
         return this@DatabaseHelper
@@ -475,6 +481,7 @@ class DatabaseHelper(url: String) {
                 it[description] = taskDescription
                 it[datedue] = dateDue
                 it[done] = 0
+                it[approvals] = 0
                 }
             }
         return this@DatabaseHelper
