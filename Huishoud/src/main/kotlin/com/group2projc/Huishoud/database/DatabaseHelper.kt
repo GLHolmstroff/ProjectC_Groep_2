@@ -57,6 +57,7 @@ class DatabaseHelper(url: String) {
         val datedue = varchar("datedue", 20)
         val done = integer("done")
         val approvals = integer("approvals")
+        val ended = integer("ended")
     }
 
     object BeerTallies : Table() {
@@ -407,14 +408,16 @@ class DatabaseHelper(url: String) {
         var out = ArrayList<HashMap<String, Any>>()
 
         transaction(db) {
-            Schedules.select { (Schedules.userid eq uid) }.forEach{
-                if (it[Schedules.done] == 0) {
+            Schedules.select { (Schedules.userid eq uid) }.forEach {
+                if (it[Schedules.ended] == 0) {
                     var task = HashMap<String, Any>()
                     task["taskid"] = it[Schedules.taskid]
                     task["taskname"] = it[Schedules.taskname]
                     task["description"] = it[Schedules.description]
                     task["datedue"] = it[Schedules.datedue]
                     task["done"] = it[Schedules.done]
+                    task["approvals"] = it[Schedules.approvals]
+                    task["ended"] = it[Schedules.ended]
 
                     out.add(task)
                 }
@@ -428,8 +431,8 @@ class DatabaseHelper(url: String) {
 
         transaction(db) {
             addLogger(StdOutSqlLogger)
-            (Schedules innerJoin Users).select { (Schedules.groupid eq gid) and (Schedules.done eq 0)}.forEach{
-                if (it[Users.id] != uid) {
+            (Schedules innerJoin Users).select { (Schedules.groupid eq gid) and (Schedules.done eq 1)}.forEach{
+                if (it[Users.id] != uid && it[Schedules.ended] == 0) {
                     var task = HashMap<String, Any>()
                     task["taskid"] = it[Schedules.taskid]
                     task["uid"] = it[Users.id]
@@ -439,6 +442,7 @@ class DatabaseHelper(url: String) {
                     task["datedue"] = it[Schedules.datedue]
                     task["done"] = it[Schedules.done]
                     task["approvals"] = it[Schedules.approvals]
+                    task["ended"] = it[Schedules.ended]
 
                     out.add(task)
                 }
@@ -451,6 +455,15 @@ class DatabaseHelper(url: String) {
         transaction(db) {
             Schedules.update ({ (Schedules.taskid eq tid) }) {
                 it[done] = 1
+            }
+        }
+        return this@DatabaseHelper
+    }
+
+    fun endTask(tid: Int) : DatabaseHelper {
+        transaction(db) {
+            Schedules.update ({ (Schedules.taskid eq tid) }) {
+                it[ended] = 1
             }
         }
         return this@DatabaseHelper
@@ -482,6 +495,7 @@ class DatabaseHelper(url: String) {
                 it[datedue] = dateDue
                 it[done] = 0
                 it[approvals] = 0
+                it[ended] = 0
                 }
             }
         return this@DatabaseHelper

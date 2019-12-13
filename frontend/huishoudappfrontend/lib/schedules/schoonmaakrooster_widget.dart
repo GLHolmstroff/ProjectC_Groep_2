@@ -51,6 +51,16 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
     }
   }
 
+  Widget getIcon(int done, int approvals) {
+    if (done == 0) {
+      return Icon(Icons.hourglass_empty, color: Colors.orange[800]);
+    }
+    if (done == 1 && approvals < 2) {
+      return Icon(Icons.hourglass_full, color: Colors.orange[800]);
+    }
+    return Icon(Icons.done_all, color: Colors.orange[800]);
+  }
+
   // Cards worden gebruikt in de listview als items, hier heb ik mijn eigen card gemaakt met de klusnaam en verloopdatum
   Widget taskCard(BuildContext context, int index, var data) {
     return new Container(
@@ -59,8 +69,9 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
       child: Padding(
         padding: const EdgeInsets.all(15.0),
         child: ListTile(
-          leading: Text(data[index]["taskname"]),
-          trailing: Text(data[index]["datedue"]),
+          title: Text(data[index]["taskname"]),
+          subtitle: Text(data[index]["datedue"]),
+          trailing: getIcon(data[index]["done"], data[index]["approvals"]),
           onTap: () {
             Navigator.push(
                 context,

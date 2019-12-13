@@ -120,7 +120,7 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
     if (goedgekeurd) {
       approveTask();
     } else {
-      Fluttertoast.showToast(msg: "Taak nog niet afgerond!");
+      Fluttertoast.showToast(msg: "Taak nog niet goedgekeurd!");
       Navigator.pop(context);
     }
   }
@@ -153,10 +153,12 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
             width: MediaQuery.of(context).size.width * 0.85,
             child: Column(
               children: <Widget>[
-                SizedBox(height: 20),
+                SizedBox(height: 30),
                 doneBy(),
+                SizedBox(height: 50),
                 showTaskPic(),
-                goedkeuren()
+                goedkeuren(),
+                button()
               ],
             ),
           )

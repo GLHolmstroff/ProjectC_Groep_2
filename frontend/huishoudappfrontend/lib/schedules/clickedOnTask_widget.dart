@@ -62,23 +62,42 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
   }
 
   Widget isTaskDone() {
-    return Container(
-      child: Row(
+    if (widget.clickedTask["done"] == 0) {
+      return Container(
+        child: Row(
+          children: <Widget>[
+            Text("Taak afgerond?",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            Spacer(),
+            Checkbox(
+              value: taskDone,
+              onChanged: (bool value) {
+                setState(() {
+                  taskDone = value;
+                });
+              },
+            )
+          ],
+        ),
+      );
+    }
+    return Container(height: 0);
+  }
+
+  Widget showApprovals() {
+    if (widget.clickedTask["done"] == 1) {
+      var value = widget.clickedTask["approvals"];
+      return Row(
         children: <Widget>[
-          Text("Taak afgerond?",
+          Text("Goedkeuringen: ",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           Spacer(),
-          Checkbox(
-            value: taskDone,
-            onChanged: (bool value) {
-              setState(() {
-                taskDone = value;
-              });
-            },
-          )
+          Text("$value/3",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18))
         ],
-      ),
-    );
+      );
+    }
+    return Container(height: 0);
   }
 
   Future<void> makeTaskDone() async {
@@ -87,10 +106,42 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
     final Response res = await get("http://10.0.2.2:8080/makeTaskDone?tid=$tid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
-      Fluttertoast.showToast(msg: "Taak is afgerond");
+      Fluttertoast.showToast(msg: "Taak zit nu in beoordelingsfase");
       Navigator.pop(context);
     } else {
       print(res.statusCode.toString());
+    }
+  }
+
+  Future<void> endTask() async {
+    var tid = widget.clickedTask["taskid"];
+
+    final Response res = await get("http://10.0.2.2:8080/endTask?tid=$tid",
+        headers: {'Content-Type': 'application/json'});
+    if (res.statusCode == 200) {
+      Fluttertoast.showToast(msg: "Taak is helemaal afgerond!");
+      Navigator.pop(context);
+    } else {
+      print(res.statusCode.toString());
+    }
+  }
+
+  Widget endTaskButton() {
+    if (widget.clickedTask["approvals"] >= 3) {
+      return Center(
+        child: RaisedButton(
+          child: Text(
+            "Taak volledig afronden",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          onPressed: () {
+            endTask();
+          },
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(36.0),
+              side: BorderSide(color: Design.orange2)),
+        ),
+      );
     }
   }
 
@@ -98,7 +149,6 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
     if (taskDone) {
       makeTaskDone();
     } else {
-      Fluttertoast.showToast(msg: "Taak nog niet afgerond!");
       Navigator.pop(context);
     }
   }
@@ -107,7 +157,7 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
     return Center(
       child: RaisedButton(
         child: Text(
-          "Bevestigen",
+          "Gereed",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         onPressed: () {
@@ -131,9 +181,13 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
               width: MediaQuery.of(context).size.width * 0.85,
               child: Column(
                 children: <Widget>[
-                  SizedBox(height: 20),
+                  SizedBox(height: 50),
                   dueDate(),
+                  SizedBox(height: 40),
                   isTaskDone(),
+                  SizedBox(height: 50),
+                  showApprovals(),
+                  SizedBox(height: 70),
                   buildButton()
                 ],
               ),

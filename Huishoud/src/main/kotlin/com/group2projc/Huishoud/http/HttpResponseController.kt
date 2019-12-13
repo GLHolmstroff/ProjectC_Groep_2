@@ -105,6 +105,14 @@ class HttpResponseController {
                 template + tid)
     }
 
+    @RequestMapping("/endTask")
+    fun endTask(@RequestParam(value = "tid", defaultValue = "") tid: Int) : HttpResponse {
+        val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .endTask(tid)
+        return HttpResponse(counter.incrementAndGet().toInt(),
+                template + tid)
+    }
+
     @RequestMapping("/approveTask")
     fun approveTask(@RequestParam(value = "tid", defaultValue = "") tid: Int) : HttpResponse {
         val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
