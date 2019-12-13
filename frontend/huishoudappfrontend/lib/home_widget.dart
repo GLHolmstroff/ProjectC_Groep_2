@@ -1,4 +1,9 @@
 import 'dart:convert';
+
+import 'package:huishoudappfrontend/design.dart';
+import 'package:huishoudappfrontend/groupgrafiek.dart';
+import 'package:huishoudappfrontend/groupmanagement/admin_widget.dart';
+
 import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/invitecode_widget.dart';
 import 'Objects.dart';
@@ -27,11 +32,39 @@ class Home_widget extends StatefulWidget {
 class Home_widget_state extends State<Home_widget> {
   String _userinfo = Home_widget.currentUser.toString();
   var currentUser = CurrentUser();
+  var userhouseName;
+  var appBarActions = <Widget>[];
+
+  void initState() {
+    print("user =" + currentUser.group_permission);
+    appBarActions.add(Visibility(
+      visible: currentUser.group_permission == "groupAdmin",
+        child: IconButton(
+        
+      icon: Icon(
+        Icons.edit,
+        color: Colors.white,
+      ),
+      onPressed: _toAdminWidget,
+    )));
+    initActual();
+  }
+
+  Future<void> initActual() async {
+    String temphouse = (await House.getCurrentHouse()).houseName;
+
+    setState(() {
+      userhouseName = temphouse;
+    });
+  }
 
   Future<User> getUser() async {
     String uid = await Auth().currentUser();
     User currentUser;
-    final Response res = await get("http://seprojects.nl:8080/authCurrent?uid=$uid",
+
+    final Response res = await get(
+        "http://10.0.2.2:8080/authCurrent?uid=$uid",
+
         headers: {'Content-Type': 'application/json'});
     print(res.statusCode);
     if (res.statusCode == 200) {
@@ -49,6 +82,13 @@ class Home_widget_state extends State<Home_widget> {
     });
   }
 
+  void _toAdminWidget() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Admin_widget(),
+        ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +139,9 @@ class Home_widget_state extends State<Home_widget> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        title: Text(userhouseName),
+        actions: appBarActions,
+        backgroundColor: Design.rood,
       ),
       body: Center(
         child: Column(

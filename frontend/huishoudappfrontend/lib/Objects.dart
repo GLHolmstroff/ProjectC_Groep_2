@@ -114,17 +114,18 @@ class CurrentUser extends BaseUser {
 }
 
 class User extends BaseUser {
-  User(userId, groupId, globalPermissions, displayName, picture_link) {
+  User(userId, groupId, globalPermissions, displayName, picture_link, group_permission) {
     this.userId = userId;
     this.groupId = groupId;
     this.globalPermissions = globalPermissions;
     this.displayName = displayName;
     this.picture_link = picture_link;
+    this.group_permission = group_permission;
   }
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(json["uid"], json["groupid"], json["global_permissions"],
-        json["display_name"], json["picture_link"]);
+        json["display_name"], json["picture_link"],json["group_permissions"]);
   }
 
 
