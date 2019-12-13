@@ -56,7 +56,8 @@ class CurrentUser extends BaseUser {
   static Future<CurrentUser> updateCurrentUser() async {
     String uid = await Auth().currentUser();
     CurrentUser placehoderCurrentUser;
-    final Response res = await get("http://seprojects.nl:8080/authCurrent?uid=$uid",
+    final Response res = await get(
+        "http://seprojects.nl:8080/authCurrent?uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       placehoderCurrentUser = CurrentUser.fromJson(json.decode(res.body));
@@ -69,17 +70,21 @@ class CurrentUser extends BaseUser {
   static List<ConsumeData> _listFromJson(Map<String, dynamic> json) {
     List<ConsumeData> lst = new List<ConsumeData>();
     ConsumeData placeholder;
-    json.forEach((k,v) => 
-    v.forEach((k1, v1) =>
-      lst.add(ConsumeData(k1, v1))
-    )
+    json.forEach(
+      (k, v) => v.forEach(
+        (k1, v1) => lst.add(
+          ConsumeData(k1, v1)
+        ),
+      ),
     );
-    
+
     return lst;
   }
 
-  static List<ConsumeDataPerMonthPerUser> _listGroupDataFromJson(Map<String, dynamic> json) {
-    List<ConsumeDataPerMonthPerUser> lst = new List<ConsumeDataPerMonthPerUser>();
+  static List<ConsumeDataPerMonthPerUser> _listGroupDataFromJson(
+      Map<String, dynamic> json) {
+    List<ConsumeDataPerMonthPerUser> lst =
+        new List<ConsumeDataPerMonthPerUser>();
     json.forEach((k, v) => lst.add(ConsumeDataPerMonthPerUser(k, v)));
     return lst;
   }
@@ -87,25 +92,28 @@ class CurrentUser extends BaseUser {
   Future<List<ConsumeDataPerMonthPerUser>> getGroupConsumeData() async {
     String gid = CurrentUser().groupId.toString();
     List<ConsumeDataPerMonthPerUser> placeHolderList;
-    final Response res = await get("http://seprojects.nl:8080/getTallyPerUserPerMonth?gid=$gid",
+    final Response res = await get(
+        "http://seprojects.nl:8080/getTallyPerUserPerMonth?gid=$gid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
-      placeHolderList = CurrentUser._listGroupDataFromJson(json.decode(res.body));
+      placeHolderList =
+          CurrentUser._listGroupDataFromJson(json.decode(res.body));
     } else {
       print("Could not make list of data");
     }
     return placeHolderList;
   }
-  
 
   Future<List<ConsumeData>> getConsumeData() async {
     String uid = CurrentUser().userId.toString();
     String gid = CurrentUser().groupId.toString();
     List<ConsumeData> placeHolderListConsumeData;
-    final Response res = await get("http://seprojects.nl:8080/getTallyPerUserPerDay?gid=$gid&uid=$uid",
+    final Response res = await get(
+        "http://seprojects.nl:8080/getTallyPerUserPerDay?gid=$gid&uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
-      placeHolderListConsumeData = CurrentUser._listFromJson(json.decode(res.body));
+      placeHolderListConsumeData =
+          CurrentUser._listFromJson(json.decode(res.body));
     } else {
       print("Could not make list of data");
     }
@@ -127,11 +135,11 @@ class User extends BaseUser {
         json["display_name"], json["picture_link"]);
   }
 
-
   static Future<User> getUser(String cuid) async {
     String uid = cuid;
     User placeholdesUser;
-    final Response res = await get("http://seprojects.nl:8080/authCurrent?uid=$uid",
+    final Response res = await get(
+        "http://seprojects.nl:8080/authCurrent?uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       placeholdesUser = User.fromJson(json.decode(res.body));
@@ -146,27 +154,19 @@ class Group {
   //TODO: Add groupid, etc. and ways to query them
   final List<String> users;
 
-  
-
   Group({this.users});
 
-  factory Group.fromJson(Map<String,dynamic> json) {
+  factory Group.fromJson(Map<String, dynamic> json) {
     List<String> users = new List<String>();
     String keyPart = "UserId";
 
-    for( var i = 0; i < json.length; i++){
-        String key = keyPart + i.toString();
-        users.add(json[key]);
-      }
-    
-    return Group(
-      users: users
-    );
+    for (var i = 0; i < json.length; i++) {
+      String key = keyPart + i.toString();
+      users.add(json[key]);
+    }
 
-
+    return Group(users: users);
   }
-
-
 
   String toString() {
     String out = "";
@@ -178,7 +178,8 @@ class Group {
     CurrentUser currentUser = CurrentUser();
     String groupId = currentUser.groupId.toString();
     Group currentGroup;
-    final Response res = await get("http://seprojects.nl:8080/getGroup?gid=$groupId",
+    final Response res = await get(
+        "http://seprojects.nl:8080/getGroup?gid=$groupId",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       currentGroup = Group.fromJson(json.decode(res.body));
@@ -191,14 +192,13 @@ class Group {
 }
 
 class House {
-    final int groupId;
-    final String createdAt;
-    final String houseName;
+  final int groupId;
+  final String createdAt;
+  final String houseName;
 
-    House({this.groupId, this.createdAt, this.houseName});
+  House({this.groupId, this.createdAt, this.houseName});
 
-
-    factory House.fromJson(Map<String,dynamic> json) {
+  factory House.fromJson(Map<String, dynamic> json) {
     return House(
         groupId: json['groupid'],
         createdAt: json['created_at'],
@@ -220,7 +220,6 @@ class House {
     }
     return currentGroup;
   }
-    
 }
 
 class BeerTally {
@@ -230,7 +229,7 @@ class BeerTally {
 
   BeerTally({this.count, this.pics});
 
-  Map<String,int> getCount(){
+  Map<String, int> getCount() {
     return this.count;
   }
 
@@ -265,7 +264,7 @@ class BeerTally {
     final Response res = await get(
         "http://seprojects.nl:8080/getTallyByName?gid=$gid",
         headers: {'Content-Type': 'application/json'});
-    
+
     if (res.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       beer = BeerTally.fromJson(json.decode(res.body));
@@ -286,13 +285,13 @@ class BeerTally {
     return BeerTally(count: count, pics: pics);
   }
 
-  String toString(){
+  String toString() {
     String out = "";
-    this.count.forEach((k,v) => out += k + " drank " + v.toString() + " beers" + "\n");
+    this.count.forEach(
+        (k, v) => out += k + " drank " + v.toString() + " beers" + "\n");
     return out;
   }
 }
-
 
 class BeerEvent {
   int gid;
@@ -303,17 +302,25 @@ class BeerEvent {
   String date;
   int mutation;
 
-  BeerEvent(this.gid, this.authorid, this.authorname, this.targetid, this.targetname, this.date, this.mutation);
+  BeerEvent(this.gid, this.authorid, this.authorname, this.targetid,
+      this.targetname, this.date, this.mutation);
 
-  BeerEvent copyByVal(){
-    return BeerEvent(this.gid, this.authorid, this.authorname, this.targetid, this.targetname, this.date, this.mutation);
+  BeerEvent copyByVal() {
+    return BeerEvent(this.gid, this.authorid, this.authorname, this.targetid,
+        this.targetname, this.date, this.mutation);
   }
 
   static List<BeerEvent> fromJson(List<dynamic> json) {
     List<BeerEvent> out = List<BeerEvent>();
     json.forEach((event) {
-      BeerEvent beer = new BeerEvent(event["gid"], event["authorid"],event["authorname"],
-          event["targetid"],event["targetname"], event["date"], event["mutation"]);
+      BeerEvent beer = new BeerEvent(
+          event["gid"],
+          event["authorid"],
+          event["authorname"],
+          event["targetid"],
+          event["targetname"],
+          event["date"],
+          event["mutation"]);
       out.add(beer);
     });
     return out;
@@ -350,4 +357,3 @@ class ConsumeDataPerMonthPerUser {
 //TODO:
 //Class Schedules
 //Class Group_Permissions
-
