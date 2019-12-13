@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:huishoudappfrontend/Objects.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:huishoudappfrontend/turf_widget.dart';
+import 'package:huishoudappfrontend/turf_widget_admin.dart';
 import 'package:huishoudappfrontend/turf_widget_edit.dart';
 
 import 'design.dart';
@@ -18,18 +19,17 @@ class TurfWidgetAddProduct extends StatefulWidget {
 
 class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
   final formKey = GlobalKey<FormState>();
+  final listFormKey = GlobalKey<FormState>();
+  List<ListItem<Product>> products = [];
+  String _listProductName;
+  String _listProductPrice;
   String _productName;
   String _productPrice;
 
-  Future<void> sentProductData() async {
+  Future<void> sentProductData(String name, String price) async {
     int gid = CurrentUser().groupId;
-    formKey.currentState.save();
-    String name = _productName;
-    String price = _productPrice;
     print(name);
     print(price);
-    
-
     final Response res = await get(
         "http://10.0.2.2:8080/addProduct?gid=$gid&name=$name&price=$price");
 
@@ -41,6 +41,192 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
     } else {
       print(res.statusCode);
     }
+  }
+
+  @override
+  void initState() {
+    initActual();
+    super.initState();
+  }
+
+  void initActual() async {
+    List<Product> productstemp = await Product.getData(CurrentUser().groupId);
+    List<ListItem<Product>> productItems = [];
+    for (var product in productstemp) {
+      productItems.add(ListItem(product));
+    }
+    setState(() {
+      products = productItems;
+    });
+  }
+
+  Future<String> getUserName(String uid) async {
+    return (await User.getUser(uid)).displayName;
+  }
+
+  Container buildRegularItem(
+      int index, TextFormField nameField, TextFormField priceField) {
+    return Container(
+        color: Colors.white,
+        child: ListTile(
+          leading: Text("Naam: ", textAlign: TextAlign.start),
+          title: Text(products[index].data.name.toString(),
+              textAlign: TextAlign.start),
+          trailing: Text(products[index].data.price.toString(),
+              textAlign: TextAlign.end),
+          //Make item selected
+          onTap: () {
+            nameField.controller.clear();
+            priceField.controller.clear();
+            setState(() {
+              for (var product in products) {
+                product.isSelected = false;
+              }
+              products[index].isSelected = true;
+            });
+          },
+        ));
+  }
+
+  GestureDetector buildSelectedItem(BuildContext context, int index,
+      TextFormField nameField, TextFormField priceField) {
+    return GestureDetector(
+      child: Container(
+        color: Design.orange2,
+        child: SizedBox(
+            height: MediaQuery.of(context).size.height * .2,
+            child: Form(
+                key: listFormKey,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text("Naam",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * .05,
+                        ),
+                        Container(
+                            alignment: Alignment.bottomCenter,
+                            width: MediaQuery.of(context).size.width * .33,
+                            child: nameField),
+                      ],
+                    ),
+                    Column(
+                      children: <Widget>[
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * .08,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16.0),
+                          child: RaisedButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24)),
+                            onPressed: () {
+                              listFormKey.currentState.save();
+                              sentProductData(_listProductName, _listProductPrice);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => new Turfwidget(),
+                                  ));
+                            },
+                            padding: EdgeInsets.all(12),
+                            color: Design.rood,
+                            child: Text(
+                              'Product wijzigen',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        Text("Prijs",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * .05,
+                        ),
+                        Container(
+                            alignment: Alignment.bottomCenter,
+                            width: MediaQuery.of(context).size.width * .33,
+                            child: priceField),
+                      ],
+                    )
+                  ],
+                ))),
+      ),
+    );
+  }
+
+  TextFormField makeListNameField(int index) {
+    return TextFormField(
+      textAlign: TextAlign.center,
+      controller: TextEditingController(),
+      keyboardType: TextInputType.text,
+      onSaved: (value) {
+        setState(() {
+          _listProductName = value;
+        });
+      },
+      decoration: InputDecoration(
+          hintText: '${products[index].data.name.toString()}',
+          hintStyle: TextStyle(fontWeight: FontWeight.bold),
+          contentPadding: const EdgeInsets.all(5.0),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Design.rood),
+          ),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+              borderSide: BorderSide(color: Design.rood))),
+    );
+  }
+
+  TextFormField makeListPriceField(int index) {
+    return TextFormField(
+      textAlign: TextAlign.center,
+      controller: TextEditingController(),
+      keyboardType: TextInputType.text,
+      onSaved: (value) {
+        setState(() {
+          _listProductPrice = value;
+        });
+      },
+      decoration: InputDecoration(
+          hintText: '${products[index].data.price.toString()}',
+          hintStyle: TextStyle(fontWeight: FontWeight.bold),
+          contentPadding: const EdgeInsets.all(5.0),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Design.rood),
+          ),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+              borderSide: BorderSide(color: Design.rood))),
+    );
+  }
+
+  ListView createListTile(int gid) {
+    return ListView.builder(
+      itemCount: products.length,
+      itemBuilder: (context, index) {
+        TextFormField listName = makeListNameField(index);
+        TextFormField listPrice = makeListPriceField(index);
+        //Build list items
+        return products[index].isSelected
+            ? buildSelectedItem(context, index, listName, listPrice)
+            : buildRegularItem(index, listName, listPrice);
+      },
+    );
   }
 
   Widget build(BuildContext context) {
@@ -71,7 +257,7 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
         });
       },
       decoration: InputDecoration(
-          hintText: '€',
+          hintText: '€ (Prijs per eenheid)',
           contentPadding: const EdgeInsets.all(15.0),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(32.0),
@@ -87,7 +273,8 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
       child: RaisedButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         onPressed: () {
-          sentProductData();
+          formKey.currentState.save();
+          sentProductData(_productName, _productPrice);
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -117,25 +304,30 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
           ),
         ),
         body: Center(
-          child: Form(
-            key: formKey,
-            child: Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 30,
-                ),
-                inputProductName,
-                SizedBox(
-                  height: 10,
-                ),
-                inputProductPrice,
-                SizedBox(
-                  height: 20,
-                ),
-                addProductButton
-              ],
+          child: Column(children: <Widget>[
+            SizedBox(
+                height: MediaQuery.of(context).size.height / 2,
+                child: createListTile(CurrentUser().groupId)),
+            Form(
+              key: formKey,
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 30,
+                  ),
+                  inputProductName,
+                  SizedBox(
+                    height: 10,
+                  ),
+                  inputProductPrice,
+                  SizedBox(
+                    height: 20,
+                  ),
+                  addProductButton
+                ],
+              ),
             ),
-          ),
+          ]),
         ));
   }
 }

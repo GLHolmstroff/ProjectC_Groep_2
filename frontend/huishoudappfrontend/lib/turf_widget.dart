@@ -17,16 +17,14 @@ import 'Objects.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class TurfInfo {
-  TurfInfo({
-    this.numberofbeers,
-    this.uid
-  });
+  TurfInfo({this.numberofbeers, this.uid});
   int numberofbeers;
   String uid;
-  
 }
 
 class Turfwidget extends StatefulWidget {
+  static String tag = 'turf-widget';
+
   @override
   State<StatefulWidget> createState() => _Turfwidget();
 }
@@ -63,30 +61,25 @@ class _Turfwidget extends State<Turfwidget> {
     List<Map> namePics = await Group.getNamesAndPics(CurrentUser().groupId);
 
     setState(() {
-      for(var namePic in namePics){
+      for (var namePic in namePics) {
         picIDs.add(namePic['picture']);
         names.add(namePic['name']);
       }
     });
 
-    BeerTally beer = await BeerTally.getData(CurrentUser().groupId, _currentItemSelected);
+    BeerTally beer =
+        await BeerTally.getData(CurrentUser().groupId, _currentItemSelected);
     print(beer);
     List<int> counts = beer.getCount();
     for (int i = 0; i < counts.length; i++) {
-      receivedData.add(TurfInfo(
-        numberofbeers: counts[i],
-        uid: picIDs[i]
-      ));
-      sentData.add(TurfInfo(
-        numberofbeers: counts[i],
-        uid: picIDs[i]
-      ));
+      receivedData.add(TurfInfo(numberofbeers: counts[i], uid: picIDs[i]));
+      sentData.add(TurfInfo(numberofbeers: counts[i], uid: picIDs[i]));
     }
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
     List<CachedNetworkImage> images = [];
     print("Picture length: ${picIDs.length}");
-  
+
     for (var pic in picIDs) {
       print("Loading image${picIDs.indexOf(pic)}");
       images.add(new CachedNetworkImage(
@@ -121,19 +114,16 @@ class _Turfwidget extends State<Turfwidget> {
       buttons.children.add(FlatButton(
         child: Text("View Log"),
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => new TurfWidgetAdmin(),
-              ));
+          Navigator.pushNamed(context, TurfWidgetAdmin.tag);
         },
       ));
     }
     return buttons;
   }
 
-  Future<void> switchProduct() async{
-    BeerTally product = await BeerTally.getData(CurrentUser().groupId, _currentItemSelected);
+  Future<void> switchProduct() async {
+    BeerTally product =
+        await BeerTally.getData(CurrentUser().groupId, _currentItemSelected);
     print(product);
     List<int> counts = product.getCount();
     for (int i = 0; i < counts.length; i++) {
@@ -144,9 +134,7 @@ class _Turfwidget extends State<Turfwidget> {
       receivedData = receivedData;
       sentData = sentData;
     });
-
   }
-
 
   FlatButton addProducts() {
     if (CurrentUser().group_permission == 'groupAdmin') {
@@ -154,15 +142,14 @@ class _Turfwidget extends State<Turfwidget> {
         child: Text("Producten toevoegen"),
         onPressed: () {
           Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => new TurfWidgetAddProduct(),
-            ));
+              context,
+              MaterialPageRoute(
+                builder: (context) => new TurfWidgetAddProduct(),
+              ));
         },
       );
       return addproduct;
     }
-
   }
 
   int getMutation(index) {
@@ -196,7 +183,7 @@ class _Turfwidget extends State<Turfwidget> {
         print(res.statusCode);
       }
       setState(() {
-        for (int i = 0; i < sentData.length; i++){
+        for (int i = 0; i < sentData.length; i++) {
           receivedData[i].numberofbeers = sentData[i].numberofbeers;
         }
       });
@@ -261,7 +248,10 @@ class _Turfwidget extends State<Turfwidget> {
           child: Center(
             child: Text(
               dropDownString,
-              style: TextStyle(fontSize: 25, color: Design.rood,),
+              style: TextStyle(
+                fontSize: 25,
+                color: Design.rood,
+              ),
             ),
           ),
         );
@@ -270,13 +260,11 @@ class _Turfwidget extends State<Turfwidget> {
         this._currentItemSelected = newValue;
         switchProduct();
       }),
-    
       value: _currentItemSelected,
       isExpanded: true,
       icon: Icon(Icons.more_horiz),
       iconEnabledColor: Design.rood,
       iconSize: 40,
-      
     );
 
     DropdownButton dropdown = dropdownButton;

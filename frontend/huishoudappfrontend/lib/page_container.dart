@@ -28,7 +28,7 @@ class HomePageState extends State<HomePage> {
   final List<Widget> _children = [
     Home_widget(),
     SchoonmaakPage(),
-    TurfwidgetGrid(),
+    Turfwidget(),
     Profilepage()
   ];
 
@@ -45,7 +45,7 @@ class HomePageState extends State<HomePage> {
     setState(() => [
           Home_widget(),
           PlaceholderWidget(Colors.deepOrange),
-          TurfwidgetGrid(),
+          Turfwidget(),
           Profilepage()
         ]);
   }
