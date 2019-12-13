@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/groupgrafiek.dart';
 import 'package:huishoudappfrontend/groupmanagement/admin_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
@@ -31,15 +32,17 @@ class Home_widget_state extends State<Home_widget> {
   var appBarActions = <Widget>[];
 
   void initState() {
-    if (currentUser.group_permission == "admin") {
-      appBarActions.add(IconButton(
-        icon: Icon(
-          Icons.edit,
-          color: Colors.white,
-        ),
-        onPressed: _toAdminWidget,
-      ));
-    }
+    print("user =" + currentUser.group_permission);
+    appBarActions.add(Visibility(
+      visible: currentUser.group_permission == "groupAdmin",
+        child: IconButton(
+        
+      icon: Icon(
+        Icons.edit,
+        color: Colors.white,
+      ),
+      onPressed: _toAdminWidget,
+    )));
     initActual();
   }
 
@@ -54,7 +57,8 @@ class Home_widget_state extends State<Home_widget> {
   Future<User> getUser() async {
     String uid = await Auth().currentUser();
     User currentUser;
-    final Response res = await get("http://seprojects.nl:8080/authCurrent?uid=$uid",
+    final Response res = await get(
+        "http://seprojects.nl:8080/authCurrent?uid=$uid",
         headers: {'Content-Type': 'application/json'});
     print(res.statusCode);
     if (res.statusCode == 200) {
@@ -101,13 +105,8 @@ class Home_widget_state extends State<Home_widget> {
     return Scaffold(
       appBar: AppBar(
         title: Text(userhouseName),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: _toAdminWidget,
-          )
-        ],
-        backgroundColor: Colors.red,
+        actions: appBarActions,
+        backgroundColor: Design.rood,
       ),
       body: Center(
         child: Column(

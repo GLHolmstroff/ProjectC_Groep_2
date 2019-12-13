@@ -156,6 +156,21 @@ class HttpResponseController {
 
     }
 
+    @RequestMapping("/setGroupPermission")
+    fun setGroupPermission(@RequestParam(value="uid", defaultValue = "")uid:String,
+                     @RequestParam(value="admin", defaultValue = "")admin:Boolean):HashMap<String,String> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").setGroupPermission(uid,admin);
+        return map;
+
+    }
+
+    @RequestMapping("/deleteUserFromGroup")
+    fun deleteUserFromGroup(@RequestParam(value="uid", defaultValue = "")uid:String):HashMap<String,String> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").deleteUserFromGroup(uid);
+        return map;
+
+    }
+
 
 
     @RequestMapping("/initDatabase")
