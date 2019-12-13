@@ -17,7 +17,7 @@ class _InviteCodeWidgetState extends State {
   Future<void> _getCode() async {
     CurrentUser currentUser = CurrentUser();
     int gid = currentUser.groupId;
-    Response res =  await get("http://seprojects.nl:8080/getInviteCode?gid=$gid");
+    Response res =  await get("http://10.0.2.2:8080/getInviteCode?gid=$gid");
     String code = json.decode(res.body)["code"].toString();
     setState(() {
       text = code;
