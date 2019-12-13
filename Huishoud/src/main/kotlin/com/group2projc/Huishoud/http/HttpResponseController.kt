@@ -105,6 +105,13 @@ class HttpResponseController {
                 template + tid)
     }
 
+    @RequestMapping("/approveTask")
+    fun approveTask(@RequestParam(value = "tid", defaultValue = "") tid: Int) : HttpResponse {
+        val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .approveTask(tid)
+        return HttpResponse(counter.incrementAndGet().toInt(),
+                template + tid)
+    }
 
     @RequestMapping("/getGroupName")
     fun getGroupname(@RequestParam(value = "gid", defaultValue = "TokenNotSet") gid: Int ): HashMap<String,Any?> {

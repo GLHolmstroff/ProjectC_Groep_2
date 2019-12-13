@@ -7,6 +7,7 @@ import 'package:huishoudappfrontend/createaccount_widget.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/creategroup_widget.dart';
+import 'package:huishoudappfrontend/schedules/clickedOnCheckHousemate.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:huishoudappfrontend/services/permission_serivce.dart';
 import 'package:huishoudappfrontend/turf_widget_admin.dart';
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
     GroupWidget.tag: (context) => GroupWidget(),
     TurfWidgetAdmin.tag: (context) => TurfWidgetAdmin(),
     TurfWidgetEdit.tag: (context) => TurfWidgetEdit(null),
-    SchoonmaakPage.tag: (context) => SchoonmaakPage()
+    SchoonmaakPage.tag: (context) => SchoonmaakPage(),
   };
 
   @override

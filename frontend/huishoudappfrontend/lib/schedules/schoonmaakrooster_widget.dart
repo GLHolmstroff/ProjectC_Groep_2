@@ -10,6 +10,7 @@ import 'package:toast/toast.dart';
 import 'admintaskadder_widget.dart';
 import 'dart:convert';
 import 'package:http/http.dart';
+import 'clickedOnCheckHousemate.dart';
 
 class SchoonmaakPage extends StatefulWidget {
   static String tag = "schoonmaakrooster_widget";
@@ -83,7 +84,13 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
             title: Text(data[index]["displayname"]),
             subtitle: Text(data[index]["taskname"]),
             trailing: Icon(Icons.arrow_right),
-            onTap: () {/* Go to page of task*/},
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => new ClickedOnCheckHousemate(
+                          clickedTask: data[index])));
+            },
           ),
         ),
       ),

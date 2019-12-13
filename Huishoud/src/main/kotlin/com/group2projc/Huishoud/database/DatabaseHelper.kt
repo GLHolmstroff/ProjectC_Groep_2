@@ -56,6 +56,7 @@ class DatabaseHelper(url: String) {
         val description = varchar("description", 50)
         val datedue = varchar("datedue", 20)
         val done = integer("done")
+        val approvals = integer("approvals")
     }
 
     object BeerTallies : Table() {
@@ -431,6 +432,7 @@ class DatabaseHelper(url: String) {
                 if (it[Users.id] != uid) {
                     var task = HashMap<String, Any>()
                     task["taskid"] = it[Schedules.taskid]
+                    task["uid"] = it[Users.id]
                     task["displayname"] = it[Users.displayname]
                     task["taskname"] = it[Schedules.taskname]
                     task["description"] = it[Schedules.description]
@@ -448,6 +450,15 @@ class DatabaseHelper(url: String) {
         transaction(db) {
             Schedules.update ({ (Schedules.taskid eq tid) }) {
                 it[done] = 1
+            }
+        }
+        return this@DatabaseHelper
+    }
+
+    fun approveTask(tid: Int) : DatabaseHelper {
+        transaction(db) {
+            Schedules.update ({ (Schedules.taskid eq tid) }) {
+                it[approvals] += 1
             }
         }
         return this@DatabaseHelper

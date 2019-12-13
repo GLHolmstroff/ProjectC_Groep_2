@@ -69,7 +69,10 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
               if (response.statusCode == 200) {
                 Fluttertoast.showToast(msg: "Taak is toegevoegd!");
                 print("Schedule added");
-                Navigator.popAndPushNamed(context, SchoonmaakPage.tag);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => new SchoonmaakPage()));
               } else {
                 print(response.statusCode.toString());
                 Fluttertoast.showToast(msg: "Er is iets mis gegaan...");
