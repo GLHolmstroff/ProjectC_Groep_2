@@ -273,7 +273,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                 child: Container(
                   width: 150,
                   height: 150,
-                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 90),
+                  margin: const EdgeInsets.all(25),
                   decoration: BoxDecoration(
                       color: Colors.white,
                       image: DecorationImage( 
@@ -282,7 +282,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                         ),
                         fit: BoxFit.cover,
                       ),
-                      borderRadius: BorderRadius.horizontal(),
+                      borderRadius: BorderRadius.circular(180),
                       border: Border.all(color: Colors.black, width: 2)),
                 ),
                 header: Container(
@@ -291,7 +291,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                   child: Text(
                     names[index],
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, backgroundColor: Colors.white),
                   ),
                 )));
                 
@@ -360,9 +360,11 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                     child: createGridView(snapshot.data
                         .groupId), //functie neerzetten die de gridview aanmaakt
                   ),
-                  addProducts(),
-                  buildButtons(),
-                ])
+                  Container(
+
+                  child: addProducts(),
+                  // buildButtons(), )
+                )])
               ]));
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
