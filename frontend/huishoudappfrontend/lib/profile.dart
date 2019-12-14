@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:huishoudappfrontend/login_widget.dart';
 import 'package:huishoudappfrontend/profileconstants.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
@@ -16,8 +15,6 @@ import 'services/permission_serivce.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:path_provider/path_provider.dart';
 import 'design.dart';
 
 class Profilepage extends StatefulWidget {
@@ -99,15 +96,8 @@ class _Profilepage extends State<Profilepage> {
         .replaceAllMapped(" ", (Match m) => "")
         .replaceAllMapped(r':', (Match m) => ",")
         .replaceAllMapped(r'.', (Match m) => ",");
-
-    final Directory tempDir = await getTemporaryDirectory();
-    File compressed = await FlutterImageCompress.compressAndGetFile(image.absolute.path, "${tempDir.path}/temp.png");
-    while(compressed.lengthSync() > 120000){
-      compressed = await FlutterImageCompress.compressAndGetFile(compressed.absolute.path,"${tempDir.path}/temp.png" , quality: 80);
-    }
-    
     MultipartFile mf = MultipartFile.fromBytes(
-        'file', await compressed.readAsBytes(),
+        'file', await image.readAsBytes(),
         filename: timeStamp + 'testfile.png');
 
     var uri = Uri.parse("http://seprojects.nl:8080/files/upload");
@@ -320,7 +310,7 @@ class _Profilepage extends State<Profilepage> {
 
     final upperpart = new Container(
       color: Design.rood,
-      height: (MediaQuery.of(context).size.height - Design.navBarHeight) * 0.33,
+      height: (MediaQuery.of(context).size.height - 50) * 0.33,
       width: MediaQuery.of(context).size.width,
       child: Stack(
         children: <Widget>[
