@@ -102,7 +102,8 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       alignment: MainAxisAlignment.center,
       children: <Widget>[
         RaisedButton(
-          child: Text("Verzenden"),
+          child: Text("Verzenden",
+          style: TextStyle(color: Colors.white),),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
           onPressed: finalData,
           color: Colors.orange[700],
@@ -112,7 +113,8 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
     print(CurrentUser().group_permission);
     if (CurrentUser().group_permission == "groupAdmin") {
       buttons.children.add(RaisedButton(
-        child: Text("View Log"),
+        child: Text("View Log",
+        style: TextStyle(color: Colors.white),),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         color: Colors.orange[700],
         onPressed: () {
@@ -124,7 +126,8 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
         },
       ));
       buttons.children.add(RaisedButton(
-        child: Text("Product toevoegen"),
+        child: Text("Product toevoegen",
+        style: TextStyle(color: Colors.white),),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         color: Colors.orange[700],
         onPressed: () {
@@ -154,22 +157,22 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
     });
   }
 
-  FlatButton addProducts() {
-    if (CurrentUser().group_permission == 'groupAdmin') {
-      FlatButton addproduct = FlatButton(
-        child: Text("Producten toevoegen"),
-        padding: EdgeInsets.symmetric(vertical: 80, horizontal: 100),
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => new TurfWidgetAddProduct(),
-              ));
-        },
-      );
-      return addproduct;
-    }
-  }
+  // FlatButton addProducts() {
+  //   if (CurrentUser().group_permission == 'groupAdmin') {
+  //     FlatButton addproduct = FlatButton(
+  //       child: Text("Producten toevoegen"),
+  //       padding: EdgeInsets.symmetric(vertical: 80, horizontal: 100),
+  //       onPressed: () {
+  //         Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //               builder: (context) => new TurfWidgetAddProduct(),
+  //             ));
+  //       },
+  //     );
+  //     return addproduct;
+  //   }
+  // }
 
   int getMutation(index) {
     return sentData[index].numberofbeers - receivedData[index].numberofbeers;
@@ -214,6 +217,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       addAutomaticKeepAlives: true,
       itemCount: pics.length,
       itemBuilder: (BuildContext context, int index) {
+        print(pics[index].imageUrl);
         return new Card(
           elevation: 10,
             // color: Colors.black,
@@ -226,10 +230,10 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                           height: 40,
                           margin: EdgeInsets.all(1),
                           padding: EdgeInsets.all(1),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(180),
-                              color: Colors.black,
-                              border: Border.all(width: 1)),
+                          // decoration: BoxDecoration(
+                          //     borderRadius: BorderRadius.circular(180),
+                          //     //color: Colors.orange[700],
+                          //     border: Border.all(width: 1)),
                           child: IconButton(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 0, horizontal: 0),
@@ -263,10 +267,10 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                           height: 40,
                           margin: EdgeInsets.all(1),
                           padding: EdgeInsets.all(1),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(180),
-                              color: Colors.black,
-                              border: Border.all(width: 1)),
+                          // decoration: BoxDecoration(
+                          //     borderRadius: BorderRadius.circular(180),
+                          //     color: Colors.black,
+                          //     border: Border.all(width: 1)),
                           child: IconButton(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 0, horizontal: 0),
@@ -294,22 +298,22 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                       color: Colors.white,
                       image: DecorationImage( 
                         image: NetworkImage(
-                          pics[index].imageUrl,
+                          pics[index].imageUrl
                         ),
                         fit: BoxFit.cover,
                       ),
                       borderRadius: BorderRadius.circular(180),
-                      border: Border.all(color: Design.rood, width: 5)),
+                      border: Border.all(color: Design.rood, width: 3)),
                 ),
                 header: Container(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 120, horizontal: 0),
+                      const EdgeInsets.symmetric(vertical: 110, horizontal: 0),
                   child: Text(
                     names[index],
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, backgroundColor: Colors.white),
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, backgroundColor: Colors.white, color: Colors.black,
                   ),
-                )));
+                ))));
                 
       },
       gridDelegate:
