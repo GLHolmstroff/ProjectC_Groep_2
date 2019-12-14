@@ -101,21 +101,37 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
     ButtonBar buttons = ButtonBar(
       alignment: MainAxisAlignment.center,
       children: <Widget>[
-        FlatButton(
+        RaisedButton(
           child: Text("Verzenden"),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
           onPressed: finalData,
+          color: Colors.orange[700],
         )
       ],
     );
     print(CurrentUser().group_permission);
     if (CurrentUser().group_permission == "groupAdmin") {
-      buttons.children.add(FlatButton(
+      buttons.children.add(RaisedButton(
         child: Text("View Log"),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        color: Colors.orange[700],
         onPressed: () {
           Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => new TurfWidgetAdmin(),
+              ));
+        },
+      ));
+      buttons.children.add(RaisedButton(
+        child: Text("Product toevoegen"),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        color: Colors.orange[700],
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => new TurfWidgetAddProduct(),
               ));
         },
       ));
@@ -234,13 +250,13 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                           padding: EdgeInsets.all(5),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(180),
-                              color: Colors.white,
+                              color: Design.rood,
                               border: Border.all(width: 1)),
                           child: Text(
                             sentData[index].numberofbeers.toString(),
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+                                fontSize: 20, fontWeight: FontWeight.bold,color: Colors.white),
                           )),
                       Container(
                           width: 40,
@@ -283,7 +299,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                         fit: BoxFit.cover,
                       ),
                       borderRadius: BorderRadius.circular(180),
-                      border: Border.all(color: Colors.black, width: 2)),
+                      border: Border.all(color: Design.rood, width: 5)),
                 ),
                 header: Container(
                   padding:
@@ -355,16 +371,14 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                 ),
                 Column(children: <Widget>[
                   Container(
-                    height: MediaQuery.of(context).size.height * .62,
-                    padding: const EdgeInsets.only(top: 10),
+                    height: MediaQuery.of(context).size.height * .60,
+                    // padding: const EdgeInsets.only(top: 10),
                     child: createGridView(snapshot.data
                         .groupId), //functie neerzetten die de gridview aanmaakt
                   ),
-                  Container(
-
-                  child: addProducts(),
-                  // buildButtons(), )
-                )])
+                  //addProducts(),
+                  buildButtons(), 
+                ])
               ]));
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
