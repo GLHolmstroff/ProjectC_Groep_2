@@ -51,6 +51,13 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
     }
   }
 
+  Future<String> getImgUrl() async {
+    String uid = await Auth().currentUser();
+    String timeStamp =
+        DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
+    return "http://10.0.2.2:8080/files/users?uid=$uid&t=$timeStamp";
+  }
+
   Widget getIcon(int done, int approvals) {
     if (done == 0) {
       return Icon(Icons.hourglass_empty, color: Colors.orange[800]);
@@ -91,7 +98,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
         child: Padding(
           padding: const EdgeInsets.all(2.0),
           child: ListTile(
-            leading: Icon(Icons.account_circle),
+            leading: Icon(Icons.person),
             title: Text(data[index]["displayname"]),
             subtitle: Text(data[index]["taskname"]),
             trailing: Icon(Icons.arrow_right),

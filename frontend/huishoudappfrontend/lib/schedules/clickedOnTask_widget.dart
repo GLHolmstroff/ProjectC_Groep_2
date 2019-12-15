@@ -143,6 +143,7 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
         ),
       );
     }
+    return Container(height: 0);
   }
 
   void buttonPressAction() {
@@ -187,6 +188,8 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
                   isTaskDone(),
                   SizedBox(height: 50),
                   showApprovals(),
+                  SizedBox(height: 30),
+                  endTaskButton(),
                   SizedBox(height: 70),
                   buildButton()
                 ],

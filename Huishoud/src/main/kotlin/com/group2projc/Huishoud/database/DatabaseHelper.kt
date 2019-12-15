@@ -437,6 +437,7 @@ class DatabaseHelper(url: String) {
                     task["taskid"] = it[Schedules.taskid]
                     task["uid"] = it[Users.id]
                     task["displayname"] = it[Users.displayname]
+                    task["picturelink"] = it[Users.picturelink]
                     task["taskname"] = it[Schedules.taskname]
                     task["description"] = it[Schedules.description]
                     task["datedue"] = it[Schedules.datedue]
