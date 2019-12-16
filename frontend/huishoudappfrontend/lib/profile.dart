@@ -36,7 +36,9 @@ class _Profilepage extends State<Profilepage> {
   bool loginWithEmail;
   ProfileConstants profCons;
 
+  @override
   void initState() {
+    super.initState();
     initActual();
   }
 
@@ -48,6 +50,10 @@ class _Profilepage extends State<Profilepage> {
       currentUser = tempCurrentUser;
     });
   }
+
+
+
+
 
   Future<bool> _loggedinWithEmail() async {
     final auth = Provider.of(context).auth;
@@ -360,7 +366,7 @@ class _Profilepage extends State<Profilepage> {
               }
               return Icon(
                 Icons.photo_camera,
-                color: Colors.white,
+                color: Colors.green,
               );
             }),
       ),

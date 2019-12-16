@@ -246,7 +246,7 @@ class DatabaseHelper(url: String) {
             var productsMap:HashMap<String, HashMap<String, Any>> = getAllProducts(gid);
             productsMap.forEach { k,v ->
                 val name:String = v["name"] as String
-                val entry = DatabaseHelper.BeerTallies.insert {
+                DatabaseHelper.BeerTallies.insert {
                     it[groupid] = gid
                     it[authorid] = uid
                     it[date] = LocalDateTime.now()
@@ -256,10 +256,11 @@ class DatabaseHelper(url: String) {
                     it[targetuserid] = uid
                     it[BeerTallies.product] = name
                     it[BeerTallies.mutation] = 0
+
                 }
             }
 
-
+            print("ding toegevoegd")
 
             setGroupPermission(gid, uid, p)
 
@@ -726,8 +727,9 @@ fun DatabaseHelper.createGroup(n: String, uid: String): DatabaseHelper {
             it[created_at] = LocalDate.now().toString()
             it[name] = n
         }
-        addUserToGroup(uid, group[DatabaseHelper.Groups.id], makeUserAdmin = true)
         addProduct(group[DatabaseHelper.Groups.id], "bier", 1.0)
+        addUserToGroup(uid, group[DatabaseHelper.Groups.id], makeUserAdmin = true)
+
     }
     return this
 }

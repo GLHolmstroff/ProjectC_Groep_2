@@ -36,6 +36,7 @@ class Home_widget_state extends State<Home_widget> {
   var appBarActions = <Widget>[];
 
   void initState() {
+    initActual();
     print("user =" + currentUser.group_permission);
     appBarActions.add(Visibility(
       visible: currentUser.group_permission == "groupAdmin",
@@ -47,7 +48,7 @@ class Home_widget_state extends State<Home_widget> {
       ),
       onPressed: _toAdminWidget,
     )));
-    initActual();
+    
   }
 
   Future<void> initActual() async {
