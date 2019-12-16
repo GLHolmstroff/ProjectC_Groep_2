@@ -104,6 +104,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.3"
+  flutter_image_compress:
+    dependency: "direct main"
+    description:
+      name: flutter_image_compress
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.3"
   flutter_signin_button:
     dependency: "direct main"
     description:
@@ -116,6 +123,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  fluttertoast:
+    dependency: "direct main"
+    description:
+      name: fluttertoast
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.3"
   font_awesome_flutter:
     dependency: transitive
     description:
@@ -166,12 +180,12 @@ packages:
     source: hosted
     version: "0.6.2+1"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.16.0"
+    version: "0.15.7"
   line_awesome_icons:
     dependency: "direct main"
     description:
@@ -208,12 +222,12 @@ packages:
     source: hosted
     version: "1.6.4"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.4"
+    version: "1.4.5"
   pedantic:
     dependency: transitive
     description:
@@ -274,7 +288,7 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.7+3"
+    version: "1.1.6+5"
   stack_trace:
     dependency: transitive
     description:
@@ -302,7 +316,7 @@ packages:
       name: syncfusion_flutter_charts
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-beta.5"
+    version: "1.0.0-beta.4"
   synchronized:
     dependency: transitive
     description:
@@ -362,3 +376,4 @@ packages:
 sdks:
   dart: ">=2.5.0 <3.0.0"
   flutter: ">=1.10.15-pre.148 <2.0.0"
+
