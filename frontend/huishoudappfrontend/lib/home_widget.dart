@@ -61,10 +61,8 @@ class Home_widget_state extends State<Home_widget> {
   Future<User> getUser() async {
     String uid = await Auth().currentUser();
     User currentUser;
-
     final Response res = await get(
         "http://10.0.2.2:8080/authCurrent?uid=$uid",
-
         headers: {'Content-Type': 'application/json'});
     print(res.statusCode);
     if (res.statusCode == 200) {
@@ -82,6 +80,7 @@ class Home_widget_state extends State<Home_widget> {
     });
   }
 
+
   void _toAdminWidget() {
     Navigator.push(
         context,
@@ -89,7 +88,7 @@ class Home_widget_state extends State<Home_widget> {
           builder: (context) => Admin_widget(),
         ));
   }
-
+  
   @override
   Widget build(BuildContext context) {
     CurrentUser.updateCurrentUser();
@@ -108,34 +107,50 @@ class Home_widget_state extends State<Home_widget> {
       addUserToGroupButton = new Container();
     }
 
-
     FutureBuilder grafiek = FutureBuilder<List<ConsumeDataPerMonthPerUser>>(
       future: CurrentUser().getGroupConsumeData(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return SfCartesianChart(
-            primaryXAxis: CategoryAxis(),
-            series: <ChartSeries>[
-              BarSeries<ConsumeDataPerMonthPerUser, String>(
-                dataSource: snapshot.data,
-                color: Design.orange2,
-                borderColor: Design.rood,
-                borderWidth: 2,
-                xValueMapper: (ConsumeDataPerMonthPerUser data, _) => data.name,
-                yValueMapper: (ConsumeDataPerMonthPerUser data, _) => data.amount,
-                dataLabelSettings: DataLabelSettings(isVisible: true),
-              )
-            ]
+          print(snapshot.data[0].name);
+          return Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Card(
+              elevation: 3,
+              child: SfCartesianChart(
+                title: ChartTitle(
+                  text: "Koning van de maand",
+                  alignment: ChartAlignment.center,
+                  textStyle: ChartTextStyle(
+                    color: Design.orange2,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                  primaryXAxis: CategoryAxis(),
+                  series: <ChartSeries>[
+                    ColumnSeries<ConsumeDataPerMonthPerUser, String>(
+                      dataSource: snapshot.data,
+                      color: Design.orange2,
+                      borderColor: Design.rood,
+                      width: 0.4,
+                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                      xValueMapper: (ConsumeDataPerMonthPerUser data, _) =>
+                          data.name,
+                      yValueMapper: (ConsumeDataPerMonthPerUser data, _) =>
+                          data.amount,
+                      dataLabelSettings: DataLabelSettings(isVisible: true),
+                    )
+                  ]),
+            ),
           );
-        }else if(snapshot.hasError) {
+        } else if (snapshot.hasError) {
           print(snapshot.error);
           return Text("${snapshot.error}");
-
-        }else{
+        } else {
           return CircularProgressIndicator();
         }
       },
-  );
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -202,7 +217,12 @@ class Home_widget_state extends State<Home_widget> {
               ),
             ),
             addUserToGroupButton,
-            grafiek,
+            Container(
+              decoration: new BoxDecoration(
+                borderRadius: BorderRadius.circular(100.0),
+              ),
+              child: grafiek,
+            ),
           ],
         ),
       ),

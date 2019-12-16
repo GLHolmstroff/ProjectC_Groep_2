@@ -96,6 +96,14 @@ class _CreateAccountState extends State<CreateAccount> {
         }
       } catch (e) {
         print(e);
+        if (e.toString().contains("The email address is already in use")) {
+          Toast.show(
+            "Email al in gebruik",
+            context,
+            duration: 2,
+            gravity: Toast.CENTER,
+          );
+        }
       }
     }
   }

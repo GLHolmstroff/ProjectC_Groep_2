@@ -76,8 +76,8 @@ class DatabaseHelper(url: String) {
         val code = integer("code");
     }
 
-    object Products: Table() {
-        val groupid = reference("groupid",Groups.id).primaryKey()
+    object Products : Table() {
+        val groupid = reference("groupid", Groups.id).primaryKey()
         val name = varchar("name", 50).primaryKey()
         val price = double("price")
     }
@@ -176,25 +176,25 @@ class DatabaseHelper(url: String) {
                 out["picture_link"] = it[Users.picturelink]
             }
 
-            GroupPermissions.select ({ GroupPermissions.userid eq uid }).forEach {
+            GroupPermissions.select({ GroupPermissions.userid eq uid }).forEach {
                 out["group_permissions"] = it[GroupPermissions.permission]
             }
         }
         return out
     }
 
-    fun userUpdateDisplayName(uid: String, displayname1: String) : DatabaseHelper {
+    fun userUpdateDisplayName(uid: String, displayname1: String): DatabaseHelper {
         transaction(db) {
-            Users.update({ Users.id eq uid}){
+            Users.update({ Users.id eq uid }) {
                 it[displayname] = displayname1
             }
         }
         return this@DatabaseHelper
     }
 
-    fun userUpdatePicture(uid:String, picturePath: String) : DatabaseHelper {
+    fun userUpdatePicture(uid: String, picturePath: String): DatabaseHelper {
         transaction(db) {
-            Users.update({ Users.id eq uid}){
+            Users.update({ Users.id eq uid }) {
                 it[picturelink] = picturePath
             }
         }
@@ -214,7 +214,7 @@ class DatabaseHelper(url: String) {
         return out
     }
 
-    fun setGroupName(gid: Int, newName: String): HashMap<String, Any?>{
+    fun setGroupName(gid: Int, newName: String): HashMap<String, Any?> {
         var out = HashMap<String, Any?>()
         out["Succes"] = 0;
         transaction(db) {
@@ -297,7 +297,7 @@ class DatabaseHelper(url: String) {
         uids.forEach {
             var singleMap = HashMap<String, Any>();
             singleMap["uid"] = it
-            singleMap["count"] = getBeerTally(gid,product,it)
+            singleMap["count"] = getBeerTally(gid, product, it)
             out["$i"] = singleMap
             i++
         }
@@ -305,12 +305,12 @@ class DatabaseHelper(url: String) {
         return out;
     }
 
-    fun getNamesAndPicsForGroup(gid:Int): HashMap<String, HashMap<String, String>>{
+    fun getNamesAndPicsForGroup(gid: Int): HashMap<String, HashMap<String, String>> {
         val uids = getAllInGroup(gid).values
-        var out = HashMap<String, HashMap<String,String>>()
+        var out = HashMap<String, HashMap<String, String>>()
         var i = 0
         uids.forEach {
-            var user = HashMap<String,String>()
+            var user = HashMap<String, String>()
             user["name"] = getUser(it)["display_name"] as String
             user["picture"] = it
             out["$i"] = user
@@ -332,7 +332,7 @@ class DatabaseHelper(url: String) {
             if (name != null && uid != null) {
                 var data = HashMap<String, Any>()
                 data["picture"] = uid
-                data["count"] = getBeerTally(gid,product,it)
+                data["count"] = getBeerTally(gid, product, it)
                 out[name] = data
             }
         }
@@ -340,7 +340,7 @@ class DatabaseHelper(url: String) {
         return out;
     }
 
-    fun createBeerEntry(gid: Int, authoruid: String, targetuid: String, mutation: Int, product:String): DatabaseHelper {
+    fun createBeerEntry(gid: Int, authoruid: String, targetuid: String, mutation: Int, product: String): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
             val entry = DatabaseHelper.BeerTallies.insert {
@@ -358,14 +358,14 @@ class DatabaseHelper(url: String) {
     }
 
     fun getAllBeerEntriesForGroup(gid: Int): ArrayList<HashMap<String, Any>> {
-        var outArr = ArrayList<HashMap<String,Any>>()
+        var outArr = ArrayList<HashMap<String, Any>>()
         transaction(db) {
             addLogger(StdOutSqlLogger)
             val authorUser = Users.alias("uAuthor")
             val targetUser = Users.alias("uTarget")
-            (BeerTallies.innerJoin(authorUser,{authorid}, {authorUser[id]})
-                    .innerJoin(targetUser,{targetuserid},{targetUser[id]}))
-                    .select {(BeerTallies.groupid eq gid)}.forEach {
+            (BeerTallies.innerJoin(authorUser, { authorid }, { authorUser[id] })
+                    .innerJoin(targetUser, { targetuserid }, { targetUser[id] }))
+                    .select { (BeerTallies.groupid eq gid) }.forEach {
                         var out = HashMap<String, Any>()
                         out["gid"] = gid
                         out["authorid"] = it[authorid]
@@ -381,9 +381,9 @@ class DatabaseHelper(url: String) {
         return outArr
     }
 
-    fun updateBeerEntry(gid: Int, author: String, target:String, date:String, mut: Int, prod:String) : DatabaseHelper{
+    fun updateBeerEntry(gid: Int, author: String, target: String, date: String, mut: Int, prod: String): DatabaseHelper {
         transaction(db) {
-            BeerTallies.update ({(groupid eq gid) and (authorid eq author) and (targetuserid eq target) and (BeerTallies.date eq date) and (product eq prod)} ){
+            BeerTallies.update({ (groupid eq gid) and (authorid eq author) and (targetuserid eq target) and (BeerTallies.date eq date) and (product eq prod) }) {
                 it[mutation] = mut
             }
         }
@@ -396,10 +396,10 @@ class DatabaseHelper(url: String) {
             addLogger(StdOutSqlLogger)
             BeerTallies
                     .slice(mutation)
-                    .select {(targetuserid eq targetuid) and (BeerTallies.product eq product)}
+                    .select { (targetuserid eq targetuid) and (BeerTallies.product eq product) }
                     .forEach {
                         val c = it[mutation]
-                        if (c != null){
+                        if (c != null) {
                             count += c
                         }
                     }
@@ -413,12 +413,12 @@ class DatabaseHelper(url: String) {
         var count = 0
         transaction(db) {
             BeerTallies
-                    .slice(mutation.sum(), date.substring(0,11))
-                    .select {(targetuserid eq targetuid)}
-                    .groupBy(date.substring(0,11))
-                    .orderBy(date.substring(0,11))
+                    .slice(mutation.sum(), date.substring(0, 11))
+                    .select { (targetuserid eq targetuid) }
+                    .groupBy(date.substring(0, 11))
+                    .orderBy(date.substring(0, 11))
                     .forEach {
-                        var day = it[date.substring(0,11)]
+                        var day = it[date.substring(0, 11)]
                         val c = it[mutation.sum()]
                         if (c != null) {
                             count += c
@@ -432,9 +432,10 @@ class DatabaseHelper(url: String) {
         return out
     } // todo make it perday (groupby maybe?) todo: give days with 0 count still data...
 
-    fun getAllUsersFromGroup(gid: Int){
+    fun getAllUsersFromGroup(gid: Int) {
 
     }
+
     fun getAllInGroup(gid: Int): HashMap<String, String> {
         var out = HashMap<String, String>()
         transaction(db) {
@@ -448,11 +449,11 @@ class DatabaseHelper(url: String) {
     }
 
 
-    fun getUserInfoInGroup(gid: Int) : ArrayList<HashMap<String, String>> {
+    fun getUserInfoInGroup(gid: Int): ArrayList<HashMap<String, String>> {
         var out = ArrayList<HashMap<String, String>>()
 
         transaction(db) {
-            Users.select { (Users.groupid eq gid) }.forEach{
+            Users.select { (Users.groupid eq gid) }.forEach {
                 var user = HashMap<String, String>()
                 user["uid"] = it[Users.id]
                 user["displayname"] = it[Users.displayname]
@@ -465,7 +466,7 @@ class DatabaseHelper(url: String) {
         return out
     }
 
-    fun getUserTasks(uid: String) : ArrayList<HashMap<String, Any>> {
+    fun getUserTasks(uid: String): ArrayList<HashMap<String, Any>> {
         var out = ArrayList<HashMap<String, Any>>()
 
         transaction(db) {
@@ -491,24 +492,24 @@ class DatabaseHelper(url: String) {
         val uids = getAllInGroup(gid).values
         var month = LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"))
-                .toString().substring(5,7)
+                .toString().substring(5, 7)
         var out = HashMap<String, Int>()
-        uids.forEach{ id ->
+        uids.forEach { id ->
             var user = getUser(id)
             var name: String? = user["display_name"] as String?
-            transaction(db){
+            transaction(db) {
                 BeerTallies
-                        .slice(mutation.sum(), date.substring(6,2))
-                        .select{targetuserid eq id}
-                        .groupBy(date.substring(6,2))
-                        .orderBy(date.substring(6,2))
+                        .slice(mutation.sum(), date.substring(6, 2))
+                        .select { targetuserid eq id }
+                        .groupBy(date.substring(6, 2))
+                        .orderBy(date.substring(6, 2))
                         .forEach { i ->
                             println(month)
-                            println(i[date.substring(6,2)])
+                            println(i[date.substring(6, 2)])
 
-                            if(i[date.substring(6,2)] == month && i[mutation.sum()] != null) {
+                            if (i[date.substring(6, 2)] == month && i[mutation.sum()] != null) {
                                 val total = i[mutation.sum()]
-                                if(total != null && name != null) {
+                                if (total != null && name != null) {
                                     out[name] = total
                                 }
                             }
@@ -520,12 +521,12 @@ class DatabaseHelper(url: String) {
     }
 
 
-    fun getHousematesChecks(gid: Int, uid: String) : ArrayList<HashMap<String, Any>> {
+    fun getHousematesChecks(gid: Int, uid: String): ArrayList<HashMap<String, Any>> {
         var out = ArrayList<HashMap<String, Any>>()
 
         transaction(db) {
             addLogger(StdOutSqlLogger)
-            (Schedules innerJoin Users).select { (Schedules.groupid eq gid) and (Schedules.done eq 1)}.forEach{
+            (Schedules innerJoin Users).select { (Schedules.groupid eq gid) and (Schedules.done eq 1) }.forEach {
                 if (it[Users.id] != uid && it[Schedules.ended] == 0) {
                     var task = HashMap<String, Any>()
                     task["taskid"] = it[Schedules.taskid]
@@ -546,25 +547,25 @@ class DatabaseHelper(url: String) {
         return out
     }
 
-    fun makeTaskDone(tid: Int) : DatabaseHelper {
+    fun makeTaskDone(tid: Int): DatabaseHelper {
         transaction(db) {
-            Schedules.update ({ (Schedules.taskid eq tid) }) {
+            Schedules.update({ (Schedules.taskid eq tid) }) {
                 it[done] = 1
             }
         }
         return this@DatabaseHelper
     }
 
-    fun endTask(tid: Int) : DatabaseHelper {
+    fun endTask(tid: Int): DatabaseHelper {
         transaction(db) {
-            Schedules.update ({ (Schedules.taskid eq tid) }) {
+            Schedules.update({ (Schedules.taskid eq tid) }) {
                 it[ended] = 1
             }
         }
         return this@DatabaseHelper
     }
 
-    fun approveTask(tid: Int) : DatabaseHelper {
+    fun approveTask(tid: Int): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
             var value = 0
@@ -578,7 +579,7 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
-    fun makeSchedule(gid: Int, uid: String, taskName: String, taskDescription: String, dateDue: String) : DatabaseHelper {
+    fun makeSchedule(gid: Int, uid: String, taskName: String, taskDescription: String, dateDue: String): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
 
@@ -591,11 +592,10 @@ class DatabaseHelper(url: String) {
                 it[done] = 0
                 it[approvals] = 0
                 it[ended] = 0
-                }
             }
+        }
         return this@DatabaseHelper
     }
-
 
 
     fun createInviteCode(): Int {
@@ -605,12 +605,11 @@ class DatabaseHelper(url: String) {
         return key;
 
 
-
     }
 
-    fun getInviteCode(gid : Int): HashMap<String, Int> {
+    fun getInviteCode(gid: Int): HashMap<String, Int> {
         var keyFound = false;
-        var finalKey  = 0;
+        var finalKey = 0;
         var out = HashMap<String, Int>();
         while (!keyFound) {
             var key = createInviteCode();
@@ -620,7 +619,7 @@ class DatabaseHelper(url: String) {
                     alreadyInUse = true;
                 }
             }
-            if(!alreadyInUse) {
+            if (!alreadyInUse) {
                 keyFound = true
                 finalKey = key;
                 out["code"] = finalKey;
@@ -636,33 +635,32 @@ class DatabaseHelper(url: String) {
         return out;
     }
 
-    fun joinGroubByCode(ic : Int, uid: String): HashMap<String, String>{
-        var groupid : Int? = null;
+    fun joinGroubByCode(ic: Int, uid: String): HashMap<String, String> {
+        var groupid: Int? = null;
         var out = HashMap<String, String>()
         transaction(db) {
-            DatabaseHelper.InviteCodes.select {(DatabaseHelper.InviteCodes.code eq ic)}.forEach{
+            DatabaseHelper.InviteCodes.select { (DatabaseHelper.InviteCodes.code eq ic) }.forEach {
                 groupid = it[DatabaseHelper.InviteCodes.groupid];
             }
         }
-        if(groupid != null) {
+        if (groupid != null) {
             transaction(db) {
-                DatabaseHelper.InviteCodes.deleteWhere {(DatabaseHelper.InviteCodes.code eq ic)}
+                DatabaseHelper.InviteCodes.deleteWhere { (DatabaseHelper.InviteCodes.code eq ic) }
             }
             addUserToGroup(uid, groupid!!);
             out["result"] = "Succes";
-        }
-        else{
+        } else {
             out["result"] = "Code not found";
         }
 
         return out;
     }
 
-    fun getAllProducts(gid:Int): HashMap<String,HashMap<String, Any>>{
-        var out = HashMap<String, HashMap<String,Any>>()
+    fun getAllProducts(gid: Int): HashMap<String, HashMap<String, Any>> {
+        var out = HashMap<String, HashMap<String, Any>>()
         transaction(db) {
             var i = 0
-            Products.select {(Products.groupid eq gid)}.forEach {
+            Products.select { (Products.groupid eq gid) }.forEach {
                 out["${i}"] = HashMap<String, Any>()
                 out["${i}"]?.set("name", it[Products.name])
                 out["${i}"]?.set("price", it[Products.price])
@@ -672,7 +670,7 @@ class DatabaseHelper(url: String) {
         return out
     }
 
-    fun addProduct(gid:Int,name:String,price:Double):DatabaseHelper{
+    fun addProduct(gid: Int, name: String, price: Double): DatabaseHelper {
         transaction(db) {
             Products.insert {
                 it[Products.groupid] = gid
@@ -684,15 +682,14 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
-    fun setGroupPermission(uid: String, admin: Boolean): HashMap<String, String>{
+    fun setGroupPermission(uid: String, admin: Boolean): HashMap<String, String> {
         var out = HashMap<String, String>()
         out["result"] = "failed"
         transaction(db) {
-            GroupPermissions.update({GroupPermissions.userid eq uid}){
-                if(admin){
+            GroupPermissions.update({ GroupPermissions.userid eq uid }) {
+                if (admin) {
                     it[permission] = "groupAdmin"
-                }
-                else{
+                } else {
                     it[permission] = "user"
                 }
                 out["result"] = "success"
@@ -702,14 +699,14 @@ class DatabaseHelper(url: String) {
         return out;
     }
 
-    fun deleteUserFromGroup(uid: String): HashMap<String, String>{
-        var out = HashMap<String,String>()
+    fun deleteUserFromGroup(uid: String): HashMap<String, String> {
+        var out = HashMap<String, String>()
         out["result"] = "failed"
-        transaction(db){
+        transaction(db) {
             BeerTallies.deleteWhere { BeerTallies.targetuserid eq uid }
             Schedules.deleteWhere { Schedules.userid eq uid }
             GroupPermissions.deleteWhere { GroupPermissions.userid eq uid }
-            Users.update( { Users.id eq uid }){
+            Users.update({ Users.id eq uid }) {
                 it[Users.groupid] = null
             }
             out["result"] = "success"
@@ -717,6 +714,7 @@ class DatabaseHelper(url: String) {
         return out;
 
 
+    }
 }
 
 fun DatabaseHelper.createGroup(n: String, uid: String): DatabaseHelper {
@@ -727,7 +725,7 @@ fun DatabaseHelper.createGroup(n: String, uid: String): DatabaseHelper {
             it[name] = n
         }
         addUserToGroup(uid, group[DatabaseHelper.Groups.id], makeUserAdmin = true)
-        addProduct(group[DatabaseHelper.Groups.id],"bier",1.0)
+        addProduct(group[DatabaseHelper.Groups.id], "bier", 1.0)
     }
     return this
 }

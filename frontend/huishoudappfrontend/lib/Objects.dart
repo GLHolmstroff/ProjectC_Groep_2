@@ -72,17 +72,21 @@ class CurrentUser extends BaseUser {
   static List<ConsumeData> _listFromJson(Map<String, dynamic> json) {
     List<ConsumeData> lst = new List<ConsumeData>();
     ConsumeData placeholder;
-    json.forEach((k,v) => 
-    v.forEach((k1, v1) =>
-      lst.add(ConsumeData(k1, v1))
-    )
+    json.forEach(
+      (k, v) => v.forEach(
+        (k1, v1) => lst.add(
+          ConsumeData(k1, v1)
+        ),
+      ),
     );
-    
+
     return lst;
   }
 
-  static List<ConsumeDataPerMonthPerUser> _listGroupDataFromJson(Map<String, dynamic> json) {
-    List<ConsumeDataPerMonthPerUser> lst = new List<ConsumeDataPerMonthPerUser>();
+  static List<ConsumeDataPerMonthPerUser> _listGroupDataFromJson(
+      Map<String, dynamic> json) {
+    List<ConsumeDataPerMonthPerUser> lst =
+        new List<ConsumeDataPerMonthPerUser>();
     json.forEach((k, v) => lst.add(ConsumeDataPerMonthPerUser(k, v)));
 
     return lst;
@@ -94,13 +98,13 @@ class CurrentUser extends BaseUser {
     final Response res = await get("http://10.0.2.2:8080/getTallyPerUserPerMonth?gid=$gid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
-      placeHolderList = CurrentUser._listGroupDataFromJson(json.decode(res.body));
+      placeHolderList =
+          CurrentUser._listGroupDataFromJson(json.decode(res.body));
     } else {
       print("Could not make list of data");
     }
     return placeHolderList;
   }
-  
 
   Future<List<ConsumeData>> getConsumeData() async {
     String uid = CurrentUser().userId.toString();
@@ -158,15 +162,10 @@ class Group {
     List<String> users = new List<String>();
     String keyPart = "UserId";
 
-    for( var i = 0; i < json.length; i++){
-        String key = keyPart + i.toString();
-        users.add(json[key]);
-      }
-    
-    return Group(
-      users: users
-    );
-
+    for (var i = 0; i < json.length; i++) {
+      String key = keyPart + i.toString();
+      users.add(json[key]);
+    }
 
     return Group(users: users);
   }
@@ -251,6 +250,7 @@ class BeerTally {
   final String product;
 
   BeerTally({this.count, this.product});
+
 
   List<int> getCount() {
     return this.count;
