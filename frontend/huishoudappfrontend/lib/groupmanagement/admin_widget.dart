@@ -44,7 +44,7 @@ class Admin_widget_state extends State {
       print(_name);
       int groupid = currentUser.groupId;
       final Response res = await get(
-          "http://seprojects.nl:8080/setGroupName?gid=$groupid&newName=$_name",
+          "http://10.0.2.2:8080/setGroupName?gid=$groupid&newName=$_name",
           headers: {'Content-Type': 'application/json'});
       if (json.decode(res.body)["Succes"] == 1) {
         setState(() {

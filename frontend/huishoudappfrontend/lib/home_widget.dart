@@ -63,7 +63,7 @@ class Home_widget_state extends State<Home_widget> {
     User currentUser;
 
     final Response res = await get(
-        "http://seprojects.nl:8080/authCurrent?uid=$uid",
+        "http://10.0.2.2:8080/authCurrent?uid=$uid",
 
         headers: {'Content-Type': 'application/json'});
     print(res.statusCode);

@@ -4,11 +4,8 @@ import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/home_widget.dart';
 import 'package:huishoudappfrontend/turf_widget.dart';
 import 'profile.dart';
-import 'schedules/schoonmaakrooster_widget.dart';
-import 'package:huishoudappfrontend/schoonmaakrooster/schoonmaakrooster_widget.dart';
+import 'package:huishoudappfrontend/schedules/schoonmaakrooster_widget.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
-
-import 'placeholder_widget.dart';
 
 class HomePage extends StatefulWidget {
   static String tag = 'home-page';
@@ -44,10 +41,9 @@ class HomePageState extends State<HomePage> {
     // give _steNewBody as argument if you want to change the currentwidget from inside your widget
     setState(() => [
           Home_widget(),
-          PlaceholderWidget(Colors.deepOrange),
+          SchoonmaakPage(),
           Turfwidget(),
           Profilepage(),
-          SchoonmaakPage()
         ]);
   }
 

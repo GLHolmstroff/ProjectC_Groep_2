@@ -454,6 +454,7 @@ class DatabaseHelper(url: String) {
                 }
             }
         }
+        return out
     }
 
     fun getTotalConsumePerMonthPerUser(gid: Int): HashMap<String, Int> {
@@ -650,7 +651,7 @@ class DatabaseHelper(url: String) {
         out["result"] = "failed"
         transaction(db){
             BeerTallies.deleteWhere { BeerTallies.targetuserid eq uid }
-            Schedules.deleteWhere { Schedules.useridto eq uid }
+            Schedules.deleteWhere { Schedules.userid eq uid }
             GroupPermissions.deleteWhere { GroupPermissions.userid eq uid }
             Users.update( { Users.id eq uid }){
                 it[Users.groupid] = null
