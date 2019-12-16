@@ -1,4 +1,5 @@
 import 'package:http/http.dart';
+import 'package:huishoudappfrontend/turf_widget.dart';
 import 'package:huishoudappfrontend/turf_widget_admin.dart';
 
 import 'Objects.dart';
@@ -38,7 +39,7 @@ class TurfWidgetEditState extends State<TurfWidgetEdit> {
   }
 
   void updateEntry() async {
-    final Response res = await get("http://10.0.2.2:8080/updateTallyEntry?gid=${eventNew.gid}&authorid=${eventNew.authorid}&targetid=${eventNew.targetid}&mutation=${eventNew.mutation}&date=${eventNew.date}");
+    final Response res = await get("http://seprojects.nl:8080/updateTallyEntry?gid=${eventNew.gid}&authorid=${eventNew.authorid}&targetid=${eventNew.targetid}&mutation=${eventNew.mutation}&date=${eventNew.date}");
     if (res.statusCode == 200){
       print("updated");
     }else{
@@ -124,7 +125,7 @@ class TurfWidgetEditState extends State<TurfWidgetEdit> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              new TurfWidgetAdmin(),
+                              new Turfwidget(),
                         ));
                       },
                     ),
@@ -136,7 +137,7 @@ class TurfWidgetEditState extends State<TurfWidgetEdit> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              new TurfWidgetAdmin(),
+                              new Turfwidget(),
                         ));
                       },
                     )

@@ -144,6 +144,13 @@ class HttpResponseController {
         return map
     }
 
+    @RequestMapping("/getTallyPerUserPerMonth")
+    fun getTotalConsumePerUserPerMonth(@RequestParam(value= "gid", defaultValue = "") gid: Int ): HashMap<String, Int> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .getTotalConsumePerMonthPerUser(gid)
+        return map
+    }
+
     @RequestMapping("/getTallyByName")
     fun getTallyByName(@RequestParam(value= "gid",defaultValue = "") gid: Int): HashMap<String, HashMap<String, Any>> {
         val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
@@ -173,6 +180,8 @@ class HttpResponseController {
     }
 
 
+
+
     @RequestMapping("/updateTally")
     fun updateTally(@RequestParam(value="gid",defaultValue = "")gid:Int,
                     @RequestParam(value="authorid",defaultValue = "")authorid:String,
@@ -197,6 +206,31 @@ class HttpResponseController {
             return map;
 
     }
+
+    @RequestMapping("/setGroupName")
+    fun setGroupName(@RequestParam(value="gid", defaultValue = "")gid:Int,
+                        @RequestParam(value="newName", defaultValue = "")newName:String):HashMap<String,Any?> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").setGroupName(gid,newName);
+        return map;
+
+    }
+
+    @RequestMapping("/setGroupPermission")
+    fun setGroupPermission(@RequestParam(value="uid", defaultValue = "")uid:String,
+                     @RequestParam(value="admin", defaultValue = "")admin:Boolean):HashMap<String,String> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").setGroupPermission(uid,admin);
+        return map;
+
+    }
+
+    @RequestMapping("/deleteUserFromGroup")
+    fun deleteUserFromGroup(@RequestParam(value="uid", defaultValue = "")uid:String):HashMap<String,String> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").deleteUserFromGroup(uid);
+        return map;
+
+    }
+
+
 
     @RequestMapping("/initDatabase")
     fun initDB():HashMap<String,String> {
