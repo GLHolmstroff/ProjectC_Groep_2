@@ -83,10 +83,10 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       images.add(new CachedNetworkImage(
         imageUrl: "http://10.0.2.2:8080/files/users?uid=$pic&t=$timeStamp",
         placeholder: (BuildContext context, String s) {
-          return new Icon(Icons.person);
+          return new Image(image: AssetImage('images/person.jpg'));
         },
         errorWidget: (BuildContext context, String s, Object o) {
-          return new Icon(Icons.error);
+          return new Image(image: AssetImage('images/person.jpg'));
         },
       ));
     }
@@ -294,16 +294,11 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                   width: 150,
                   height: 150,
                   margin: const EdgeInsets.all(25),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      image: DecorationImage( 
-                        image: NetworkImage(
-                          pics[index].imageUrl
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.circular(180),
-                      border: Border.all(color: Design.rood, width: 3)),
+                  child: FittedBox(
+                    
+                    child: pics[index],
+                    fit: BoxFit.fill,
+                  ),
                 ),
                 header: Container(
                   padding:
