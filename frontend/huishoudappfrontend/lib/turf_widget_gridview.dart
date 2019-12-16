@@ -4,6 +4,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -15,6 +16,7 @@ import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:huishoudappfrontend/turf_widget_admin.dart';
 import 'Objects.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:typed_data';
 
 class TurfInfo {
   TurfInfo({this.numberofbeers, this.uid});
@@ -115,7 +117,6 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
         )
       ],
     );
-    print(CurrentUser().group_permission);
     if (CurrentUser().group_permission == "groupAdmin") {
       buttons.children.add(RaisedButton(
         child: Text(
@@ -238,6 +239,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
           },
         ),
       ),
+      SizedBox(width: 25),
       Container(
           width: 40,
           height: 40,
@@ -253,6 +255,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
             style: TextStyle(
                 fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
           )),
+      SizedBox(width: 25),
       Container(
         width: 40,
         height: 40,
@@ -276,13 +279,13 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
 
   Container pictureGridview(int gid, int index) {
     return Container(
-        margin: const EdgeInsets.all(20),
-        child: ClipOval(
-          child: FittedBox(
-            child: pics[index],
-      
-          ),
-        ));
+      margin: const EdgeInsets.all(10.0),
+      decoration: new BoxDecoration(
+          shape: BoxShape.circle,
+          image: new DecorationImage(
+              fit: BoxFit.cover,
+              image: new NetworkImage(pics[index].imageUrl))),
+    );
   }
 
   Container userNameGridView(int gid, int index) {
@@ -325,8 +328,6 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       itemBuilder: (BuildContext context, int index) {
         return new Card(
           elevation: 10,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
           child: new GridTile(
             header: userNameGridView(gid, index),
             child: pictureGridview(gid, index),
