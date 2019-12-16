@@ -5,6 +5,7 @@ import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.date
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.groupid
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.mutation
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.targetuserid
+import com.group2projc.Huishoud.database.DatabaseHelper.InviteCodes.code
 import com.group2projc.Huishoud.database.DatabaseHelper.Users.displayname
 import com.group2projc.Huishoud.database.DatabaseHelper.Users.id
 import org.jetbrains.exposed.sql.*
@@ -47,11 +48,15 @@ class DatabaseHelper(url: String) {
     }
 
     object Schedules : Table() {
-        val groupid = reference("groupid", Groups.id).primaryKey()
-        val useridto = reference("useridto", Users.id).primaryKey()
-        val datedue = varchar("datetime", 20).primaryKey()
-        val useridby = reference("useridby", Users.id)
+        val taskid = integer("taskid").primaryKey().autoIncrement()
+        val groupid = reference("groupid", Groups.id)
+        val userid = reference("userid", Users.id)
+        val taskname = varchar("taskname", 25)
         val description = varchar("description", 50)
+        val datedue = varchar("datedue", 20)
+        val done = integer("done")
+        val approvals = integer("approvals")
+        val ended = integer("ended")
     }
 
     object BeerTallies : Table() {
@@ -412,6 +417,45 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+
+    fun getUserInfoInGroup(gid: Int) : ArrayList<HashMap<String, String>> {
+        var out = ArrayList<HashMap<String, String>>()
+
+        transaction(db) {
+            Users.select { (Users.groupid eq gid) }.forEach{
+                var user = HashMap<String, String>()
+                user["uid"] = it[Users.id]
+                user["displayname"] = it[Users.displayname]
+                user["picturelink"] = it[Users.picturelink]
+
+                out.add(user)
+
+            }
+        }
+        return out
+    }
+
+    fun getUserTasks(uid: String) : ArrayList<HashMap<String, Any>> {
+        var out = ArrayList<HashMap<String, Any>>()
+
+        transaction(db) {
+            Schedules.select { (Schedules.userid eq uid) }.forEach {
+                if (it[Schedules.ended] == 0) {
+                    var task = HashMap<String, Any>()
+                    task["taskid"] = it[Schedules.taskid]
+                    task["taskname"] = it[Schedules.taskname]
+                    task["description"] = it[Schedules.description]
+                    task["datedue"] = it[Schedules.datedue]
+                    task["done"] = it[Schedules.done]
+                    task["approvals"] = it[Schedules.approvals]
+                    task["ended"] = it[Schedules.ended]
+
+                    out.add(task)
+                }
+            }
+        }
+    }
+
     fun getTotalConsumePerMonthPerUser(gid: Int): HashMap<String, Int> {
         val uids = getAllInGroup(gid).values
         var month = LocalDateTime.now()
@@ -438,10 +482,90 @@ class DatabaseHelper(url: String) {
                                 }
                             }
                         }
+
             }
         }
         return out
     }
+
+
+    fun getHousematesChecks(gid: Int, uid: String) : ArrayList<HashMap<String, Any>> {
+        var out = ArrayList<HashMap<String, Any>>()
+
+        transaction(db) {
+            addLogger(StdOutSqlLogger)
+            (Schedules innerJoin Users).select { (Schedules.groupid eq gid) and (Schedules.done eq 1)}.forEach{
+                if (it[Users.id] != uid && it[Schedules.ended] == 0) {
+                    var task = HashMap<String, Any>()
+                    task["taskid"] = it[Schedules.taskid]
+                    task["uid"] = it[Users.id]
+                    task["displayname"] = it[Users.displayname]
+                    task["picturelink"] = it[Users.picturelink]
+                    task["taskname"] = it[Schedules.taskname]
+                    task["description"] = it[Schedules.description]
+                    task["datedue"] = it[Schedules.datedue]
+                    task["done"] = it[Schedules.done]
+                    task["approvals"] = it[Schedules.approvals]
+                    task["ended"] = it[Schedules.ended]
+
+                    out.add(task)
+                }
+            }
+        }
+        return out
+    }
+
+    fun makeTaskDone(tid: Int) : DatabaseHelper {
+        transaction(db) {
+            Schedules.update ({ (Schedules.taskid eq tid) }) {
+                it[done] = 1
+            }
+        }
+        return this@DatabaseHelper
+    }
+
+    fun endTask(tid: Int) : DatabaseHelper {
+        transaction(db) {
+            Schedules.update ({ (Schedules.taskid eq tid) }) {
+                it[ended] = 1
+            }
+        }
+        return this@DatabaseHelper
+    }
+
+    fun approveTask(tid: Int) : DatabaseHelper {
+        transaction(db) {
+            addLogger(StdOutSqlLogger)
+            var value = 0
+            Schedules.select { Schedules.taskid eq tid }.forEach {
+                value = it[Schedules.approvals]
+            }
+            Schedules.update({ Schedules.taskid eq tid }) {
+                it[approvals] = (value + 1)
+            }
+        }
+        return this@DatabaseHelper
+    }
+
+    fun makeSchedule(gid: Int, uid: String, taskName: String, taskDescription: String, dateDue: String) : DatabaseHelper {
+        transaction(db) {
+            addLogger(StdOutSqlLogger)
+
+            Schedules.insert {
+                it[groupid] = gid
+                it[userid] = uid
+                it[taskname] = taskName
+                it[description] = taskDescription
+                it[datedue] = dateDue
+                it[done] = 0
+                it[approvals] = 0
+                it[ended] = 0
+                }
+            }
+        return this@DatabaseHelper
+    }
+
+
 
     fun createInviteCode(): Int {
 
@@ -461,7 +585,7 @@ class DatabaseHelper(url: String) {
             var key = createInviteCode();
             var alreadyInUse = false;
             transaction(db) {
-                InviteCodes.select { (InviteCodes.code eq key) }.forEach {
+                DatabaseHelper.InviteCodes.select { (DatabaseHelper.InviteCodes.code eq key) }.forEach {
                     alreadyInUse = true;
                 }
             }
@@ -473,7 +597,7 @@ class DatabaseHelper(url: String) {
         }
 
         transaction(db) {
-            InviteCodes.insert {
+            DatabaseHelper.InviteCodes.insert {
                 it[groupid] = gid;
                 it[code] = finalKey;
             }
@@ -485,13 +609,13 @@ class DatabaseHelper(url: String) {
         var groupid : Int? = null;
         var out = HashMap<String, String>()
         transaction(db) {
-            InviteCodes.select {(InviteCodes.code eq ic)}.forEach{
-                groupid = it[InviteCodes.groupid];
+            DatabaseHelper.InviteCodes.select {(DatabaseHelper.InviteCodes.code eq ic)}.forEach{
+                groupid = it[DatabaseHelper.InviteCodes.groupid];
             }
         }
         if(groupid != null) {
             transaction(db) {
-                InviteCodes.deleteWhere {(InviteCodes.code eq ic)}
+                DatabaseHelper.InviteCodes.deleteWhere {(DatabaseHelper.InviteCodes.code eq ic)}
             }
             addUserToGroup(uid, groupid!!);
             out["result"] = "Succes";

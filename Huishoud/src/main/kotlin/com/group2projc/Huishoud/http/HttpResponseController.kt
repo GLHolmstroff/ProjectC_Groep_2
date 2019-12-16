@@ -2,6 +2,7 @@ package com.group2projc.Huishoud.http
 
 import com.group2projc.Huishoud.HuishoudApplication
 import com.group2projc.Huishoud.database.DatabaseHelper
+import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.mutation
 import com.group2projc.Huishoud.database.createGroup
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -60,6 +61,64 @@ class HttpResponseController {
         val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
                 .getAllInGroup(gid)
         return map
+    }
+
+    @RequestMapping("/getUserInfoInGroup")
+    fun getUserInfoInGroup(@RequestParam(value = "gid", defaultValue = "") gid: Int): ArrayList<HashMap<String, String>> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .getUserInfoInGroup(gid)
+        return map
+    }
+
+    @RequestMapping("/getUserTasks")
+    fun getUserTasks(@RequestParam(value = "uid", defaultValue = "") uid: String): ArrayList<HashMap<String, Any>> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .getUserTasks(uid)
+        return map
+    }
+
+    @RequestMapping("/getHousematesChecks")
+    fun getHousematesChecks(@RequestParam(value = "gid", defaultValue = "") gid: Int,
+                            @RequestParam(value = "uid", defaultValue = "") uid: String): ArrayList<HashMap<String, Any>> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .getHousematesChecks(gid, uid)
+        return map
+    }
+
+    @RequestMapping("/insertSchedule")
+    fun updateTallyEntry(   @RequestParam(value = "gid", defaultValue = "") gid: Int,
+                            @RequestParam(value= "userid", defaultValue = "") userid: String,
+                            @RequestParam(value= "taskname", defaultValue = "") taskname: String,
+                            @RequestParam(value= "description", defaultValue = "") description: String,
+                            @RequestParam(value = "datedue", defaultValue = "") datedue: String): HttpResponse {
+        val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .makeSchedule(gid, userid, taskname, description, datedue)
+        return HttpResponse(counter.incrementAndGet().toInt(),
+                template + gid)
+    }
+
+    @RequestMapping("/makeTaskDone")
+    fun makeTaskDone(@RequestParam(value = "tid", defaultValue = "") tid: Int) : HttpResponse {
+        val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .makeTaskDone(tid)
+        return HttpResponse(counter.incrementAndGet().toInt(),
+                template + tid)
+    }
+
+    @RequestMapping("/endTask")
+    fun endTask(@RequestParam(value = "tid", defaultValue = "") tid: Int) : HttpResponse {
+        val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .endTask(tid)
+        return HttpResponse(counter.incrementAndGet().toInt(),
+                template + tid)
+    }
+
+    @RequestMapping("/approveTask")
+    fun approveTask(@RequestParam(value = "tid", defaultValue = "") tid: Int) : HttpResponse {
+        val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .approveTask(tid)
+        return HttpResponse(counter.incrementAndGet().toInt(),
+                template + tid)
     }
 
     @RequestMapping("/getGroupName")
