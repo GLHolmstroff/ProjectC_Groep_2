@@ -66,7 +66,7 @@ class _Profilepage extends State<Profilepage> {
     String uid = await Auth().currentUser();
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
-    return "http://seprojects.nl:8080/files/users?uid=$uid&t=$timeStamp";
+    return "http://10.0.2.2:8080/files/users?uid=$uid&t=$timeStamp";
   }
 
   Future<File> openGallery() async {
@@ -85,7 +85,7 @@ class _Profilepage extends State<Profilepage> {
     String uid = user.userId;
     String mu = '1';
     final Response res = await get(
-        "http://seprojects.nl:8080/updateTally?gid=$gid&authorid=$uid&targetid=$uid&mutation=$mu",
+        "http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$uid&mutation=$mu",
         headers: {'Content-Type': 'application/json'});
   }
 
@@ -100,7 +100,7 @@ class _Profilepage extends State<Profilepage> {
         'file', await image.readAsBytes(),
         filename: timeStamp + 'testfile.png');
 
-    var uri = Uri.parse("http://seprojects.nl:8080/files/upload");
+    var uri = Uri.parse("http://10.0.2.2:8080/files/upload");
     var request = new MultipartRequest("POST", uri);
     request.fields['uid'] = uid;
     request.files.add(mf);
@@ -153,7 +153,7 @@ class _Profilepage extends State<Profilepage> {
         });
   }
 
-  void _sendChangePasswordEmail() async {
+  Future<void> _sendChangePasswordEmail() async {
     final auth = Provider.of(context).auth;
     print(await auth.getUserIdToken());
     try {
@@ -178,7 +178,13 @@ class _Profilepage extends State<Profilepage> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text(type),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32.0),
+          ),
+          title: new Text(
+            type,
+            style: TextStyle(color: Colors.orange[700]),
+          ),
           content: SingleChildScrollView(
             child: Form(
               key: fromkey,
@@ -189,8 +195,16 @@ class _Profilepage extends State<Profilepage> {
                 decoration: InputDecoration(
                   hintText: 'Je nieuwe naam',
                   contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32.0)),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(32.0),
+                    borderSide: BorderSide(
+                      color: Colors.orange[700],
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(32.0),
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
                 ),
               ),
             ),
@@ -198,7 +212,10 @@ class _Profilepage extends State<Profilepage> {
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
-              child: new Text("Opslaan"),
+              child: new Text(
+                "Opslaan",
+                style: TextStyle(color: Colors.orange[700]),
+              ),
               onPressed: _submitnewname,
             ),
           ],
@@ -214,8 +231,9 @@ class _Profilepage extends State<Profilepage> {
       print(_name);
       String uid = await Auth().currentUser();
       final Response res = await get(
-          "http://seprojects.nl:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
+          "http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
           headers: {'Content-Type': 'application/json'});
+      setState(() {});
     }
   }
 
@@ -232,7 +250,11 @@ class _Profilepage extends State<Profilepage> {
         print('logt niet uit');
       }
     } else if (choice == "Verander wachtwoord") {
-      _sendChangePasswordEmail();
+      try {
+        await _sendChangePasswordEmail();
+      } catch(e) {
+        print(e);
+      }
     }
   }
 
@@ -289,6 +311,9 @@ class _Profilepage extends State<Profilepage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return PopupMenuButton<String>(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0),
+              ),
               onSelected: _choiceAction,
               itemBuilder: (BuildContext context) {
                 return snapshot.data.choices.map((String choice) {
@@ -377,72 +402,79 @@ class _Profilepage extends State<Profilepage> {
         ));
 
     final bottompart = new Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      
-      children: <Widget>[
-      Padding(
-        padding: const EdgeInsets.only(top: 12.0, bottom: 0, left: 10),
-        child: Text("Jouw bier data", style: TextStyle(fontSize: 25, color: Design.orange2, fontWeight: FontWeight.bold, )),
-      ),  
-      Container(
-        height: (MediaQuery.of(context).size.height - 50) * 0.40,
-        child: FutureBuilder<List<ConsumeData>>(
-          future: CurrentUser().getConsumeData(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Padding(
-                padding: const EdgeInsets.all(10),
-                child: Card(
-                  elevation: 3,
-                  
-                  child: SfCartesianChart(
-                      primaryXAxis: CategoryAxis(),
-                      series: <ChartSeries>[
-                        AreaSeries<ConsumeData, String>(
-                          dataSource: snapshot.data,
-                          color: Design.orange2,
-                          // borderMode: AreaBorderMode.excludeBottom,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Container(
+              decoration: new BoxDecoration(
+                borderRadius: BorderRadius.circular(100.0),
+              ),
+              //height: (MediaQuery.of(context).size.height - 50) * 0.40,
+              child: FutureBuilder<List<ConsumeData>>(
+                future: CurrentUser().getConsumeData(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Card(
+                        elevation: 3,
+                        child: SfCartesianChart(
+                            title: ChartTitle(
+                              text: "Jouw bier data",
+                              alignment: ChartAlignment.center,
+                              textStyle: ChartTextStyle(
+                                color: Design.orange2,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            primaryXAxis: CategoryAxis(),
+                            series: <ChartSeries>[
+                              AreaSeries<ConsumeData, String>(
+                                dataSource: snapshot.data,
+                                color: Design.orange2,
+                                // borderMode: AreaBorderMode.excludeBottom,
 
-                          // borderWidth: 2,
-                          xValueMapper: (ConsumeData data, _) => data.date,
-                          yValueMapper: (ConsumeData data, _) => data.amount,
-                          dataLabelSettings: DataLabelSettings(isVisible: true),
-                        )
-                      ]),
-                ),
-              );
-            } else if (snapshot.hasError) {
-              print(snapshot.error);
-              return Text("${snapshot.error}");
-            } else {
-              return Center(
-                child:Container(
-                  width: 100,
-                  height: 100,
-                  child:CircularProgressIndicator(),
-                )
-              )
-              ;
-            }
-          },
-        ))]);
+                                // borderWidth: 2,
+                                xValueMapper: (ConsumeData data, _) =>
+                                    data.date,
+                                yValueMapper: (ConsumeData data, _) =>
+                                    data.amount,
+                                dataLabelSettings:
+                                    DataLabelSettings(isVisible: true),
+                              )
+                            ]),
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    print(snapshot.error);
+                    return Text("${snapshot.error}");
+                  } else {
+                    return Center(
+                        child: Container(
+                      width: 100,
+                      height: 100,
+                      child: CircularProgressIndicator(),
+                    ));
+                  }
+                },
+              ))
+        ]);
 
     return new Scaffold(
-      body: Container(
-          color: Colors.grey[100],
-          child: Column(
-            children: <Widget>[
-              upperpart,
-              // Divider(
-              //   color: Design.geel,
-              //   height: 1,
-              // ),
-              middelpart,
-              
-              
-              bottompart,
-            ],
-          )),
+      body: ListView(
+        children: <Widget>[
+          Container(
+            color: Colors.grey[100],
+            child: Column(
+              children: <Widget>[
+                upperpart,
+                middelpart,
+                bottompart,
+              ],
+            ),
+          ),
+        ],
+      ),
       floatingActionButton: settingsButton,
     );
   }

@@ -7,6 +7,7 @@ import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/createaccount_widget.dart';
+import 'package:toast/toast.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
@@ -68,16 +69,17 @@ class _LoginPageState extends State<LoginPage> {
           }
           print('Signed in $userId');
           // Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
-        } else {
-          String userId = await auth.createUserWithEmailAndPassword(
-            _email,
-            _password,
-          );
-
-          print('Signed in $userId');
         }
       } catch (e) {
-        print(e);
+        print('deze $e');
+        if (e.toString().contains("The password is invalid")) {
+          Toast.show(
+            "Wachtwoord ongeldig",
+            context,
+            duration: 2,
+            gravity: Toast.CENTER,
+          );
+        }
       }
     }
   }
@@ -133,8 +135,16 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: InputDecoration(
                   hintText: 'Jouw email',
                   contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32.0)),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(32.0),
+                    borderSide: BorderSide(
+                      color: Colors.orange[700],
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(32.0),
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
                 ),
               ),
             ),
@@ -142,12 +152,20 @@ class _LoginPageState extends State<LoginPage> {
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
-              child: new Text("Verstuur"),
+              child: new Text(
+                "Verstuur",
+                style: TextStyle(
+                  color: Colors.orange[700],
+                ),
+              ),
               onPressed: () {
                 _sendChangePasswordEmail();
               },
             ),
           ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32.0),
+          ),
         );
       },
     );
@@ -158,8 +176,7 @@ class _LoginPageState extends State<LoginPage> {
     // Widget variables
     final logo = Image(
       image: AssetImage('images/beerphoto2.png'),
-      width: 150,
-      height: 180,
+      fit: BoxFit.cover,
     );
 
     final email = TextFormField(
@@ -226,7 +243,7 @@ class _LoginPageState extends State<LoginPage> {
 
     final googleLogIn = SignInButton(
       Buttons.Google,
-      text: 'Log in met je Google account',
+      text: 'Log in Google',
       onPressed: () async {
         try {
           final _auth = Provider.of(context).auth;
@@ -305,10 +322,26 @@ class _LoginPageState extends State<LoginPage> {
         child: Form(
           key: formKey,
           child: ListView(
-            padding: EdgeInsets.only(left: 40.0, right: 40.0),
+            padding: EdgeInsets.only(left: 10.0, right: 10.0),
             children: <Widget>[
               SizedBox(height: 60),
-              logo,
+              Center(
+                child: Container(
+                  alignment: Alignment.center,
+                  child: logo,
+                  width: 150,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(75.0),
+                    color: Colors.white,
+                    border: Border.all(
+                      color: Colors.grey[200],
+                      width: 2,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 40,),
               Container(
                 padding: EdgeInsets.all(5.0),
                 decoration: new BoxDecoration(
@@ -330,7 +363,13 @@ class _LoginPageState extends State<LoginPage> {
                     googleLogIn,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[forgotPassword, createAccount],
+                      children: <Widget>[
+                        forgotPassword,
+                        SizedBox(
+                          width: 1,
+                        ),
+                        createAccount,
+                      ],
                     ),
                   ],
                 ),

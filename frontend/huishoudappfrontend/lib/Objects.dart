@@ -47,6 +47,9 @@ class CurrentUser extends BaseUser {
   }
 
   CurrentUser._internal() {
+    if (this.userId == null) {
+      updateCurrentUser();
+    }
     userId = null;
     groupId = null;
     globalPermissions = null;
@@ -69,9 +72,35 @@ class CurrentUser extends BaseUser {
   static List<ConsumeData> _listFromJson(Map<String, dynamic> json) {
     List<ConsumeData> lst = new List<ConsumeData>();
     ConsumeData placeholder;
-    json.forEach((k, v) => v.forEach((k1, v1) => lst.add(ConsumeData(k1, v1))));
+    json.forEach((k,v) => 
+    v.forEach((k1, v1) =>
+      lst.add(ConsumeData(k1, v1))
+    )
+    );
+    
     return lst;
   }
+
+  static List<ConsumeDataPerMonthPerUser> _listGroupDataFromJson(Map<String, dynamic> json) {
+    List<ConsumeDataPerMonthPerUser> lst = new List<ConsumeDataPerMonthPerUser>();
+    json.forEach((k, v) => lst.add(ConsumeDataPerMonthPerUser(k, v)));
+
+    return lst;
+  }
+
+  Future<List<ConsumeDataPerMonthPerUser>> getGroupConsumeData() async {
+    String gid = CurrentUser().groupId.toString();
+    List<ConsumeDataPerMonthPerUser> placeHolderList;
+    final Response res = await get("http://10.0.2.2:8080/getTallyPerUserPerMonth?gid=$gid",
+        headers: {'Content-Type': 'application/json'});
+    if (res.statusCode == 200) {
+      placeHolderList = CurrentUser._listGroupDataFromJson(json.decode(res.body));
+    } else {
+      print("Could not make list of data");
+    }
+    return placeHolderList;
+  }
+  
 
   Future<List<ConsumeData>> getConsumeData() async {
     String uid = CurrentUser().userId.toString();
@@ -91,17 +120,18 @@ class CurrentUser extends BaseUser {
 }
 
 class User extends BaseUser {
-  User(userId, groupId, globalPermissions, displayName, picture_link) {
+  User(userId, groupId, globalPermissions, displayName, picture_link, group_permission) {
     this.userId = userId;
     this.groupId = groupId;
     this.globalPermissions = globalPermissions;
     this.displayName = displayName;
     this.picture_link = picture_link;
+    this.group_permission = group_permission;
   }
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(json["uid"], json["groupid"], json["global_permissions"],
-        json["display_name"], json["picture_link"]);
+        json["display_name"], json["picture_link"],json["group_permissions"]);
   }
 
   static Future<User> getUser(String cuid) async {
@@ -128,10 +158,15 @@ class Group {
     List<String> users = new List<String>();
     String keyPart = "UserId";
 
-    for (var i = 0; i < json.length; i++) {
-      String key = keyPart + i.toString();
-      users.add(json[key]);
-    }
+    for( var i = 0; i < json.length; i++){
+        String key = keyPart + i.toString();
+        users.add(json[key]);
+      }
+    
+    return Group(
+      users: users
+    );
+
 
     return Group(users: users);
   }
@@ -311,7 +346,7 @@ class Product {
   final double price;
   final String name;
   Product(this.price, this.name);
-
+  
   static Future<List<Product>> getData(int gid) async {
     List<Product> products = [];
     final Response res = await get(
@@ -334,7 +369,24 @@ class Product {
     }
     return products;
   }
+  
 }
+class Schedules {
+  String taskName;
+  List usersid;
+  String endDate;
+  String infoTask;
+
+  Schedules(this.usersid);
+}
+
+class ConsumeDataPerMonthPerUser {
+  final String name;
+  final int amount;
+  ConsumeDataPerMonthPerUser(this.name, this.amount);
+}
+
+  
 
 //TODO:
 //Class Schedules
