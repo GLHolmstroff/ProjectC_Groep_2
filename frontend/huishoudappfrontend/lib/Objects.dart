@@ -84,6 +84,7 @@ class CurrentUser extends BaseUser {
   static List<ConsumeDataPerMonthPerUser> _listGroupDataFromJson(Map<String, dynamic> json) {
     List<ConsumeDataPerMonthPerUser> lst = new List<ConsumeDataPerMonthPerUser>();
     json.forEach((k, v) => lst.add(ConsumeDataPerMonthPerUser(k, v)));
+
     return lst;
   }
 
@@ -166,6 +167,7 @@ class Group {
       users: users
     );
 
+
     return Group(users: users);
   }
 
@@ -188,6 +190,27 @@ class Group {
       print('Could not find group');
     }
     return currentGroup;
+  }
+
+  static Future<List<Map>> getNamesAndPics(int gid) async {
+    List<Map> namePics = [];
+    final Response res = await get("http://10.0.2.2:8080/getPicsAndNames?gid=$gid",
+        headers: {'Content-Type': 'application/json'});
+    if (res.statusCode == 200) {
+      namePics = Group.namePicfromJson(json.decode(res.body));
+    } else {
+      print(res.statusCode.toString());
+      print('Could not find group');
+    }
+    return namePics;
+  }
+
+  static List<Map> namePicfromJson(Map json) {
+    List<Map> namePics = [];
+    for(int i = 0; i < json.length; i++){
+      namePics.add(json[i.toString()]);      
+    }
+    return namePics;
   }
 }
 
@@ -224,45 +247,19 @@ class House {
 
 class BeerTally {
   //TODO: Link with group
-  final Map<String, int> count;
-  final Map<String, String> pics;
+  final List<int> count;
+  final String product;
 
-  BeerTally({this.count, this.pics});
+  BeerTally({this.count, this.product});
 
-  Map<String, int> getCount() {
+  List<int> getCount() {
     return this.count;
   }
 
-  List<Map<String, int>> getCountAsList() {
-    List<Map<String, int>> out = List<Map<String, int>>();
-    this.count.forEach((k, v) {
-      Map<String, int> single = Map<String, int>();
-      single[k] = v;
-      out.add(single);
-    });
-
-    return out;
-  }
-
-  Map<String, String> getPics() {
-    return this.pics;
-  }
-
-  List<Map<String, String>> getPicsAsList() {
-    List<Map<String, String>> out = List<Map<String, String>>();
-    this.pics.forEach((k, v) {
-      Map<String, String> single = Map<String, String>();
-      single[k] = v;
-      out.add(single);
-    });
-
-    return out;
-  }
-
-  static Future<BeerTally> getData(int gid) async {
+  static Future<BeerTally> getData(int gid, String product) async {
     BeerTally beer;
     final Response res = await get(
-        "http://10.0.2.2:8080/getTallyByName?gid=$gid",
+        "http://10.0.2.2:8080/getTally?gid=$gid&product=$product",
         headers: {'Content-Type': 'application/json'});
 
     if (res.statusCode == 200) {
@@ -276,19 +273,16 @@ class BeerTally {
   }
 
   factory BeerTally.fromJson(Map<String, dynamic> json) {
-    Map<String, int> count = new Map<String, int>();
-    Map<String, String> pics = new Map<String, String>();
-    json.forEach((k, v) {
-      count[k] = v["count"];
-      pics[k] = v["picture"];
-    });
-    return BeerTally(count: count, pics: pics);
+    List<int> count = new List<int>();
+    String product = json["product"];
+    for(int i = 0; i < json.length - 1; i++){
+      count.add(json["$i"]["count"]);
+    }
+    return BeerTally(count: count, product: product);
   }
 
   String toString() {
-    String out = "";
-    this.count.forEach(
-        (k, v) => out += k + " drank " + v.toString() + " beers" + "\n");
+    String out = "TODO:REMAKE TOSTRING";
     return out;
   }
 }
@@ -348,6 +342,35 @@ class ConsumeData {
   ConsumeData(this.date, this.amount);
 }
 
+class Product {
+  final double price;
+  final String name;
+  Product(this.price, this.name);
+  
+  static Future<List<Product>> getData(int gid) async {
+    List<Product> products = [];
+    final Response res = await get(
+        "http://10.0.2.2:8080/getAllProducts?gid=$gid",
+        headers: {'Content-Type': 'application/json'});
+    if (res.statusCode == 200) {
+      // If server returns an OK response, parse the JSON.
+      products = Product.fromJson(json.decode(res.body));
+    } else {
+      print("Could not find beer data");
+    }
+    return products;
+  }
+
+  static List<Product> fromJson(Map<String, dynamic> json) {
+    List<Product> products = [];
+    for (int i = 0; i < json.length; i++) {
+      products.add(
+          Product(json[i.toString()]["price"], json[i.toString()]["name"]));
+    }
+    return products;
+  }
+  
+}
 class Schedules {
   String taskName;
   List usersid;
@@ -361,8 +384,9 @@ class ConsumeDataPerMonthPerUser {
   final String name;
   final int amount;
   ConsumeDataPerMonthPerUser(this.name, this.amount);
-
 }
+
+  
 
 //TODO:
 //Class Schedules

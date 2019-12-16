@@ -63,12 +63,7 @@ class TurfWidgetAdminState extends State<TurfWidgetAdmin> {
           onTap: () {
             setState(() {
               if (events[index].isSelected) {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          new TurfWidgetEdit(events[index].data),
-                    ));
+                Navigator.pushNamed(context, TurfWidgetEdit.tag, arguments: events[index].data);
               } else {
                 for (var event in events) {
                   event.isSelected = false;
@@ -78,11 +73,7 @@ class TurfWidgetAdminState extends State<TurfWidgetAdmin> {
             });
           },
           onLongPress: () {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => new TurfWidgetEdit(events[index].data),
-                ));
+            Navigator.pushNamed(context, TurfWidgetEdit.tag, arguments: events[index].data);
           },
         ));
   }
@@ -134,11 +125,7 @@ class TurfWidgetAdminState extends State<TurfWidgetAdmin> {
               )),
         ),
         onTap: () {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => new TurfWidgetEdit(events[index].data),
-              ));
+          Navigator.pushNamed(context, TurfWidgetEdit.tag, arguments: events[index].data);
         });
   }
 

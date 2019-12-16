@@ -1,4 +1,5 @@
 import 'package:http/http.dart';
+import 'package:huishoudappfrontend/page_container.dart';
 import 'package:huishoudappfrontend/turf_widget.dart';
 import 'package:huishoudappfrontend/turf_widget_admin.dart';
 
@@ -8,9 +9,7 @@ import 'package:flutter/material.dart';
 import 'design.dart';
 
 class TurfWidgetEdit extends StatefulWidget {
-  final BeerEvent event;
-
-  TurfWidgetEdit(this.event);
+  TurfWidgetEdit();
 
   static get tag => 'TurfWidgetEdit';
 
@@ -27,11 +26,9 @@ class TurfWidgetEditState extends State<TurfWidgetEdit> {
   void initState() {
     super.initState();
     setHouseName();
-    event = widget.event.copyByVal();
-    eventNew = event.copyByVal();
   }
 
-  Future<void> setHouseName() async{
+  Future<void> setHouseName() async {
     var temp = (await House.getCurrentHouse()).houseName;
     setState(() {
       houseName = temp;
@@ -39,28 +36,38 @@ class TurfWidgetEditState extends State<TurfWidgetEdit> {
   }
 
   void updateEntry() async {
-    final Response res = await get("http://10.0.2.2:8080/updateTallyEntry?gid=${eventNew.gid}&authorid=${eventNew.authorid}&targetid=${eventNew.targetid}&mutation=${eventNew.mutation}&date=${eventNew.date}");
-    if (res.statusCode == 200){
+    final Response res = await get(
+        "http://10.0.2.2:8080/updateTallyEntry?gid=${eventNew.gid}&authorid=${eventNew.authorid}&targetid=${eventNew.targetid}&mutation=${eventNew.mutation}&date=${eventNew.date}");
+    if (res.statusCode == 200) {
       print("updated");
-    }else{
+    } else {
       print(res.statusCode);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    //Initialization via named route arguments must happen in build.
+    //Only initialize if event is still null. Otherwise event would be overwritten
+    if (event == null){
+      setState(() {
+        this.event = ModalRoute.of(context).settings.arguments;
+        this.eventNew = event.copyByVal();
+      });
+      
+    }
     return Form(
       key: _formKey,
       child: Scaffold(
-         appBar: AppBar(
-              backgroundColor: Design.rood,
-              title: Center(
-                child: Text(
-                  "Wijzig beer event",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
+        appBar: AppBar(
+          backgroundColor: Design.rood,
+          title: Center(
+            child: Text(
+              "Wijzig beer event",
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
+          ),
+        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,11 +82,21 @@ class TurfWidgetEditState extends State<TurfWidgetEdit> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text("Oud verschil", textAlign: TextAlign.center,),
+                Text(
+                  "Oud verschil",
+                  textAlign: TextAlign.center,
+                ),
                 Padding(padding: const EdgeInsets.only(top: 20)),
-                Text(event.mutation.toString(), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold),),
+                Text(
+                  event.mutation.toString(),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 Padding(padding: const EdgeInsets.only(top: 20)),
-                Text("Maak nieuw verschil", textAlign: TextAlign.center,),
+                Text(
+                  "Maak nieuw verschil",
+                  textAlign: TextAlign.center,
+                ),
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -91,19 +108,25 @@ class TurfWidgetEditState extends State<TurfWidgetEdit> {
                           color: Colors.green,
                         ),
                         onPressed: () {
+                          print("+ " + this.eventNew.mutation.toString());
                           setState(() {
-                            eventNew.mutation += 1;
+                            this.eventNew.mutation += 1;
                           });
                         }),
-                    Text(eventNew.mutation.toString(), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(eventNew.mutation.toString(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                     IconButton(
                       icon: Icon(
                         Icons.remove,
                         color: Colors.red,
                       ),
                       onPressed: () {
+                        print("-" + this.eventNew.mutation.toString());
                         setState(() {
-                          eventNew.mutation -= 1;
+                          if (this.eventNew.mutation >= 0) {
+                            this.eventNew.mutation -= 1;
+                          }
                         });
                       },
                     ),
@@ -121,24 +144,18 @@ class TurfWidgetEditState extends State<TurfWidgetEdit> {
                           eventNew.mutation = 0;
                         });
                         updateEntry();
-                        Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              new Turfwidget(),
-                        ));
+                        Navigator.of(context)
+                            .popUntil(ModalRoute.withName(TurfWidgetAdmin.tag));
+                        Navigator.of(context).pop();
                       },
                     ),
                     FlatButton(
                       child: Text("Verandering opslaan"),
                       onPressed: () {
                         updateEntry();
-                        Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              new Turfwidget(),
-                        ));
+                        Navigator.of(context)
+                            .popUntil(ModalRoute.withName(TurfWidgetAdmin.tag));
+                        Navigator.of(context).pop();
                       },
                     )
                   ],

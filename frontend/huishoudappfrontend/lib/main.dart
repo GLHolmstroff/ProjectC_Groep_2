@@ -10,6 +10,7 @@ import 'package:huishoudappfrontend/groupmanagement/creategroup_widget.dart';
 import 'package:huishoudappfrontend/schedules/clickedOnCheckHousemate.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:huishoudappfrontend/services/permission_serivce.dart';
+import 'package:huishoudappfrontend/turf_widget.dart';
 import 'package:huishoudappfrontend/turf_widget_admin.dart';
 import 'package:huishoudappfrontend/turf_widget_edit.dart';
 import 'login_widget.dart';
@@ -30,8 +31,9 @@ class MyApp extends StatelessWidget {
     CreateAccount.tag: (context) => CreateAccount(),
     Profilepage.tag: (context) => Profilepage(),
     GroupWidget.tag: (context) => GroupWidget(),
+    Turfwidget.tag: (context) => Turfwidget(),
     TurfWidgetAdmin.tag: (context) => TurfWidgetAdmin(),
-    TurfWidgetEdit.tag: (context) => TurfWidgetEdit(null),
+    TurfWidgetEdit.tag: (context) => TurfWidgetEdit(),
     SchoonmaakPage.tag: (context) => SchoonmaakPage(),
   };
 
@@ -63,7 +65,7 @@ class MyHomePage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     final Auth auth = Provider.of(context).auth;
     return StreamBuilder<String>(
         stream: auth.onAuthStateChanged,
