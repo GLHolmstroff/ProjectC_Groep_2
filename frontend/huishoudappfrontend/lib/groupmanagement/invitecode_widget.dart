@@ -28,8 +28,9 @@ class _InviteCodeWidgetState extends State {
   @override
   Widget build(BuildContext context) {
     final getCodeButton = RaisedButton(
+      color: Colors.orange[700],
       onPressed: _getCode,
-      child: Text('Krijg een eenmalige code', style: TextStyle(fontSize: 20)),
+      child: Text('Krijg een eenmalige code', style: TextStyle(color: Colors.white)),
     );
 
     final codeText = Text(
