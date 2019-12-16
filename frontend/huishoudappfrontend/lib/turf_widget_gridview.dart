@@ -23,6 +23,8 @@ class TurfInfo {
 }
 
 class TurfwidgetGrid extends StatefulWidget {
+  static String tag = 'turfwidgetgrid';
+
   @override
   State<StatefulWidget> createState() => _TurfwidgetGrid();
 }
@@ -123,11 +125,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         color: Colors.orange[700],
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => new TurfWidgetAdmin(),
-              ));
+          Navigator.pushNamed(context, TurfWidgetAdmin.tag);
         },
       ));
       buttons.children.add(RaisedButton(
@@ -138,11 +136,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         color: Colors.orange[700],
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => new TurfWidgetAddProduct(),
-              ));
+          Navigator.pushNamed(context, TurfWidgetAddProduct.tag);
         },
       ));
     }

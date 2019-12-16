@@ -11,7 +11,7 @@ import 'package:huishoudappfrontend/turf_widget_edit.dart';
 import 'design.dart';
 
 class TurfWidgetAddProduct extends StatefulWidget {
-  static get tag => 'turfwidgetaddproduct';
+  static String tag ='turfwidgetaddproduct';
 
   @override
   State<StatefulWidget> createState() => TurfWidgetAddProductState();
@@ -275,11 +275,8 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
         onPressed: () {
           formKey.currentState.save();
           sentProductData(_productName, _productPrice);
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => new Turfwidget(),
-              ));
+          Navigator.popUntil(context, ModalRoute.withName(TurfWidgetAddProduct.tag));
+          Navigator.pop(context);
         },
         padding: EdgeInsets.all(12),
         color: Colors.orange[700],
