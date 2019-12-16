@@ -439,7 +439,8 @@ class _Profilepage extends State<Profilepage> {
                             ),
                             primaryXAxis: CategoryAxis(),
                             series: <ChartSeries>[
-                              AreaSeries<ConsumeData, String>(
+                              SplineSeries<ConsumeData, String>(
+                                splineType: SplineType.monotonic,
                                 dataSource: snapshot.data,
                                 color: Design.orange2,
                                 // borderMode: AreaBorderMode.excludeBottom,

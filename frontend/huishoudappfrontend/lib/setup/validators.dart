@@ -13,7 +13,7 @@ class EmailValidator {
     }
 
     if (value.substring(value.length - 1) == ' ') {
-      return "Email kan niet eindigen met een spatie";
+      return "Mag een spatie aan het einde bevatten";
     }
     if (!RegExp(
             r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
@@ -21,6 +21,15 @@ class EmailValidator {
       return "Ongeldig email format";
     }
     return null;
+  }
+
+  static String spaceCheck(value) {
+    if (value.substring(value.length - 1) == ' ' && !value.isEmpty) {
+      return spaceCheck(value.substring(0, value.length -1));
+    } else {
+      return value;
+    }
+
   }
 }
 
