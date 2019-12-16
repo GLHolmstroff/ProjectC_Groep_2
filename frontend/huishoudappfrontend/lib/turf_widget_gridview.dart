@@ -253,7 +253,6 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                             });
                           },
                         ),
-
                       ),
                       Container(
                           width: 40,
@@ -297,11 +296,17 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                       ),
                     ]),
                 child: Container(
-                  width: 150,
-                  height: 150,
-                  margin: const EdgeInsets.all(25),
+                  width: 100,
+                  height: 100,
+                  margin: const EdgeInsets.all(30),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(360),
+                    border: Border.all(width: 5)
+                  ),
                   child: FittedBox(
-                    child: pics[index],
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(360),
+                      child: Container(child: pics[index])),
                     fit: BoxFit.fill,
                   ),
                 ),
