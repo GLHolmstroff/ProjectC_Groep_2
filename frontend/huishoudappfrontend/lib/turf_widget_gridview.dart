@@ -274,53 +274,41 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
     ]);
   }
 
-  Container pictureGridview(int gid, int index){
-    return Container(
-                  margin: const EdgeInsets.all(40),
-                  // decoration: BoxDecoration(
-                  //   borderRadius: BorderRadius.circular(180),
-                  //   border: Border.all(width: 5)
-                  // ),
-                  child: FittedBox(
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(360),
-                        child: pics[index]),
-                    fit: BoxFit.fill,
-                  ),
-                );
+  Container pictureGridview(int gid, int index) {
+    return Container(margin: const EdgeInsets.all(20), child: pics[index]);
   }
 
-  Container userNameGridView(int gid, int index){
+  Container userNameGridView(int gid, int index) {
     return Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 110, horizontal: 0),
-                    child: Text(
-                      names[index],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          backgroundColor: Colors.transparent,
-                          color: Colors.black,
-                          shadows: [
-                            Shadow(
-                                // bottomLeft
-                                offset: Offset(-1.5, -1.5),
-                                color: Colors.white),
-                            Shadow(
-                                // bottomRight
-                                offset: Offset(1.5, -1.5),
-                                color: Colors.white),
-                            Shadow(
-                                // topRight
-                                offset: Offset(1.5, 1.5),
-                                color: Colors.white),
-                            Shadow(
-                                // topLeft
-                                offset: Offset(-1.5, 1.5),
-                                color: Colors.white),
-                          ]),
-                    ),);
+      padding: const EdgeInsets.symmetric(vertical: 110, horizontal: 0),
+      child: Text(
+        names[index],
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            backgroundColor: Colors.transparent,
+            color: Colors.black,
+            shadows: [
+              Shadow(
+                  // bottomLeft
+                  offset: Offset(-1.5, -1.5),
+                  color: Colors.white),
+              Shadow(
+                  // bottomRight
+                  offset: Offset(1.5, -1.5),
+                  color: Colors.white),
+              Shadow(
+                  // topRight
+                  offset: Offset(1.5, 1.5),
+                  color: Colors.white),
+              Shadow(
+                  // topLeft
+                  offset: Offset(-1.5, 1.5),
+                  color: Colors.white),
+            ]),
+      ),
+    );
   }
 
   GridView createGridView(int gid) {
@@ -329,15 +317,18 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       itemCount: pics.length,
       itemBuilder: (BuildContext context, int index) {
         return new Card(
-            elevation: 10,
-            child: new GridTile(
-                footer: bottomGridView(gid, index),
-                child: pictureGridview(gid, index),
-                header: userNameGridView(gid, index)
-                ),);
+          elevation: 10,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+          child: new GridTile(
+            header: userNameGridView(gid, index),
+            child: pictureGridview(gid, index),
+            footer: bottomGridView(gid, index),
+          ),
+        );
       },
-      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, childAspectRatio: (4 / 4)),
+      gridDelegate:
+          new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
     );
   }
 
