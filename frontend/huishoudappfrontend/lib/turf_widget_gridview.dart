@@ -227,27 +227,34 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Container(
-                          width: 40,
-                          height: 40,
-                          margin: EdgeInsets.all(1),
-                          padding: EdgeInsets.all(1),
-                          // decoration: BoxDecoration(
-                          //     borderRadius: BorderRadius.circular(180),
-                          //     //color: Colors.orange[700],
-                          //     border: Border.all(width: 1)),
-                          child: IconButton(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 0),
-                              icon: Icon(
-                                Icons.add,
-                                color: Colors.green,
-                                size: 35,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  sentData[index].numberofbeers += 1;
-                                });
-                              })),
+                        width: 40,
+                        height: 40,
+                        margin: EdgeInsets.all(1),
+                        padding: EdgeInsets.all(1),
+                        // decoration: BoxDecoration(
+                        //     borderRadius: BorderRadius.circular(180),
+                        //     //color: Colors.orange[700],
+                        //     border: Border.all(width: 1)),
+                        child: IconButton(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 0),
+                          icon: Icon(
+                            Icons.remove,
+                            color: Colors.red,
+                            size: 35,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              if (sentData[index].numberofbeers == 0) {
+                                print('Can' 't remove any more beers');
+                              } else {
+                                sentData[index].numberofbeers -= 1;
+                              }
+                            });
+                          },
+                        ),
+
+                      ),
                       Container(
                           width: 40,
                           height: 40,
@@ -266,32 +273,28 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                                 color: Colors.white),
                           )),
                       Container(
-                          width: 40,
-                          height: 40,
-                          margin: EdgeInsets.all(1),
-                          padding: EdgeInsets.all(1),
-                          // decoration: BoxDecoration(
-                          //     borderRadius: BorderRadius.circular(180),
-                          //     color: Colors.black,
-                          //     border: Border.all(width: 1)),
-                          child: IconButton(
+                        width: 40,
+                        height: 40,
+                        margin: EdgeInsets.all(1),
+                        padding: EdgeInsets.all(1),
+                        // decoration: BoxDecoration(
+                        //     borderRadius: BorderRadius.circular(180),
+                        //     color: Colors.black,
+                        //     border: Border.all(width: 1)),
+                        child: IconButton(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 0, horizontal: 0),
                             icon: Icon(
-                              Icons.remove,
-                              color: Colors.red,
+                              Icons.add,
+                              color: Colors.green,
                               size: 35,
                             ),
                             onPressed: () {
                               setState(() {
-                                if (sentData[index].numberofbeers == 0) {
-                                  print('Can' 't remove any more beers');
-                                } else {
-                                  sentData[index].numberofbeers -= 1;
-                                }
+                                sentData[index].numberofbeers += 1;
                               });
-                            },
-                          )),
+                            }),
+                      ),
                     ]),
                 child: Container(
                   width: 150,
