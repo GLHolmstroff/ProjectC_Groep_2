@@ -102,9 +102,12 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       alignment: MainAxisAlignment.center,
       children: <Widget>[
         RaisedButton(
-          child: Text("Verzenden",
-          style: TextStyle(color: Colors.white),),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          child: Text(
+            "Verzenden",
+            style: TextStyle(color: Colors.white),
+          ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
           onPressed: finalData,
           color: Colors.orange[700],
         )
@@ -113,8 +116,10 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
     print(CurrentUser().group_permission);
     if (CurrentUser().group_permission == "groupAdmin") {
       buttons.children.add(RaisedButton(
-        child: Text("View Log",
-        style: TextStyle(color: Colors.white),),
+        child: Text(
+          "View Log",
+          style: TextStyle(color: Colors.white),
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         color: Colors.orange[700],
         onPressed: () {
@@ -126,8 +131,10 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
         },
       ));
       buttons.children.add(RaisedButton(
-        child: Text("Product toevoegen",
-        style: TextStyle(color: Colors.white),),
+        child: Text(
+          "Product toevoegen",
+          style: TextStyle(color: Colors.white),
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         color: Colors.orange[700],
         onPressed: () {
@@ -219,7 +226,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       itemBuilder: (BuildContext context, int index) {
         print(pics[index].imageUrl);
         return new Card(
-          elevation: 10,
+            elevation: 10,
             // color: Colors.black,
             child: new GridTile(
                 footer: Row(
@@ -260,7 +267,9 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                             sentData[index].numberofbeers.toString(),
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold,color: Colors.white),
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                           )),
                       Container(
                           width: 40,
@@ -295,21 +304,40 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                   height: 150,
                   margin: const EdgeInsets.all(25),
                   child: FittedBox(
-                    
                     child: pics[index],
                     fit: BoxFit.fill,
                   ),
                 ),
                 header: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 110, horizontal: 0),
-                  child: Text(
-                    names[index],
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, backgroundColor: Colors.white, color: Colors.black,
-                  ),
-                ))));
-                
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 110, horizontal: 0),
+                    child: Text(
+                      names[index],
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          backgroundColor: Colors.transparent,
+                          color: Colors.black,
+                          shadows: [
+                            Shadow(
+                                // bottomLeft
+                                offset: Offset(-1.5, -1.5),
+                                color: Colors.white),
+                            Shadow(
+                                // bottomRight
+                                offset: Offset(1.5, -1.5),
+                                color: Colors.white),
+                            Shadow(
+                                // topRight
+                                offset: Offset(1.5, 1.5),
+                                color: Colors.white),
+                            Shadow(
+                                // topLeft
+                                offset: Offset(-1.5, 1.5),
+                                color: Colors.white),
+                          ]),
+                    ))));
       },
       gridDelegate:
           new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
@@ -376,7 +404,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                         .groupId), //functie neerzetten die de gridview aanmaakt
                   ),
                   //addProducts(),
-                  buildButtons(), 
+                  buildButtons(),
                 ])
               ]));
         } else if (snapshot.hasError) {
