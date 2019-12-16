@@ -31,7 +31,7 @@ class Home_widget extends StatefulWidget {
 
 class Home_widget_state extends State<Home_widget> {
   String _userinfo = Home_widget.currentUser.toString();
-  var currentUser = CurrentUser();
+  CurrentUser currentUser = CurrentUser();
   var userhouseName;
   var appBarActions = <Widget>[];
 
@@ -51,27 +51,14 @@ class Home_widget_state extends State<Home_widget> {
   }
 
   Future<void> initActual() async {
+    CurrentUser tempCurrentUser = await CurrentUser.updateCurrentUser();
     String temphouse = (await House.getCurrentHouse()).houseName;
 
     setState(() {
       userhouseName = temphouse;
-    });
-  }
+      currentUser = tempCurrentUser;
 
-  Future<User> getUser() async {
-    String uid = await Auth().currentUser();
-    User currentUser;
-    final Response res = await get(
-        "http://10.0.2.2:8080/authCurrent?uid=$uid",
-        headers: {'Content-Type': 'application/json'});
-    print(res.statusCode);
-    if (res.statusCode == 200) {
-      // If server returns an OK response, parse the JSON.
-      currentUser = User.fromJson(json.decode(res.body));
-    } else {
-      print("Could not find user");
-    }
-    return currentUser;
+    });
   }
 
   void _changeUserInfo(String newinfo) {
@@ -111,7 +98,6 @@ class Home_widget_state extends State<Home_widget> {
       future: CurrentUser().getGroupConsumeData(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          print(snapshot.data[0].name);
           return Padding(
             padding: const EdgeInsets.all(10.0),
             child: Card(
@@ -154,7 +140,7 @@ class Home_widget_state extends State<Home_widget> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(userhouseName),
+        title: Text(userhouseName != null ? userhouseName  : "Laden..."),
         actions: appBarActions,
         backgroundColor: Design.rood,
       ),
@@ -162,33 +148,12 @@ class Home_widget_state extends State<Home_widget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FutureBuilder<User>(
-                future: getUser(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text("Welcome, " + snapshot.data.displayName);
-                  } else if (snapshot.hasError) {
-                    return Text("${snapshot.error}");
-                  } else {
-                    return CircularProgressIndicator();
-                  }
-                }),
+            Text('welkom ' + currentUser.displayName),
             Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  FutureBuilder<User>(
-                    future: getUser(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Text("Welcome, " + snapshot.data.displayName);
-                      } else if (snapshot.hasError) {
-                        return Text("${snapshot.error}");
-                      }
-                      // By default, show a loading spinner.
-                      return CircularProgressIndicator();
-                    },
-                  ),
+                  
                   FlatButton(
                     child: Text("Go to Beer"),
                     onPressed: () {

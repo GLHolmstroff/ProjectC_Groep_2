@@ -31,6 +31,7 @@ class _Profilepage extends State<Profilepage> {
   final fromkey = GlobalKey<FormState>();
   FormType _formType = FormType.editprofile;
   String _name;
+  CurrentUser currentUser = CurrentUser();
   String userhouseName;
   bool loginWithEmail;
   ProfileConstants profCons;
@@ -41,8 +42,10 @@ class _Profilepage extends State<Profilepage> {
 
   Future<void> initActual() async {
     String temphouse = (await House.getCurrentHouse()).houseName;
+    CurrentUser tempCurrentUser = await CurrentUser.updateCurrentUser();
     setState(() {
       userhouseName = temphouse;
+      currentUser = tempCurrentUser;
     });
   }
 
@@ -82,16 +85,6 @@ class _Profilepage extends State<Profilepage> {
     _updateImage(image);
   }
 
-  void _entrybeertallies() async {
-    CurrentUser user = CurrentUser();
-    String gid = user.groupId.toString();
-    String uid = user.userId;
-    String mu = '1';
-    final Response res = await get(
-        "http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$uid&mutation=$mu",
-        headers: {'Content-Type': 'application/json'});
-  }
-
   Future<void> _updateImage(File image) async {
     var uid = await Auth().currentUser();
     String timeStamp = DateTime.now()
@@ -101,11 +94,14 @@ class _Profilepage extends State<Profilepage> {
         .replaceAllMapped(r'.', (Match m) => ",");
 
     final Directory tempDir = await getTemporaryDirectory();
-    File compressed = await FlutterImageCompress.compressAndGetFile(image.absolute.path, "${tempDir.path}/temp.png");
-    while(compressed.lengthSync() > 120000){
-      compressed = await FlutterImageCompress.compressAndGetFile(compressed.absolute.path,"${tempDir.path}/temp.png" , quality: 80);
+    File compressed = await FlutterImageCompress.compressAndGetFile(
+        image.absolute.path, "${tempDir.path}/temp.png");
+    while (compressed.lengthSync() > 120000) {
+      compressed = await FlutterImageCompress.compressAndGetFile(
+          compressed.absolute.path, "${tempDir.path}/temp.png",
+          quality: 80);
     }
-    
+
     MultipartFile mf = MultipartFile.fromBytes(
         'file', await compressed.readAsBytes(),
         filename: timeStamp + 'testfile.png');
@@ -234,16 +230,70 @@ class _Profilepage extends State<Profilepage> {
     );
   }
 
+  void _kickUser() async {
+    String uid = currentUser.userId;
+    final Response res =
+        await get("http://10.0.2.2:8080/deleteUserFromGroup?uid=$uid");
+    if (json.decode(res.body)["result"] == "success") {
+      //setState(() {
+      //  visible = false;
+      //});
+      Navigator.pop(context);
+      Navigator.pop(context);
+    }
+  }
+
+  void _kickUserDialog() {
+    showDialog(
+        context: (context),
+        builder: (BuildContext context) {
+          return (AlertDialog(
+            title: Text("Huisgenoot verwijderen"),
+            content: Container(
+              height: 100,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Text("Weet u zeker dat u uw huis wilt verlaten?"),
+                  ),
+                  Text("al je data zal hierdoor verloren gaan.")
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text(
+                  "Verwijderen",
+                  style: TextStyle(color: Colors.orange[700]),
+                ),
+                onPressed: _kickUser,
+              ),
+              new FlatButton(
+                child: new Text(
+                  "Anuleren",
+                  style: TextStyle(color: Colors.orange[700]),
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ));
+        });
+  }
+
   void _submitnewname() async {
     if (fromkey.currentState.validate()) {
       fromkey.currentState.save();
       Navigator.pop(context);
       print(_name);
-      String uid = await Auth().currentUser();
+      String uid = currentUser.userId;
       final Response res = await get(
           "http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
           headers: {'Content-Type': 'application/json'});
-      setState(() {});
+      CurrentUser tempCurrentUser = await CurrentUser.updateCurrentUser();
+      setState(() {
+        currentUser = tempCurrentUser;
+      });
     }
   }
 
@@ -262,9 +312,11 @@ class _Profilepage extends State<Profilepage> {
     } else if (choice == "Verander wachtwoord") {
       try {
         await _sendChangePasswordEmail();
-      } catch(e) {
+      } catch (e) {
         print(e);
       }
+    } else if (choice == profCons.huisVerlaten) {
+      _kickUserDialog();
     }
   }
 
@@ -385,7 +437,7 @@ class _Profilepage extends State<Profilepage> {
             children: <Widget>[
               //userDisplayname,
               Text(
-                CurrentUser().displayName,
+                currentUser.displayName != null ? currentUser.displayName : "Laden...",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -399,7 +451,7 @@ class _Profilepage extends State<Profilepage> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Text(userhouseName != null ? userhouseName : "Loading..."),
+                  Text(userhouseName != null ? userhouseName : "Laden..."),
                 ],
               ),
               // VerticalDivider(
