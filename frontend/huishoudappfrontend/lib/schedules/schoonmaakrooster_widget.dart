@@ -29,7 +29,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
   String userPermissions = user.group_permission.toString();
 
   Future<void> getUserTasks() async {
-    final Response res = await get("http://10.0.2.2:8080/getUserTasks?uid=$uid",
+    final Response res = await get("http://seprojects.nl:8080/getUserTasks?uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       return json.decode(res.body);
@@ -41,7 +41,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
 
   Future<void> getHousematesChecks() async {
     final Response res = await get(
-        "http://10.0.2.2:8080/getHousematesChecks?gid=$gid&uid=$uid",
+        "http://seprojects.nl:8080/getHousematesChecks?gid=$gid&uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       return json.decode(res.body);
@@ -55,7 +55,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
     String uid = await Auth().currentUser();
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
-    return "http://10.0.2.2:8080/files/users?uid=$uid&t=$timeStamp";
+    return "http://seprojects.nl:8080/files/users?uid=$uid&t=$timeStamp";
   }
 
   Widget getIcon(int done, int approvals) {
@@ -120,9 +120,10 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
       return Expanded(
         child: Center(
           child: RaisedButton(
+            color: Design.orange2,
             child: Text(
               "Taken toewijzen",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
             ),
             onPressed: () {
               Navigator.push(
@@ -144,11 +145,13 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
 
   @override
   Widget build(BuildContext context) {
-    final taskCardsListHeader = Text(
+    final taskCardsListHeader = Padding(
+      padding: EdgeInsets.only(left: 8),
+      child:Text(
       "Jouw taken",
       style: TextStyle(
-          fontWeight: FontWeight.bold, fontSize: 30, color: Colors.orange[800]),
-    );
+          fontWeight: FontWeight.bold, fontSize: 18, color: Colors.orange[800]),
+    ));
 
     final taskCardsList = Container(
       height: 210,
@@ -179,11 +182,13 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
       ),
     );
 
-    final checkHousematesListHeader = Text(
-      "goedkeuren huisgenoten",
+    final checkHousematesListHeader = Padding(
+    padding: EdgeInsets.only(left: 8),
+    child:Text(
+      "Goedkeuren huisgenoten",
       style: TextStyle(
-          fontWeight: FontWeight.bold, fontSize: 30, color: Colors.orange[800]),
-    );
+          fontWeight: FontWeight.bold, fontSize: 18, color: Colors.orange[800]),
+    ));
 
     final checkHousematesCardsList = Container(
       height: 210,
@@ -214,8 +219,10 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
       ),
     );
 
-    return Center(
-      child: Column(
+    return Scaffold(
+      appBar: AppBar(title: Text('Rooster'),),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           SizedBox(height: 15),
           taskCardsListHeader,

@@ -81,7 +81,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
     for (var pic in picIDs) {
       print("Loading image${picIDs.indexOf(pic)}");
       images.add(new CachedNetworkImage(
-        imageUrl: "http://10.0.2.2:8080/files/users?uid=$pic&t=$timeStamp",
+        imageUrl: "http://seprojects.nl:8080/files/users?uid=$pic&t=$timeStamp",
         placeholder: (BuildContext context, String s) {
           return new Icon(Icons.person);
         },
@@ -198,7 +198,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       String target = map['targetid'];
       int mutation = map['mutation'];
       final Response res = await get(
-          "http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$target&mutation=$mutation&product=$product");
+          "http://seprojects.nl:8080/updateTally?gid=$gid&authorid=$uid&targetid=$target&mutation=$mutation&product=$product");
       if (res.statusCode == 200) {
         print("tally update sent");
       } else {
@@ -387,8 +387,11 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
-        return AnimatedLiquidCustomProgressIndicator(
-            MediaQuery.of(context).size);
+        return Center(child:Container(
+          height: 100,
+          width: 100,
+          child: CircularProgressIndicator(),
+        ));
       },
     );
   }

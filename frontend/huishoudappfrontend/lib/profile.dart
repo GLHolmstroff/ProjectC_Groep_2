@@ -69,7 +69,7 @@ class _Profilepage extends State<Profilepage> {
     String uid = await Auth().currentUser();
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
-    return "http://10.0.2.2:8080/files/users?uid=$uid&t=$timeStamp";
+    return "http://seprojects.nl:8080/files/users?uid=$uid&t=$timeStamp";
   }
 
   Future<File> openGallery() async {
@@ -88,7 +88,7 @@ class _Profilepage extends State<Profilepage> {
     String uid = user.userId;
     String mu = '1';
     final Response res = await get(
-        "http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$uid&mutation=$mu",
+        "http://seprojects.nl:8080/updateTally?gid=$gid&authorid=$uid&targetid=$uid&mutation=$mu",
         headers: {'Content-Type': 'application/json'});
   }
 
@@ -110,7 +110,7 @@ class _Profilepage extends State<Profilepage> {
         'file', await compressed.readAsBytes(),
         filename: timeStamp + 'testfile.png');
 
-    var uri = Uri.parse("http://10.0.2.2:8080/files/upload");
+    var uri = Uri.parse("http://seprojects.nl:8080/files/upload");
     var request = new MultipartRequest("POST", uri);
     request.fields['uid'] = uid;
     request.files.add(mf);
@@ -241,7 +241,7 @@ class _Profilepage extends State<Profilepage> {
       print(_name);
       String uid = await Auth().currentUser();
       final Response res = await get(
-          "http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
+          "http://seprojects.nl:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
           headers: {'Content-Type': 'application/json'});
       setState(() {});
     }
