@@ -275,7 +275,14 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
   }
 
   Container pictureGridview(int gid, int index) {
-    return Container(margin: const EdgeInsets.all(20), child: pics[index]);
+    return Container(
+        margin: const EdgeInsets.all(20),
+        child: ClipOval(
+          child: FittedBox(
+            child: pics[index],
+      
+          ),
+        ));
   }
 
   Container userNameGridView(int gid, int index) {
