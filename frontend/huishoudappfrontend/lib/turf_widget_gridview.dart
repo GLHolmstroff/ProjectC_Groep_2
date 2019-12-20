@@ -32,7 +32,7 @@ class TurfwidgetGrid extends StatefulWidget {
 }
 
 class _TurfwidgetGrid extends State<TurfwidgetGrid> {
-  List<CachedNetworkImage> pics = [];
+  List<CachedNetworkImageProvider> pics = [];
   List<String> picIDs = [];
   List<String> names = [];
 
@@ -79,19 +79,13 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
     }
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
-    List<CachedNetworkImage> images = [];
+    List<CachedNetworkImageProvider> images = [];
     print("Picture length: ${picIDs.length}");
 
     for (var pic in picIDs) {
       print("Loading image${picIDs.indexOf(pic)}");
-      images.add(new CachedNetworkImage(
-        imageUrl: "http://10.0.2.2:8080/files/users?uid=$pic&t=$timeStamp",
-        placeholder: (BuildContext context, String s) {
-          return new Image(image: AssetImage('images/person.jpg'));
-        },
-        errorWidget: (BuildContext context, String s, Object o) {
-          return new Image(image: AssetImage('images/person.jpg'));
-        },
+      images.add(new CachedNetworkImageProvider(
+        "http://10.0.2.2:8080/files/users?uid=$pic&t=$timeStamp",
       ));
     }
     setState(() {
@@ -279,21 +273,49 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
 
   Container pictureGridview(int gid, int index) {
     return Container(
-      
-      margin: const EdgeInsets.all(40.0),
-      padding: const EdgeInsets.all(20),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(360),
-        child: pics[index],
-        
+      width: 150,
+      height: 150,
+      child: Stack(
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color:
+                    Design.materialRood, //                   <--- border color
+                width: 2.0,
+              ),
+              image: DecorationImage(image: AssetImage('images/person.jpg'),fit: BoxFit.cover),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color:
+                    Design.materialRood, //                   <--- border color
+                width: 2.0,
+              ),
+              image: DecorationImage(image: pics[index], fit: BoxFit.cover),
+            ),
+          ),
+        ],
       ),
-    
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: Design.materialRood, //                   <--- border color
+          width: 2.0,
+        ),
+        image: DecorationImage(image: pics[index], fit: BoxFit.cover),
+      ),
     );
   }
 
   Container userNameGridView(int gid, int index) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 10),
       child: Text(
         names[index],
         textAlign: TextAlign.center,
@@ -329,18 +351,40 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       addAutomaticKeepAlives: true,
       itemCount: pics.length,
       itemBuilder: (BuildContext context, int index) {
-        return new Card(
-          elevation: 10,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-          child: new GridTile(
-            header: pictureGridview(gid, index),
-            child: userNameGridView(gid, index),
-            footer: bottomGridView(gid, index),
+        return Container(
+          height: 1000,
+          child: new Card(
+            elevation: 10,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0)),
+            child: Column(
+              children: <Widget>[
+                Stack(
+                  children: <Widget>[
+                    Center(
+                        child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 10),
+                        pictureGridview(gid, index),
+                      ],
+                    )),
+                    Center(
+                        child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 50),
+                        userNameGridView(gid, index),
+                      ],
+                    )),
+                  ],
+                ),
+                bottomGridView(gid, index),
+              ],
+            ),
           ),
         );
       },
-      gridDelegate:
-          new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2, childAspectRatio: 0.9),
     );
   }
 
@@ -400,10 +444,8 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                   Container(
                     height: MediaQuery.of(context).size.height * .60,
                     // padding: const EdgeInsets.only(top: 10),
-                    child: createGridView(snapshot.data
-                        .groupId), //functie neerzetten die de gridview aanmaakt
+                    child: createGridView(snapshot.data.groupId),
                   ),
-                  //addProducts(),
                   buildButtons(),
                 ])
               ]));
