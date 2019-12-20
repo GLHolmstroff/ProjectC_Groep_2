@@ -66,7 +66,7 @@ class DatabaseHelper(url: String) {
         val date = varchar("date", 25).primaryKey()
         val targetuserid = reference("targetid", Users.id)
         val mutation = integer("mutation")
-        val product = varchar("product", 50)
+        val product = reference("product", Products.name)
 
     }
 
@@ -345,6 +345,8 @@ class DatabaseHelper(url: String) {
 
         return out;
     }
+
+
 
     fun createBeerEntry(gid: Int, authoruid: String, targetuid: String, mutation: Int, product: String): DatabaseHelper {
         transaction(db) {
