@@ -241,22 +241,28 @@ class DatabaseHelper(url: String) {
             if (makeUserAdmin)
                 p = "groupAdmin"
 
+            //getAllProducts(gid).foreach((k, v) => productsList.add(v["name"]))
+            var productsMap:HashMap<String, HashMap<String, Any>> = getAllProducts(gid);
+            productsMap.forEach { k,v ->
+                val name:String = v["name"] as String
+                DatabaseHelper.BeerTallies.insert {
+                    it[groupid] = gid
+                    it[authorid] = uid
+                    it[date] = LocalDateTime.now()
+                            .minusDays(1)
+                            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"))
+                            .toString()
+                    it[targetuserid] = uid
+                    it[BeerTallies.product] = name
+                    it[BeerTallies.mutation] = 0
+
+                }
+            }
+
+            print("ding toegevoegd")
+
             setGroupPermission(gid, uid, p)
 
-        }
-
-        transaction(db) {
-            addLogger(StdOutSqlLogger)
-            val entry = DatabaseHelper.BeerTallies.insert {
-                it[groupid] = gid
-                it[authorid] = uid
-                it[date] = LocalDateTime.now()
-                        .minusDays(1)
-                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"))
-                        .toString()
-                it[targetuserid] = uid
-                it[BeerTallies.mutation] = 0
-            }
         }
         return this@DatabaseHelper
     }
@@ -517,9 +523,6 @@ class DatabaseHelper(url: String) {
                         .groupBy(date.substring(6, 2))
                         .orderBy(date.substring(6, 2))
                         .forEach { i ->
-                            println(month)
-                            println(i[date.substring(6, 2)])
-
                             if (i[date.substring(6, 2)] == month && i[mutation.sum()] != null) {
                                 val total = i[mutation.sum()]
                                 if (total != null && name != null) {
@@ -743,8 +746,9 @@ fun DatabaseHelper.createGroup(n: String, uid: String): DatabaseHelper {
             it[created_at] = LocalDate.now().toString()
             it[name] = n
         }
-        addUserToGroup(uid, group[DatabaseHelper.Groups.id], makeUserAdmin = true)
         addProduct(group[DatabaseHelper.Groups.id], "bier", 1.0)
+        addUserToGroup(uid, group[DatabaseHelper.Groups.id], makeUserAdmin = true)
+
     }
     return this
 }

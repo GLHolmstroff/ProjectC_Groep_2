@@ -217,7 +217,6 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       addAutomaticKeepAlives: true,
       itemCount: pics.length,
       itemBuilder: (BuildContext context, int index) {
-        print(pics[index].imageUrl);
         return new Card(
           elevation: 10,
             // color: Colors.black,
