@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
             _password,
           );
           final response =
-              await get("http://seprojects.nl:8080/authRegister?uid=$userId");
+              await get("http://10.0.2.2:8080/authRegister?uid=$userId");
           if (response.statusCode == 200) {
             print("Succesfully Registered");
           } else {
@@ -250,7 +250,7 @@ class _LoginPageState extends State<LoginPage> {
           final _auth = Provider.of(context).auth;
           final id = await _auth.signInWithGoogle();
           final response =
-              await get("http://seprojects.nl:8080/authRegister?uid=$id");
+              await get("http://10.0.2.2:8080/authRegister?uid=$id");
           if (response.statusCode == 200) {
             print("Succesfully Registered");
           } else {

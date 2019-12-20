@@ -69,7 +69,7 @@ class _Profilepage extends State<Profilepage> {
     String uid = await Auth().currentUser();
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
-    return "http://seprojects.nl:8080/files/users?uid=$uid&t=$timeStamp";
+    return "http://10.0.2.2:8080/files/users?uid=$uid&t=$timeStamp";
   }
 
   Future<File> openGallery() async {
@@ -88,7 +88,7 @@ class _Profilepage extends State<Profilepage> {
     String uid = user.userId;
     String mu = '1';
     final Response res = await get(
-        "http://seprojects.nl:8080/updateTally?gid=$gid&authorid=$uid&targetid=$uid&mutation=$mu",
+        "http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$uid&mutation=$mu",
         headers: {'Content-Type': 'application/json'});
   }
 
@@ -110,7 +110,7 @@ class _Profilepage extends State<Profilepage> {
         'file', await compressed.readAsBytes(),
         filename: timeStamp + 'testfile.png');
 
-    var uri = Uri.parse("http://seprojects.nl:8080/files/upload");
+    var uri = Uri.parse("http://10.0.2.2:8080/files/upload");
     var request = new MultipartRequest("POST", uri);
     request.fields['uid'] = uid;
     request.files.add(mf);
@@ -241,7 +241,7 @@ class _Profilepage extends State<Profilepage> {
       print(_name);
       String uid = await Auth().currentUser();
       final Response res = await get(
-          "http://seprojects.nl:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
+          "http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
           headers: {'Content-Type': 'application/json'});
       setState(() {});
     }
@@ -345,7 +345,7 @@ class _Profilepage extends State<Profilepage> {
 
     final upperpart = new Container(
       color: Design.rood,
-      height: (MediaQuery.of(context).size.height - Design.navBarHeight) * 0.33,
+      height: (MediaQuery.of(context).size.height - Design.navBarHeight) * 0.30,
       width: MediaQuery.of(context).size.width,
       child: Stack(
         children: <Widget>[
@@ -375,9 +375,9 @@ class _Profilepage extends State<Profilepage> {
     );
 
     final middelpart = new Material(
-        elevation: 15,
+        
         child: Container(
-          color: Design.orange1,
+          color: Design.rood,
           height: (MediaQuery.of(context).size.height - 50) * 0.08,
           width: MediaQuery.of(context).size.width,
           child: Row(
@@ -385,28 +385,31 @@ class _Profilepage extends State<Profilepage> {
             children: <Widget>[
               //userDisplayname,
               Text(
-                CurrentUser().displayName,
+                CurrentUser().displayName ,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
-                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.w300
+                  // fontStyle: FontStyle.italic,
                 ),
               ),
               // VerticalDivider(
               //   color: Design.geel,
               //   thickness: 2,
               // ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Text(userhouseName != null ? userhouseName : "Loading..."),
-                ],
-              ),
+              
+                  Text(userhouseName != null ? userhouseName : "Loading...", style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w300
+                  // fontStyle: FontStyle.italic,
+                )),
+                
               // VerticalDivider(
               //   color: Design.geel,
               //   thickness: 2,
               // ),
-              Text("Saldo"),
+              
             ],
           ),
         ));
@@ -430,10 +433,12 @@ class _Profilepage extends State<Profilepage> {
                         child: SfCartesianChart(
                             title: ChartTitle(
                               text: "Jouw bier data",
-                              alignment: ChartAlignment.center,
+                              borderWidth: 8,
+                              
+                              alignment: ChartAlignment.near,
                               textStyle: ChartTextStyle(
                                 color: Design.orange2,
-                                fontSize: 20,
+                                fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

@@ -59,7 +59,7 @@ class CurrentUser extends BaseUser {
   static Future<CurrentUser> updateCurrentUser() async {
     String uid = await Auth().currentUser();
     CurrentUser placehoderCurrentUser;
-    final Response res = await get("http://seprojects.nl:8080/authCurrent?uid=$uid",
+    final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       placehoderCurrentUser = CurrentUser.fromJson(json.decode(res.body));
@@ -95,7 +95,7 @@ class CurrentUser extends BaseUser {
   Future<List<ConsumeDataPerMonthPerUser>> getGroupConsumeData() async {
     String gid = CurrentUser().groupId.toString();
     List<ConsumeDataPerMonthPerUser> placeHolderList;
-    final Response res = await get("http://seprojects.nl:8080/getTallyPerUserPerMonth?gid=$gid",
+    final Response res = await get("http://10.0.2.2:8080/getTallyPerUserPerMonth?gid=$gid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       placeHolderList =
@@ -111,7 +111,7 @@ class CurrentUser extends BaseUser {
     String gid = CurrentUser().groupId.toString();
     List<ConsumeData> placeHolderListConsumeData;
     final Response res = await get(
-        "http://seprojects.nl:8080/getTallyPerUserPerDay?gid=$gid&uid=$uid",
+        "http://10.0.2.2:8080/getTallyPerUserPerDay?gid=$gid&uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       placeHolderListConsumeData =
@@ -141,7 +141,7 @@ class User extends BaseUser {
   static Future<User> getUser(String cuid) async {
     String uid = cuid;
     User placeholdesUser;
-    final Response res = await get("http://seprojects.nl:8080/authCurrent?uid=$uid",
+    final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       placeholdesUser = User.fromJson(json.decode(res.body));
@@ -180,7 +180,7 @@ class Group {
     CurrentUser currentUser = CurrentUser();
     String groupId = currentUser.groupId.toString();
     Group currentGroup;
-    final Response res = await get("http://seprojects.nl:8080/getGroup?gid=$groupId",
+    final Response res = await get("http://10.0.2.2:8080/getGroup?gid=$groupId",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       currentGroup = Group.fromJson(json.decode(res.body));
@@ -193,7 +193,7 @@ class Group {
 
   static Future<List<Map>> getNamesAndPics(int gid) async {
     List<Map> namePics = [];
-    final Response res = await get("http://seprojects.nl:8080/getPicsAndNames?gid=$gid",
+    final Response res = await get("http://10.0.2.2:8080/getPicsAndNames?gid=$gid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       namePics = Group.namePicfromJson(json.decode(res.body));
@@ -231,7 +231,7 @@ class House {
     String groupID = currentUser.groupId.toString();
     House currentGroup;
     final Response res = await get(
-        "http://seprojects.nl:8080/getGroupName?gid=$groupID",
+        "http://10.0.2.2:8080/getGroupName?gid=$groupID",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
@@ -259,7 +259,7 @@ class BeerTally {
   static Future<BeerTally> getData(int gid, String product) async {
     BeerTally beer;
     final Response res = await get(
-        "http://seprojects.nl:8080/getTally?gid=$gid&product=$product",
+        "http://10.0.2.2:8080/getTally?gid=$gid&product=$product",
         headers: {'Content-Type': 'application/json'});
 
     if (res.statusCode == 200) {
@@ -323,7 +323,7 @@ class BeerEvent {
   static Future<List<BeerEvent>> getData(int gid) async {
     List<BeerEvent> beerEvents;
     final Response res = await get(
-        "http://seprojects.nl:8080/getTallyEntries?gid=$gid",
+        "http://10.0.2.2:8080/getTallyEntries?gid=$gid",
         headers: {'Content-Type': 'application/json'});
 
     if (res.statusCode == 200) {
@@ -350,7 +350,7 @@ class Product {
   static Future<List<Product>> getData(int gid) async {
     List<Product> products = [];
     final Response res = await get(
-        "http://seprojects.nl:8080/getAllProducts?gid=$gid",
+        "http://10.0.2.2:8080/getAllProducts?gid=$gid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       // If server returns an OK response, parse the JSON.

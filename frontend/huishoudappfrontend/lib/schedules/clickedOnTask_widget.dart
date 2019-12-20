@@ -103,7 +103,7 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
   Future<void> makeTaskDone() async {
     var tid = widget.clickedTask["taskid"];
 
-    final Response res = await get("http://seprojects.nl:8080/makeTaskDone?tid=$tid",
+    final Response res = await get("http://10.0.2.2:8080/makeTaskDone?tid=$tid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       Fluttertoast.showToast(msg: "Taak zit nu in beoordelingsfase");
@@ -116,7 +116,7 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
   Future<void> endTask() async {
     var tid = widget.clickedTask["taskid"];
 
-    final Response res = await get("http://seprojects.nl:8080/endTask?tid=$tid",
+    final Response res = await get("http://10.0.2.2:8080/endTask?tid=$tid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       Fluttertoast.showToast(msg: "Taak is helemaal afgerond!");

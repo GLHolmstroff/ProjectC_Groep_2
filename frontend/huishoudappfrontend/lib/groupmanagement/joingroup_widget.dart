@@ -18,7 +18,7 @@ class Joingroup_WidgetState extends State {
     var code = int.parse(_inviteCodeController.text);
     var uid = currentUser.userId;
     final response =
-        await get("http://seprojects.nl:8080/joinGroupByCode?uid=$uid&ic=$code");
+        await get("http://10.0.2.2:8080/joinGroupByCode?uid=$uid&ic=$code");
     if (response.statusCode == 200) {
       print("Succesfully Registered");
     } else {

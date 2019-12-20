@@ -83,7 +83,7 @@ class _Turfwidget extends State<Turfwidget> {
     for (var pic in picIDs) {
       print("Loading image${picIDs.indexOf(pic)}");
       images.add(new CachedNetworkImage(
-        imageUrl: "http://seprojects.nl:8080/files/users?uid=$pic&t=$timeStamp",
+        imageUrl: "http://10.0.2.2:8080/files/users?uid=$pic&t=$timeStamp",
         placeholder: (BuildContext context, String s) {
           return new Icon(Icons.person);
         },
@@ -176,7 +176,7 @@ class _Turfwidget extends State<Turfwidget> {
       String target = map['targetid'];
       int mutation = map['mutation'];
       final Response res = await get(
-          "http://seprojects.nl:8080/updateTally?gid=$gid&authorid=$uid&targetid=$target&mutation=$mutation&product=$product");
+          "http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$target&mutation=$mutation&product=$product");
       if (res.statusCode == 200) {
         print("tally update sent");
       } else {
@@ -281,12 +281,12 @@ class _Turfwidget extends State<Turfwidget> {
           return Scaffold(
               appBar: AppBar(
                 backgroundColor: Design.rood,
-                title: Center(
-                  child: Text(
-                    snapshot.data.houseName,
+                title: 
+                   Text(
+                    "Turflijsten",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                ),
+                
               ),
               body: Column(children: <Widget>[
                 Container(

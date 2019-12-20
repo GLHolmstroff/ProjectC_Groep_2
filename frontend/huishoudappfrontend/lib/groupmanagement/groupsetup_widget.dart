@@ -46,11 +46,7 @@ class _GroupWidget extends State<GroupWidget> {
       ),
     );
 
-    final uitnodigingText = Text(
-      "Uitnodigingen",
-      textAlign: TextAlign.center,
-      style: TextStyle(fontWeight: FontWeight.w300),
-    );
+
 
     final makeGroupButton = RaisedButton(
       onPressed: _makeGroup,
