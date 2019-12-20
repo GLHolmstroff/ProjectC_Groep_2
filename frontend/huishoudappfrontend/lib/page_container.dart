@@ -11,10 +11,6 @@ import 'package:line_awesome_icons/line_awesome_icons.dart';
 class HomePage extends StatefulWidget {
   static String tag = 'home-page';
 
-  static Future<HomePage> _init() async {
-    return HomePage();
-  }
-
   @override
   State<StatefulWidget> createState() {
     return new HomePageState();
@@ -23,12 +19,26 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  final List<Widget> _children = [
+  List<Widget> _children;
+
+  void initState() {
+    super.initState();
+    setState(() {
+      _children = _children = [
+        Home_widget(),
+        SchoonmaakPage(),
+        TurfwidgetGrid(),
+        Profilepage()
+      ];
+    });
+  }
+
+  /*List<Widget> _children = [
     Home_widget(),
     SchoonmaakPage(),
     TurfwidgetGrid(),
     Profilepage()
-  ];
+  ];*/
 
   void onTabTapped(int index) {
     setState(() {
@@ -51,26 +61,38 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     // initialize all the children, cant be done in the constructor because we are parsing a function
-    _setChildren();
+    //_setChildren();
     return Scaffold(
-      body: _children[_currentIndex], backgroundColor: Colors.grey[100],
+      body: _children[_currentIndex],
+      backgroundColor: Colors.grey[100],
       bottomNavigationBar: CurvedNavigationBar(
         // type needs to be fixed otherwise the color of the navigationBariItems will be white, (weird bug)
         // set function for when an navigationbaritem is tapped
         onTap: onTabTapped,
         backgroundColor: Colors.grey[100],
         buttonBackgroundColor: Design.rood,
-        
+
         height: 50,
         color: Design.rood,
         animationCurve: Curves.easeInBack,
         index: _currentIndex, // this will be set when a new tab is tapped
         items: <Widget>[
-            Icon(LineAwesomeIcons.home, color: Colors.white,),
-            Icon(LineAwesomeIcons.clipboard, color: Colors.white),
-            
-            Icon(LineAwesomeIcons.beer, color: Colors.white),
-            Icon(LineAwesomeIcons.user, color: Colors.white)
+          Icon(
+            LineAwesomeIcons.home,
+            color: Colors.white,
+          ),
+          Icon(
+            LineAwesomeIcons.clipboard,
+            color: Colors.white,
+          ),
+          Icon(
+            LineAwesomeIcons.beer,
+            color: Colors.white,
+          ),
+          Icon(
+            LineAwesomeIcons.user,
+            color: Colors.white,
+          )
         ],
       ),
     );

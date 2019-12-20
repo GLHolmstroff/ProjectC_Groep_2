@@ -7,6 +7,7 @@ import 'package:huishoudappfrontend/createaccount_widget.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/creategroup_widget.dart';
+import 'package:huishoudappfrontend/home_widget.dart';
 import 'package:huishoudappfrontend/schedules/clickedOnCheckHousemate.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:huishoudappfrontend/services/permission_serivce.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
   final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(),
     HomePage.tag: (context) => HomePage(),
+    Home_widget.tag: (context) => Home_widget(),
     CreateAccount.tag: (context) => CreateAccount(),
     Profilepage.tag: (context) => Profilepage(),
     GroupWidget.tag: (context) => GroupWidget(),
