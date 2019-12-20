@@ -279,18 +279,21 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
 
   Container pictureGridview(int gid, int index) {
     return Container(
-      margin: const EdgeInsets.all(10.0),
-      decoration: new BoxDecoration(
-          shape: BoxShape.circle,
-          image: new DecorationImage(
-              fit: BoxFit.cover,
-              image: new NetworkImage(pics[index].imageUrl))),
+      
+      margin: const EdgeInsets.all(40.0),
+      padding: const EdgeInsets.all(20),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(360),
+        child: pics[index],
+        
+      ),
+    
     );
   }
 
   Container userNameGridView(int gid, int index) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 110, horizontal: 0),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       child: Text(
         names[index],
         textAlign: TextAlign.center,
@@ -328,9 +331,10 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       itemBuilder: (BuildContext context, int index) {
         return new Card(
           elevation: 10,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
           child: new GridTile(
-            header: userNameGridView(gid, index),
-            child: pictureGridview(gid, index),
+            header: pictureGridview(gid, index),
+            child: userNameGridView(gid, index),
             footer: bottomGridView(gid, index),
           ),
         );
