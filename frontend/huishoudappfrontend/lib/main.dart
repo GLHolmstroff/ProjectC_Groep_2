@@ -11,6 +11,7 @@ import 'package:huishoudappfrontend/schedules/clickedOnCheckHousemate.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:huishoudappfrontend/services/permission_serivce.dart';
 import 'package:huishoudappfrontend/turf_widget.dart';
+import 'package:huishoudappfrontend/turf_widget_addproduct.dart';
 import 'package:huishoudappfrontend/turf_widget_admin.dart';
 import 'package:huishoudappfrontend/turf_widget_edit.dart';
 import 'login_widget.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
     GroupWidget.tag: (context) => GroupWidget(),
     Turfwidget.tag: (context) => Turfwidget(),
     TurfWidgetAdmin.tag: (context) => TurfWidgetAdmin(),
+    TurfWidgetAddProduct.tag: (context) => TurfWidgetAddProduct(),
     TurfWidgetEdit.tag: (context) => TurfWidgetEdit(),
     SchoonmaakPage.tag: (context) => SchoonmaakPage(),
   };
@@ -78,9 +80,11 @@ class MyHomePage extends StatelessWidget {
                   future: CurrentUser.updateCurrentUser(),
                   builder: (context, innersnapshot) {
                     if (innersnapshot.hasData) {
+                      print(CurrentUser().userId);
                       if (CurrentUser().groupId != null) {
                         return (HomePage());
                       } else {
+                        
                         return (GroupWidget());
                       }
                     } else if (innersnapshot.hasError) {

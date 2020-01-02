@@ -155,19 +155,19 @@ class Home_widget_state extends State<Home_widget> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   
-                  FlatButton(
-                    child: Text("Go to Beer"),
-                    onPressed: () {
-                      CurrentUser currentUser = CurrentUser();
+                  // FlatButton(
+                  //   child: Text("Go to Beer"),
+                  //   onPressed: () {
+                  //     CurrentUser currentUser = CurrentUser();
 
-                      //   Navigator.push(
-                      //       context,
-                      //       MaterialPageRoute(
-                      //         builder: (context) =>
-                      //             BeerPage(currentUser: currentUser),
-                      //       ));
-                    },
-                  ),
+                  //     //   Navigator.push(
+                  //     //       context,
+                  //     //       MaterialPageRoute(
+                  //     //         builder: (context) =>
+                  //     //             BeerPage(currentUser: currentUser),
+                  //     //       ));
+                  //   },
+                  // ),
                   FlatButton(
                     child: Text("Go to group"),
                     onPressed: () {

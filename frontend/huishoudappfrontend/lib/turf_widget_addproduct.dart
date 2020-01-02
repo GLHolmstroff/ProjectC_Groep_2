@@ -127,12 +127,12 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
                                 borderRadius: BorderRadius.circular(24)),
                             onPressed: () {
                               listFormKey.currentState.save();
-                              sentProductData(_listProductName, _listProductPrice);
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => new Turfwidget(),
-                                  ));
+                              sentProductData(
+                                  _listProductName, _listProductPrice);
+                              Navigator.of(context).popUntil(
+                                  ModalRoute.withName(
+                                      TurfWidgetAddProduct.tag));
+                              Navigator.of(context).pop();
                             },
                             padding: EdgeInsets.all(12),
                             color: Design.rood,
@@ -275,11 +275,9 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
         onPressed: () {
           formKey.currentState.save();
           sentProductData(_productName, _productPrice);
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => new Turfwidget(),
-              ));
+          Navigator.of(context)
+              .popUntil(ModalRoute.withName(TurfWidgetAddProduct.tag));
+          Navigator.of(context).pop();
         },
         padding: EdgeInsets.all(12),
         color: Colors.orange[700],

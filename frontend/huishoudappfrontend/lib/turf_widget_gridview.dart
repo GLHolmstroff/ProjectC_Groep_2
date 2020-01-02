@@ -131,11 +131,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         color: Colors.orange[700],
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => new TurfWidgetAddProduct(),
-              ));
+          Navigator.pushNamed(context, TurfWidgetAddProduct.tag);
         },
       ));
     }
