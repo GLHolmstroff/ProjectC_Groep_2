@@ -72,8 +72,6 @@ class _Profilepage extends State<Profilepage> {
     return profCons;
   }
 
-  File _image;
-
   Future<String> getImgUrl() async {
     String uid = await Auth().currentUser();
     String timeStamp =

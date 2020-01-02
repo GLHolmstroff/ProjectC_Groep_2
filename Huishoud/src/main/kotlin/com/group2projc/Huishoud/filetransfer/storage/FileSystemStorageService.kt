@@ -41,6 +41,20 @@ constructor(@Qualifier("storageProperties") properties: StorageProperties) : Sto
 
     }
 
+    override fun storeTask(file: MultipartFile, taskid:Int) {
+        try {
+            if (file.isEmpty) {
+                throw StorageException("Failed to store empty file " + file.originalFilename!!)
+            }
+            Files.copy(file.inputStream, this.rootLocation.resolve(file.originalFilename!!))
+            val dbHelper = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                    .updateTaskPicture(taskid,(file.originalFilename!!).toString())
+        } catch (e: IOException) {
+            throw StorageException("Failed to store file " + file.originalFilename!!, e)
+        }
+
+    }
+
     override fun loadAll(): Stream<Path> {
         try {
             return Files.walk(this.rootLocation, 1)

@@ -12,6 +12,8 @@ interface StorageService {
 
     fun store(file: MultipartFile, uid:String)
 
+    fun storeTask(file: MultipartFile, taskid: Int)
+
     fun loadAll(): Stream<Path>
 
     fun load(filename: String): Path

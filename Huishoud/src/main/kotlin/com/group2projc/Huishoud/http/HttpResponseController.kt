@@ -77,6 +77,13 @@ class HttpResponseController {
         return map
     }
 
+    @RequestMapping("/getTask")
+    fun getTask(@RequestParam(value = "tid", defaultValue = "") tid: Int): HashMap<String, Any> {
+        val map = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .getTask(tid)
+        return map
+    }
+
     @RequestMapping("/getHousematesChecks")
     fun getHousematesChecks(@RequestParam(value = "gid", defaultValue = "") gid: Int,
                             @RequestParam(value = "uid", defaultValue = "") uid: String): ArrayList<HashMap<String, Any>> {

@@ -125,10 +125,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => new AdminTaskAdder()));
+              Navigator.pushNamed(context, AdminTaskAdder.tag);
             },
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(36.0),

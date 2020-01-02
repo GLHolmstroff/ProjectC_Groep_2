@@ -58,6 +58,7 @@ class DatabaseHelper(url: String) {
         val done = integer("done")
         val approvals = integer("approvals")
         val ended = integer("ended")
+        val picturelink = varchar("picturelink", 50)
     }
 
     object BeerTallies : Table() {
@@ -506,12 +507,30 @@ class DatabaseHelper(url: String) {
                     task["done"] = it[Schedules.done]
                     task["approvals"] = it[Schedules.approvals]
                     task["ended"] = it[Schedules.ended]
+                    task["picturelink"] = it[Schedules.picturelink]
 
                     out.add(task)
                 }
             }
         }
         return out
+    }
+
+    fun getTask(tid: Int): HashMap<String, Any> {
+        var task = HashMap<String, Any>()
+        transaction(db) {
+            Schedules.select { (Schedules.taskid eq tid) }.forEach {
+                    task["taskid"] = it[Schedules.taskid]
+                    task["taskname"] = it[Schedules.taskname]
+                    task["description"] = it[Schedules.description]
+                    task["datedue"] = it[Schedules.datedue]
+                    task["done"] = it[Schedules.done]
+                    task["approvals"] = it[Schedules.approvals]
+                    task["ended"] = it[Schedules.ended]
+                    task["picturelink"] = it[Schedules.picturelink]
+            }
+        }
+        return task
     }
 
     fun getTotalConsumePerMonthPerUser(gid: Int): HashMap<String, Int> {
@@ -562,6 +581,7 @@ class DatabaseHelper(url: String) {
                     task["done"] = it[Schedules.done]
                     task["approvals"] = it[Schedules.approvals]
                     task["ended"] = it[Schedules.ended]
+                    task["picturelink"] = it[Schedules.picturelink]
 
                     out.add(task)
                 }
@@ -583,6 +603,15 @@ class DatabaseHelper(url: String) {
         transaction(db) {
             Schedules.update({ (Schedules.taskid eq tid) }) {
                 it[ended] = 1
+            }
+        }
+        return this@DatabaseHelper
+    }
+
+    fun updateTaskPicture(tid: Int, piclink:String): DatabaseHelper {
+        transaction(db) {
+            Schedules.update({Schedules.taskid eq tid}) {
+                it[Schedules.picturelink] = piclink
             }
         }
         return this@DatabaseHelper
@@ -615,6 +644,7 @@ class DatabaseHelper(url: String) {
                 it[done] = 0
                 it[approvals] = 0
                 it[ended] = 0
+                it[picturelink] = ""
             }
         }
         return this@DatabaseHelper
