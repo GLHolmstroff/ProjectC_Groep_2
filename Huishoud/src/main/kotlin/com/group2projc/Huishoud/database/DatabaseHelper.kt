@@ -131,7 +131,7 @@ class DatabaseHelper(url: String) {
     fun initDataBase(): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
-            SchemaUtils.create(Groups, Users, GroupPermissions, Schedules,Products, BeerTallies, InviteCodes)
+            SchemaUtils.create(Groups, Users, GroupPermissions, Schedules, Products, BeerTallies, InviteCodes)
         }
 
         return this@DatabaseHelper
