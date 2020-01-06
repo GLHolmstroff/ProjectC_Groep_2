@@ -7,6 +7,7 @@ import 'package:huishoudappfrontend/createaccount_widget.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/creategroup_widget.dart';
+import 'package:huishoudappfrontend/schedules/admintaskadder_widget.dart';
 import 'package:huishoudappfrontend/schedules/clickedOnCheckHousemate.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:huishoudappfrontend/services/permission_serivce.dart';
@@ -35,10 +36,12 @@ class MyApp extends StatelessWidget {
     GroupWidget.tag: (context) => GroupWidget(),
     // Turfwidget.tag: (context) => Turfwidget(),
     TurfWidgetAdmin.tag: (context) => TurfWidgetAdmin(),
+    TurfWidgetAddProduct.tag: (context) => TurfWidgetAddProduct(),
     TurfWidgetEdit.tag: (context) => TurfWidgetEdit(),
     TurfWidgetAddProduct.tag: (context) => TurfWidgetAddProduct(),
     TurfwidgetGrid.tag: (context) => TurfwidgetGrid(),
     SchoonmaakPage.tag: (context) => SchoonmaakPage(),
+    AdminTaskAdder.tag: (context) => AdminTaskAdder(),
   };
 
   @override
@@ -82,9 +85,11 @@ class MyHomePage extends StatelessWidget {
                   future: CurrentUser.updateCurrentUser(),
                   builder: (context, innersnapshot) {
                     if (innersnapshot.hasData) {
+                      print(CurrentUser().userId);
                       if (CurrentUser().groupId != null) {
                         return (HomePage());
                       } else {
+                        
                         return (GroupWidget());
                       }
                     } else if (innersnapshot.hasError) {

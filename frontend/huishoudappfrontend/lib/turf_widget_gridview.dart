@@ -351,31 +351,92 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       addAutomaticKeepAlives: true,
       itemCount: pics.length,
       itemBuilder: (BuildContext context, int index) {
-        return Container(
-          height: 1000,
-          child: new Card(
-            elevation: 10,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.0)),
-            child: Column(
-              children: <Widget>[
-                Stack(
-                  children: <Widget>[
-                    Center(
-                        child: Column(
-                      children: <Widget>[
-                        SizedBox(height: 10),
-                        pictureGridview(gid, index),
-                      ],
-                    )),
-                    Center(
-                        child: Column(
-                      children: <Widget>[
-                        SizedBox(height: 50),
-                        userNameGridView(gid, index),
-                      ],
-                    )),
-                  ],
+        return new Card(
+          elevation: 10,
+            // color: Colors.black,
+            child: new GridTile(
+                footer: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                          width: 40,
+                          height: 40,
+                          margin: EdgeInsets.all(1),
+                          padding: EdgeInsets.all(1),
+                          // decoration: BoxDecoration(
+                          //     borderRadius: BorderRadius.circular(180),
+                          //     //color: Colors.orange[700],
+                          //     border: Border.all(width: 1)),
+                          child: IconButton(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 0),
+                              icon: Icon(
+                                Icons.add,
+                                color: Colors.green,
+                                size: 35,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  sentData[index].numberofbeers += 1;
+                                });
+                              })),
+                      Container(
+                          width: 40,
+                          height: 40,
+                          margin: EdgeInsets.all(5),
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(180),
+                              color: Design.rood,
+                              border: Border.all(width: 1)),
+                          child: Text(
+                            sentData[index].numberofbeers.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold,color: Colors.white),
+                          )),
+                      Container(
+                          width: 40,
+                          height: 40,
+                          margin: EdgeInsets.all(1),
+                          padding: EdgeInsets.all(1),
+                          // decoration: BoxDecoration(
+                          //     borderRadius: BorderRadius.circular(180),
+                          //     color: Colors.black,
+                          //     border: Border.all(width: 1)),
+                          child: IconButton(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 0, horizontal: 0),
+                            icon: Icon(
+                              Icons.remove,
+                              color: Colors.red,
+                              size: 35,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                if (sentData[index].numberofbeers == 0) {
+                                  print('Can' 't remove any more beers');
+                                } else {
+                                  sentData[index].numberofbeers -= 1;
+                                }
+                              });
+                            },
+                          )),
+                    ]),
+                child: Container(
+                  width: 150,
+                  height: 150,
+                  margin: const EdgeInsets.all(25),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      image: DecorationImage( 
+                        image: NetworkImage(
+                          pics[index].imageUrl
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                      borderRadius: BorderRadius.circular(180),
+                      border: Border.all(color: Design.rood, width: 3)),
                 ),
                 bottomGridView(gid, index),
               ],
