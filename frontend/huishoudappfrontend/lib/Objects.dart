@@ -47,9 +47,9 @@ class CurrentUser extends BaseUser {
   }
 
   CurrentUser._internal() {
-    if (this.userId == null) {
-      updateCurrentUser();
-    }
+    // if (this.userId == null) {
+    //   updateCurrentUser();
+    // }
     userId = null;
     groupId = null;
     globalPermissions = null;
@@ -71,7 +71,6 @@ class CurrentUser extends BaseUser {
 
   static List<ConsumeData> _listFromJson(Map<String, dynamic> json) {
     List<ConsumeData> lst = new List<ConsumeData>();
-    ConsumeData placeholder;
     json.forEach(
       (k, v) => v.forEach(
         (k1, v1) => lst.add(
