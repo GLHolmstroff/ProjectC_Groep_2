@@ -57,6 +57,7 @@ class DatabaseHelper(url: String) {
         val done = integer("done")
         val approvals = integer("approvals")
         val ended = integer("ended")
+        val picturelink = varchar("picturelink", 50)
     }
 
     object BeerTallies : Table() {
@@ -65,7 +66,7 @@ class DatabaseHelper(url: String) {
         val date = varchar("date", 25).primaryKey()
         val targetuserid = reference("targetid", Users.id)
         val mutation = integer("mutation")
-        val product = varchar("product", 50)
+        val product = reference("product", Products.id)
 
     }
 
@@ -76,8 +77,9 @@ class DatabaseHelper(url: String) {
     }
 
     object Products : Table() {
-        val groupid = reference("groupid", Groups.id).primaryKey()
-        val name = varchar("name", 50).primaryKey()
+        val id = integer("productid").primaryKey().autoIncrement()
+        val groupid = reference("groupid", Groups.id)
+        val name = varchar("name", 50)
         val price = double("price")
     }
 
@@ -128,7 +130,7 @@ class DatabaseHelper(url: String) {
     fun initDataBase(): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
-            SchemaUtils.create(Groups, Users, GroupPermissions, Schedules, BeerTallies, InviteCodes, Products)
+            SchemaUtils.create(Groups, Users, GroupPermissions, Schedules, Products, BeerTallies, InviteCodes)
         }
 
         return this@DatabaseHelper
@@ -244,8 +246,8 @@ class DatabaseHelper(url: String) {
             //getAllProducts(gid).foreach((k, v) => productsList.add(v["name"]))
             var productsMap:HashMap<String, HashMap<String, Any>> = getAllProducts(gid);
             productsMap.forEach { k,v ->
-                val name:String = v["name"] as String
-                DatabaseHelper.BeerTallies.insert {
+                val id:Int = v["id"] as Int
+                BeerTallies.insert {
                     it[groupid] = gid
                     it[authorid] = uid
                     it[date] = LocalDateTime.now()
@@ -253,7 +255,7 @@ class DatabaseHelper(url: String) {
                             .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"))
                             .toString()
                     it[targetuserid] = uid
-                    it[BeerTallies.product] = name
+                    it[BeerTallies.product] = id
                     it[BeerTallies.mutation] = 0
 
                 }
@@ -292,6 +294,23 @@ class DatabaseHelper(url: String) {
             }
         }
         return this@DatabaseHelper
+    }
+
+    fun getSaldoPerUser(uid: String) : Double {
+        var User = getUser(uid)
+        var gid = User["groupid"] as Int
+        var productsMap:HashMap<String, HashMap<String, Any>> = getAllProducts(gid);
+        var saldo : Double = 0.0
+        productsMap.forEach { k, v ->
+            val name: String = v["name"] as String
+            val price: Double = v["price"] as Double
+            val amount : Int = getBeerTally(gid,name,uid)
+            print(amount.toString())
+            print(price.toString())
+            saldo += price*amount
+        }
+
+        return saldo
     }
 
     fun getTallyforGroup(gid: Int, product: String): HashMap<String, Any> {
@@ -359,8 +378,30 @@ class DatabaseHelper(url: String) {
         return out;
     }
 
+    fun getProductIdByGidAndProductName(gid: Int, product: String): Int{
+        var productId = 0
+        transaction(db) {
+            Products.select { (Products.groupid eq gid) and (Products.name eq product)}.forEach {
+                productId = it[Products.id]
+            }
+        }
+        return productId
+    }
+
+    fun getProductNameByProductId(ProductId: Int): String {
+        var productName = ""
+        transaction(db) {
+            Products.select {Products.id eq ProductId}.forEach {
+                productName = it[Products.name]
+            }
+        }
+        return productName
+    }
+
+
     fun createBeerEntry(gid: Int, authoruid: String, targetuid: String, mutation: Int, product: String): DatabaseHelper {
         transaction(db) {
+            var productId = getProductIdByGidAndProductName(gid,product)
             addLogger(StdOutSqlLogger)
             val entry = DatabaseHelper.BeerTallies.insert {
                 it[groupid] = gid
@@ -369,7 +410,7 @@ class DatabaseHelper(url: String) {
                         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"))
                         .toString()
                 it[targetuserid] = targetuid
-                it[BeerTallies.product] = product
+                it[BeerTallies.product] = productId
                 it[BeerTallies.mutation] = mutation
             }
         }
@@ -391,7 +432,7 @@ class DatabaseHelper(url: String) {
                         out["authorname"] = it[authorUser[displayname]]
                         out["targetid"] = it[targetuserid]
                         out["targetname"] = it[targetUser[displayname]]
-                        out["product"] = it[product]
+                        out["product"] = getProductNameByProductId(it[product])
                         out["mutation"] = it[mutation]
                         out["date"] = it[date]
                         outArr.add(out)
@@ -402,7 +443,8 @@ class DatabaseHelper(url: String) {
 
     fun updateBeerEntry(gid: Int, author: String, target: String, date: String, mut: Int, prod: String): DatabaseHelper {
         transaction(db) {
-            BeerTallies.update({ (groupid eq gid) and (authorid eq author) and (targetuserid eq target) and (BeerTallies.date eq date) and (product eq prod) }) {
+            var productId = getProductIdByGidAndProductName(gid, prod)
+            BeerTallies.update({ (groupid eq gid) and (authorid eq author) and (targetuserid eq target) and (BeerTallies.date eq date) and (product eq productId) }) {
                 it[mutation] = mut
             }
         }
@@ -412,10 +454,11 @@ class DatabaseHelper(url: String) {
     fun getBeerTally(gid: Int, product: String, targetuid: String): Int {
         var count = 0
         transaction(db) {
+            var productId = getProductIdByGidAndProductName(gid, product)
             addLogger(StdOutSqlLogger)
             BeerTallies
                     .slice(mutation)
-                    .select { (targetuserid eq targetuid) and (BeerTallies.product eq product) }
+                    .select { (targetuserid eq targetuid) and (BeerTallies.product eq productId) }
                     .forEach {
                         val c = it[mutation]
                         if (c != null) {
@@ -431,9 +474,10 @@ class DatabaseHelper(url: String) {
         var i = 0
         var count = 0
         transaction(db) {
+            var productId = getProductIdByGidAndProductName(gid, "bier")
             BeerTallies
                     .slice(mutation.sum(), date.substring(0, 11))
-                    .select { (targetuserid eq targetuid) }
+                    .select { (targetuserid eq targetuid  ) and (product eq productId) }
                     .groupBy(date.substring(0, 11))
                     .orderBy(date.substring(0, 11))
                     .forEach {
@@ -451,10 +495,6 @@ class DatabaseHelper(url: String) {
         return out
     } // todo make it perday (groupby maybe?) todo: give days with 0 count still data...
 
-    fun getAllUsersFromGroup(gid: Int) {
-
-    }
-
     fun getAllInGroup(gid: Int): HashMap<String, String> {
         var out = HashMap<String, String>()
         transaction(db) {
@@ -466,7 +506,6 @@ class DatabaseHelper(url: String) {
         }
         return out
     }
-
 
     fun getUserInfoInGroup(gid: Int): ArrayList<HashMap<String, String>> {
         var out = ArrayList<HashMap<String, String>>()
@@ -499,12 +538,30 @@ class DatabaseHelper(url: String) {
                     task["done"] = it[Schedules.done]
                     task["approvals"] = it[Schedules.approvals]
                     task["ended"] = it[Schedules.ended]
+                    task["picturelink"] = it[Schedules.picturelink]
 
                     out.add(task)
                 }
             }
         }
         return out
+    }
+
+    fun getTask(tid: Int): HashMap<String, Any> {
+        var task = HashMap<String, Any>()
+        transaction(db) {
+            Schedules.select { (Schedules.taskid eq tid) }.forEach {
+                    task["taskid"] = it[Schedules.taskid]
+                    task["taskname"] = it[Schedules.taskname]
+                    task["description"] = it[Schedules.description]
+                    task["datedue"] = it[Schedules.datedue]
+                    task["done"] = it[Schedules.done]
+                    task["approvals"] = it[Schedules.approvals]
+                    task["ended"] = it[Schedules.ended]
+                    task["picturelink"] = it[Schedules.picturelink]
+            }
+        }
+        return task
     }
 
     fun getTotalConsumePerMonthPerUser(gid: Int): HashMap<String, Int> {
@@ -555,6 +612,7 @@ class DatabaseHelper(url: String) {
                     task["done"] = it[Schedules.done]
                     task["approvals"] = it[Schedules.approvals]
                     task["ended"] = it[Schedules.ended]
+                    task["picturelink"] = it[Schedules.picturelink]
 
                     out.add(task)
                 }
@@ -576,6 +634,15 @@ class DatabaseHelper(url: String) {
         transaction(db) {
             Schedules.update({ (Schedules.taskid eq tid) }) {
                 it[ended] = 1
+            }
+        }
+        return this@DatabaseHelper
+    }
+
+    fun updateTaskPicture(tid: Int, piclink:String): DatabaseHelper {
+        transaction(db) {
+            Schedules.update({Schedules.taskid eq tid}) {
+                it[Schedules.picturelink] = piclink
             }
         }
         return this@DatabaseHelper
@@ -608,6 +675,7 @@ class DatabaseHelper(url: String) {
                 it[done] = 0
                 it[approvals] = 0
                 it[ended] = 0
+                it[picturelink] = ""
             }
         }
         return this@DatabaseHelper
@@ -678,6 +746,7 @@ class DatabaseHelper(url: String) {
             var i = 0
             Products.select { (Products.groupid eq gid) }.forEach {
                 out["${i}"] = HashMap<String, Any>()
+                out["${i}"]?.set("id", it[Products.id])
                 out["${i}"]?.set("name", it[Products.name])
                 out["${i}"]?.set("price", it[Products.price])
                 i++

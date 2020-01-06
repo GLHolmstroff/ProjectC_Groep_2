@@ -51,10 +51,6 @@ class _Profilepage extends State<Profilepage> {
     });
   }
 
-
-
-
-
   Future<bool> _loggedinWithEmail() async {
     final auth = Provider.of(context).auth;
     try {
@@ -71,8 +67,6 @@ class _Profilepage extends State<Profilepage> {
     profCons = ProfileConstants(loginWithEmail);
     return profCons;
   }
-
-  File _image;
 
   Future<String> getImgUrl() async {
     String uid = await Auth().currentUser();
@@ -444,7 +438,9 @@ class _Profilepage extends State<Profilepage> {
               //userDisplayname,
               Text(
 
-                currentUser.displayName != null ? currentUser.displayName : "Laden...",
+                currentUser.displayName != null
+                    ? currentUser.displayName
+                    : "Laden...",
 
                 style: TextStyle(
                   color: Colors.white,
@@ -469,7 +465,21 @@ class _Profilepage extends State<Profilepage> {
               //   color: Design.geel,
               //   thickness: 2,
               // ),
-              
+
+              FutureBuilder<String>(
+                future: User.getSaldo(currentUser.userId),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Text("Saldo: "+ snapshot.data);
+                  } else if (snapshot.hasError) {
+                    print(snapshot.error);
+                    return Text("${snapshot.error}");
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
+
             ],
           ),
         ));

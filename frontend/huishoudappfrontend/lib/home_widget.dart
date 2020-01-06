@@ -16,6 +16,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'design.dart';
 
 class Home_widget extends StatefulWidget {
+  static String tag = 'home-widget';
   static User currentUser;
 
   final ValueChanged<Widget> changeToWidget;
@@ -36,6 +37,7 @@ class Home_widget_state extends State<Home_widget> {
   var appBarActions = <Widget>[];
 
   void initState() {
+    super.initState();
     initActual();
     print("user =" + currentUser.group_permission);
     appBarActions.add(Visibility(
@@ -141,7 +143,6 @@ class Home_widget_state extends State<Home_widget> {
             
 
             Text('welkom ' + currentUser.displayName),
-           
 
             Container(
               decoration: new BoxDecoration(
