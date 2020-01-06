@@ -82,20 +82,7 @@ class Home_widget_state extends State<Home_widget> {
   @override
   Widget build(BuildContext context) {
     CurrentUser.updateCurrentUser();
-    Widget addUserToGroupButton = FlatButton(
-        child: Text("Get invite code"),
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => InviteCode_widget(),
-              ));
-        });
-
-    if (currentUser.group_permission != "groupAdmin") {
-      print(currentUser.group_permission);
-      addUserToGroupButton = new Container();
-    }
+    
 
     FutureBuilder grafiek = FutureBuilder<List<ConsumeDataPerMonthPerUser>>(
       future: CurrentUser().getGroupConsumeData(),
@@ -151,40 +138,12 @@ class Home_widget_state extends State<Home_widget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('welkom ' + currentUser.displayName),
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  
-                  // FlatButton(
-                  //   child: Text("Go to Beer"),
-                  //   onPressed: () {
-                  //     CurrentUser currentUser = CurrentUser();
+           
+            
+            
 
-                  //     //   Navigator.push(
-                  //     //       context,
-                  //     //       MaterialPageRoute(
-                  //     //         builder: (context) =>
-                  //     //             BeerPage(currentUser: currentUser),
-                  //     //       ));
-                  //   },
-                  // ),
-                  FlatButton(
-                    child: Text("Go to group"),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => GroupWidget(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-            addUserToGroupButton,
+            Text('welkom ' + currentUser.displayName),
+
             Container(
               decoration: new BoxDecoration(
                 borderRadius: BorderRadius.circular(100.0),

@@ -367,12 +367,12 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
           return Scaffold(
               appBar: AppBar(
                 backgroundColor: Design.rood,
-                title: Center(
-                  child: Text(
-                    snapshot.data.houseName,
+                title: 
+                   Text(
+                    "Turflijsten",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                ),
+                
               ),
               body: Column(children: <Widget>[
                 Container(
@@ -392,8 +392,11 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
-        return AnimatedLiquidCustomProgressIndicator(
-            MediaQuery.of(context).size);
+        return Center(child:Container(
+          height: 100,
+          width: 100,
+          child: CircularProgressIndicator(),
+        ));
       },
     );
   }
