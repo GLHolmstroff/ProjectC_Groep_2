@@ -11,16 +11,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:huishoudappfrontend/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('Widgets are present test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MyApp());
 
     // Verify that our counter starts at 0.
-    expect(0,0);
-    expect(0,0);
-
-    // Verify that our counter has incremented.
-    expect(0,0);
-    expect(0,0);
+    expect(0 ,0);
+    
   });
 }
