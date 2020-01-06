@@ -6,7 +6,6 @@ import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.groupid
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.mutation
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.product
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.targetuserid
-import com.group2projc.Huishoud.database.DatabaseHelper.InviteCodes.code
 import com.group2projc.Huishoud.database.DatabaseHelper.Users.displayname
 import com.group2projc.Huishoud.database.DatabaseHelper.Users.id
 import org.jetbrains.exposed.sql.*
@@ -329,6 +328,20 @@ class DatabaseHelper(url: String) {
 
         return out;
     }
+
+
+    fun getAdminCount(gid: Int): Int{
+        var out = 0
+        var users = getAllInGroup(gid).values
+        users.forEach {
+            var user = getUser(it)
+            if(user["group_permission"] == "groupAdmin"){
+                out++
+            }
+        }
+        return  out
+    }
+
 
     fun getNamesAndPicsForGroup(gid: Int): HashMap<String, HashMap<String, String>> {
         val uids = getAllInGroup(gid).values
@@ -773,19 +786,25 @@ class DatabaseHelper(url: String) {
 
     fun deleteUserFromGroup(uid: String): HashMap<String, String> {
         var out = HashMap<String, String>()
-        out["result"] = "failed"
-        transaction(db) {
-            BeerTallies.deleteWhere { BeerTallies.targetuserid eq uid }
-            Schedules.deleteWhere { Schedules.userid eq uid }
-            GroupPermissions.deleteWhere { GroupPermissions.userid eq uid }
-            Users.update({ Users.id eq uid }) {
-                it[Users.groupid] = null
+        var user = getUser(uid)
+        var groupid = user["groupid"]
+        var adminCount = getAdminCount(groupid as Int)
+        if(user["group_permission"] == "groupAdmin" && adminCount == 1 ) {
+           out["result"] = "Group needs at least one admin"
+        }
+        else{
+            out["result"] = "failed"
+            transaction(db) {
+                BeerTallies.deleteWhere { BeerTallies.targetuserid eq uid }
+                Schedules.deleteWhere { Schedules.userid eq uid }
+                GroupPermissions.deleteWhere { GroupPermissions.userid eq uid }
+                Users.update({ Users.id eq uid }) {
+                    it[Users.groupid] = null
+                }
+                out["result"] = "success"
             }
-            out["result"] = "success"
         }
         return out;
-
-
     }
 }
 

@@ -397,7 +397,7 @@ class _Profilepage extends State<Profilepage> {
 
     final upperpart = new Container(
       color: Design.rood,
-      height: (MediaQuery.of(context).size.height - Design.navBarHeight) * 0.33,
+      height: (MediaQuery.of(context).size.height - Design.navBarHeight) * 0.30,
       width: MediaQuery.of(context).size.width,
       child: Stack(
         children: <Widget>[
@@ -427,9 +427,9 @@ class _Profilepage extends State<Profilepage> {
     );
 
     final middelpart = new Material(
-        elevation: 15,
+        
         child: Container(
-          color: Design.orange1,
+          color: Design.rood,
           height: (MediaQuery.of(context).size.height - 50) * 0.08,
           width: MediaQuery.of(context).size.width,
           child: Row(
@@ -437,29 +437,35 @@ class _Profilepage extends State<Profilepage> {
             children: <Widget>[
               //userDisplayname,
               Text(
+
                 currentUser.displayName != null
                     ? currentUser.displayName
                     : "Laden...",
+
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
-                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.w300
+                  // fontStyle: FontStyle.italic,
                 ),
               ),
               // VerticalDivider(
               //   color: Design.geel,
               //   thickness: 2,
               // ),
+
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Text(userhouseName != null ? userhouseName : "Laden..."),
                 ],
               ),
+
               // VerticalDivider(
               //   color: Design.geel,
               //   thickness: 2,
               // ),
+
               FutureBuilder<String>(
                 future: User.getSaldo(currentUser.userId),
                 builder: (context, snapshot) {
@@ -473,6 +479,7 @@ class _Profilepage extends State<Profilepage> {
                   }
                 },
               ),
+
             ],
           ),
         ));
@@ -496,10 +503,12 @@ class _Profilepage extends State<Profilepage> {
                         child: SfCartesianChart(
                             title: ChartTitle(
                               text: "Jouw bier data",
-                              alignment: ChartAlignment.center,
+                              borderWidth: 8,
+                              
+                              alignment: ChartAlignment.near,
                               textStyle: ChartTextStyle(
                                 color: Design.orange2,
-                                fontSize: 20,
+                                fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
