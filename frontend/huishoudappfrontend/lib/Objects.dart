@@ -150,6 +150,19 @@ class User extends BaseUser {
     }
     return placeholdesUser;
   }
+
+  static Future<String> getSaldo(String uid) async {
+    String saldo = '0';
+    final Response res = await get("http://10.0.2.2:8080/getSaldoPerUser?uid=$uid",
+        headers: {'Content-Type': 'application/json'});
+    if (res.statusCode == 200) {
+      print(res.body);
+      saldo = res.body;
+    } else {
+      print("could not find saldo");
+    }
+    return saldo;
+  }
 }
 
 class Group {

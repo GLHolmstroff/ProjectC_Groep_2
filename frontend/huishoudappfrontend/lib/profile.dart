@@ -51,10 +51,6 @@ class _Profilepage extends State<Profilepage> {
     });
   }
 
-
-
-
-
   Future<bool> _loggedinWithEmail() async {
     final auth = Provider.of(context).auth;
     try {
@@ -441,7 +437,9 @@ class _Profilepage extends State<Profilepage> {
             children: <Widget>[
               //userDisplayname,
               Text(
-                currentUser.displayName != null ? currentUser.displayName : "Laden...",
+                currentUser.displayName != null
+                    ? currentUser.displayName
+                    : "Laden...",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -462,7 +460,19 @@ class _Profilepage extends State<Profilepage> {
               //   color: Design.geel,
               //   thickness: 2,
               // ),
-              Text("Saldo"),
+              FutureBuilder<String>(
+                future: User.getSaldo(currentUser.userId),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Text("Saldo: "+ snapshot.data);
+                  } else if (snapshot.hasError) {
+                    print(snapshot.error);
+                    return Text("${snapshot.error}");
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
             ],
           ),
         ));

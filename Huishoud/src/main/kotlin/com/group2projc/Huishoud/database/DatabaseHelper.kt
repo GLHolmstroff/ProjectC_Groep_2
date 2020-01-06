@@ -297,6 +297,23 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
+    fun getSaldoPerUser(uid: String) : Double {
+        var User = getUser(uid)
+        var gid = User["groupid"] as Int
+        var productsMap:HashMap<String, HashMap<String, Any>> = getAllProducts(gid);
+        var saldo : Double = 0.0
+        productsMap.forEach { k, v ->
+            val name: String = v["name"] as String
+            val price: Double = v["price"] as Double
+            val amount : Int = getBeerTally(gid,name,uid)
+            print(amount.toString())
+            print(price.toString())
+            saldo += price*amount
+        }
+
+        return saldo
+    }
+
     fun getTallyforGroup(gid: Int, product: String): HashMap<String, Any> {
         val uids = getAllInGroup(gid).values
         var out = HashMap<String, Any>()
@@ -446,7 +463,7 @@ class DatabaseHelper(url: String) {
         transaction(db) {
             BeerTallies
                     .slice(mutation.sum(), date.substring(0, 11))
-                    .select { (targetuserid eq targetuid) }
+                    .select { (targetuserid eq targetuid  ) and (product eq "bier") }
                     .groupBy(date.substring(0, 11))
                     .orderBy(date.substring(0, 11))
                     .forEach {
