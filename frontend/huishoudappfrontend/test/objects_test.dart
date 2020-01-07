@@ -81,6 +81,33 @@ void main() {
       expect(user.toString(),
           "userID: JdQOZfDU0fclLWzqjMCfpp9m8hz2\ngroupID: 1\npermission: user\nName: Quinten\n");
     });
+    test('should return correct consumedata', () async {
+      CurrentUser user = CurrentUser();
+      var result = await user.getConsumeData(mode: 'test');
+      var expected = [ConsumeData('mon', 1),
+      ConsumeData('mon', 1)];
+      expect(result, expected);
+    });
+
+    test('should return null on fail to get consumedata', () async {
+      CurrentUser user = CurrentUser();
+      var result = await user.getConsumeData(mode: 'testfail');
+      expect(result, null);
+    });
+
+    test('should return correct groupconsumedata', () async {
+      CurrentUser user = CurrentUser();
+      var result = await user.getGroupConsumeData(mode: 'test');
+      var expected = [ConsumeDataPerMonthPerUser('001', 1),
+      ConsumeDataPerMonthPerUser('002', 2)];
+      expect(result, expected);
+    });
+
+    test('should return null on fail to get groupconsumedata', () async {
+      CurrentUser user = CurrentUser();
+      var result = await user.getGroupConsumeData(mode: 'testfail');
+      expect(result, null);
+    });
   });
   group('User', () {
     test('should be able to be constructed', () {
@@ -110,6 +137,28 @@ void main() {
       expect(user.group_permission, 'groupAdmin');
       expect(user.displayName, 'Quinten');
       expect(user.picture_link, '2019-12-0214,26,48,451629testfile.png');
+    });
+
+    test('should return correct user', () async {
+      var result = await User.getUser('', mode: 'test');
+      var expected = User('001',0,'user','Q','2019','groupAdmin');
+      expect(result, expected);
+    });
+
+    test('should return null on fail to get user', () async {
+      var result = await User.getUser('', mode: 'testfail');
+      expect(result, null);
+    });
+
+    test('should return correct saldo', () async {
+      var result = await User.getSaldo('', mode: 'test');
+      var expected = '0.1';
+      expect(result, expected);
+    });
+
+    test('should return 0 on fail to get saldo', () async {
+      var result = await User.getSaldo('', mode: 'testfail');
+      expect(result, '0');
     });
   });
 
@@ -188,7 +237,7 @@ void main() {
 
     test('should get count correctly', () {
       BeerTally tally = BeerTally(count: [1, 1], product: 'product');
-      expect(tally.getCount(), [1,1]);
+      expect(tally.getCount(), [1, 1]);
     });
 
     test('should have correct string representation', () {
@@ -199,7 +248,8 @@ void main() {
 
   group('BeerEvent', () {
     test('should be constructed correctly', () {
-      BeerEvent event = BeerEvent(1,'auth','authname','t','tname', 'now', 1);
+      BeerEvent event =
+          BeerEvent(1, 'auth', 'authname', 't', 'tname', 'now', 1);
       expect(event.gid, 1);
       expect(event.authorid, 'auth');
       expect(event.authorname, 'authname');
@@ -210,23 +260,26 @@ void main() {
     });
 
     test('should read in from json correctly', () {
-      List<dynamic> json = [{
-        'gid': 1,
-        'authorid': 'a',
-        'authorname': 'aname',
-        'targetid': 't',
-        'targetname': 'tname',
-        'date': 'now',
-        'mutation': 1
-      }, {
-        'gid': 1,
-        'authorid': 'a',
-        'authorname': 'aname',
-        'targetid': 't',
-        'targetname': 'tname',
-        'date': 'now',
-        'mutation': 2
-      }];
+      List<dynamic> json = [
+        {
+          'gid': 1,
+          'authorid': 'a',
+          'authorname': 'aname',
+          'targetid': 't',
+          'targetname': 'tname',
+          'date': 'now',
+          'mutation': 1
+        },
+        {
+          'gid': 1,
+          'authorid': 'a',
+          'authorname': 'aname',
+          'targetid': 't',
+          'targetname': 'tname',
+          'date': 'now',
+          'mutation': 2
+        }
+      ];
 
       List<BeerEvent> events = BeerEvent.fromJson(json);
       expect(events[0].gid, 1);
@@ -236,7 +289,8 @@ void main() {
     });
 
     test('should copy correctly', () {
-      BeerEvent event = BeerEvent(1,'auth','authname','t','tname', 'now', 1);
+      BeerEvent event =
+          BeerEvent(1, 'auth', 'authname', 't', 'tname', 'now', 1);
       BeerEvent copy = event.copyByVal();
       expect(copy.gid, 1);
       expect(copy.authorid, 'auth');
@@ -254,7 +308,6 @@ void main() {
       expect(consume.date, 'now');
       expect(consume.amount, 1);
     });
-
   });
   group('Product', () {
     test('should construct correctly', () {
@@ -264,7 +317,7 @@ void main() {
     });
 
     test('should read in from json correctly', () {
-      Map<String,dynamic> json = {
+      Map<String, dynamic> json = {
         '0': {'id': '1', 'name': 'bier', 'price': 1.0},
         '1': {'id': '2', 'name': 'ei', 'price': 2.0}
       };
@@ -275,25 +328,20 @@ void main() {
       expect(products[1].price, 2.0);
       expect(products[1].name, 'ei');
     });
-
   });
 
   group('Schedules', () {
     test('should construct correctly', () {
       Schedules schedules = Schedules([]);
       expect(schedules.usersid, []);
-      
     });
-
   });
 
   group('ConsumeDataPerMonthUser', () {
     test('should construct correctly', () {
-      ConsumeDataPerMonthPerUser consume = ConsumeDataPerMonthPerUser('n',1);
+      ConsumeDataPerMonthPerUser consume = ConsumeDataPerMonthPerUser('n', 1);
       expect(consume.name, 'n');
       expect(consume.amount, 1);
-      
     });
-
   });
 }

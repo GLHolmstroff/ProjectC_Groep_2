@@ -73,9 +73,7 @@ class CurrentUser extends BaseUser {
     List<ConsumeData> lst = new List<ConsumeData>();
     json.forEach(
       (k, v) => v.forEach(
-        (k1, v1) => lst.add(
-          ConsumeData(k1, v1)
-        ),
+        (k1, v1) => lst.add(ConsumeData(k1, v1)),
       ),
     );
 
@@ -91,11 +89,19 @@ class CurrentUser extends BaseUser {
     return lst;
   }
 
-  Future<List<ConsumeDataPerMonthPerUser>> getGroupConsumeData() async {
+  Future<List<ConsumeDataPerMonthPerUser>> getGroupConsumeData(
+      {String mode = 'main'}) async {
     String gid = CurrentUser().groupId.toString();
     List<ConsumeDataPerMonthPerUser> placeHolderList;
-    final Response res = await get("http://10.0.2.2:8080/getTallyPerUserPerMonth?gid=$gid",
-        headers: {'Content-Type': 'application/json'});
+    Response res;
+    if (mode == 'test') {
+      res = Response(json.encode({'001': 1, '002': 2}), 200);
+    } else if (mode == 'testfail') {
+      res = Response(json.encode({'001': 1, '002': 2}), 400);
+    } else {
+      res = await get("http://10.0.2.2:8080/getTallyPerUserPerMonth?gid=$gid",
+          headers: {'Content-Type': 'application/json'});
+    }
     if (res.statusCode == 200) {
       placeHolderList =
           CurrentUser._listGroupDataFromJson(json.decode(res.body));
@@ -105,13 +111,30 @@ class CurrentUser extends BaseUser {
     return placeHolderList;
   }
 
-  Future<List<ConsumeData>> getConsumeData() async {
+  Future<List<ConsumeData>> getConsumeData({mode = 'main'}) async {
     String uid = CurrentUser().userId.toString();
     String gid = CurrentUser().groupId.toString();
     List<ConsumeData> placeHolderListConsumeData;
-    final Response res = await get(
-        "http://10.0.2.2:8080/getTallyPerUserPerDay?gid=$gid&uid=$uid",
-        headers: {'Content-Type': 'application/json'});
+    Response res;
+    if (mode == 'test') {
+      res = Response(
+          json.encode({
+            '001': {'mon': 1},
+            '002': {'mon': 1}
+          }),
+          200);
+    } else if (mode == 'testfail') {
+      res = Response(
+          json.encode({
+            '001': {'mon': 1},
+            '002': {'mon': 1}
+          }),
+          400);
+    } else {
+      res = await get(
+          "http://10.0.2.2:8080/getTallyPerUserPerDay?gid=$gid&uid=$uid",
+          headers: {'Content-Type': 'application/json'});
+    }
     if (res.statusCode == 200) {
       placeHolderListConsumeData =
           CurrentUser._listFromJson(json.decode(res.body));
@@ -123,7 +146,8 @@ class CurrentUser extends BaseUser {
 }
 
 class User extends BaseUser {
-  User(userId, groupId, globalPermissions, displayName, picture_link, group_permission) {
+  User(userId, groupId, globalPermissions, displayName, picture_link,
+      group_permission) {
     this.userId = userId;
     this.groupId = groupId;
     this.globalPermissions = globalPermissions;
@@ -132,16 +156,53 @@ class User extends BaseUser {
     this.group_permission = group_permission;
   }
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(json["uid"], json["groupid"], json["global_permissions"],
-        json["display_name"], json["picture_link"],json["group_permissions"]);
+  @override
+  bool operator ==(other) {
+    if (other is User) {
+      return this.userId == other.userId;
+    } else {
+      return false;
+    }
   }
 
-  static Future<User> getUser(String cuid) async {
+  @override
+  external int get hashCode;
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(json["uid"], json["groupid"], json["global_permissions"],
+        json["display_name"], json["picture_link"], json["group_permissions"]);
+  }
+
+  static Future<User> getUser(String cuid, {String mode = 'main'}) async {
     String uid = cuid;
     User placeholdesUser;
-    final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
-        headers: {'Content-Type': 'application/json'});
+    Response res;
+    if (mode == 'test') {
+      res = Response(
+          json.encode({
+            "global_permissions": "user",
+            "uid": "001",
+            "groupid": 0,
+            "group_permissions": "groupAdmin",
+            "display_name": "Q",
+            "picture_link": "2019"
+          }),
+          200);
+    } else if (mode == 'testfail') {
+      res = Response(
+          json.encode({
+            "global_permissions": "user",
+            "uid": "001",
+            "groupid": 0,
+            "group_permissions": "groupAdmin",
+            "display_name": "Q",
+            "picture_link": "2019"
+          }),
+          400);
+    } else {
+      res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
+          headers: {'Content-Type': 'application/json'});
+    }
     if (res.statusCode == 200) {
       placeholdesUser = User.fromJson(json.decode(res.body));
     } else {
@@ -150,10 +211,17 @@ class User extends BaseUser {
     return placeholdesUser;
   }
 
-  static Future<String> getSaldo(String uid) async {
+  static Future<String> getSaldo(String uid, {String mode = 'main'}) async {
     String saldo = '0';
-    final Response res = await get("http://10.0.2.2:8080/getSaldoPerUser?uid=$uid",
-        headers: {'Content-Type': 'application/json'});
+    Response res;
+    if (mode == 'test') {
+      res = Response(json.encode(0.1), 200);
+    } else if (mode == 'testfail') {
+      res = Response(json.encode(0.1), 400);
+    } else {
+      res = await get("http://10.0.2.2:8080/getSaldoPerUser?uid=$uid",
+          headers: {'Content-Type': 'application/json'});
+    }
     if (res.statusCode == 200) {
       print(res.body);
       saldo = res.body;
@@ -205,7 +273,8 @@ class Group {
 
   static Future<List<Map>> getNamesAndPics(int gid) async {
     List<Map> namePics = [];
-    final Response res = await get("http://10.0.2.2:8080/getPicsAndNames?gid=$gid",
+    final Response res = await get(
+        "http://10.0.2.2:8080/getPicsAndNames?gid=$gid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       namePics = Group.namePicfromJson(json.decode(res.body));
@@ -218,8 +287,8 @@ class Group {
 
   static List<Map> namePicfromJson(Map json) {
     List<Map> namePics = [];
-    for(int i = 0; i < json.length; i++){
-      namePics.add(json[i.toString()]);      
+    for (int i = 0; i < json.length; i++) {
+      namePics.add(json[i.toString()]);
     }
     return namePics;
   }
@@ -263,7 +332,6 @@ class BeerTally {
 
   BeerTally({this.count, this.product});
 
-
   List<int> getCount() {
     return this.count;
   }
@@ -287,7 +355,7 @@ class BeerTally {
   factory BeerTally.fromJson(Map<String, dynamic> json) {
     List<int> count = new List<int>();
     String product = json["product"];
-    for(int i = 0; i < json.length - 1; i++){
+    for (int i = 0; i < json.length - 1; i++) {
       count.add(json["$i"]["count"]);
     }
     return BeerTally(count: count, product: product);
@@ -352,13 +420,25 @@ class ConsumeData {
   final String date;
   final int amount;
   ConsumeData(this.date, this.amount);
+
+  @override
+  bool operator ==(other) {
+    if (other is ConsumeData) {
+      return this.date == other.date && this.amount == other.amount;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  external int get hashCode;
 }
 
 class Product {
   final double price;
   final String name;
   Product(this.price, this.name);
-  
+
   static Future<List<Product>> getData(int gid) async {
     List<Product> products = [];
     final Response res = await get(
@@ -381,8 +461,8 @@ class Product {
     }
     return products;
   }
-  
 }
+
 class Schedules {
   String taskName;
   List usersid;
@@ -396,9 +476,19 @@ class ConsumeDataPerMonthPerUser {
   final String name;
   final int amount;
   ConsumeDataPerMonthPerUser(this.name, this.amount);
-}
 
-  
+  @override
+  bool operator ==(other) {
+    if (other is ConsumeDataPerMonthPerUser) {
+      return this.name == other.name && this.amount == other.amount;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  external int get hashCode;
+}
 
 //TODO:
 //Class Schedules
