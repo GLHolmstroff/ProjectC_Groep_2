@@ -84,8 +84,7 @@ void main() {
     test('should return correct consumedata', () async {
       CurrentUser user = CurrentUser();
       var result = await user.getConsumeData(mode: 'test');
-      var expected = [ConsumeData('mon', 1),
-      ConsumeData('mon', 1)];
+      var expected = [ConsumeData('mon', 1), ConsumeData('mon', 1)];
       expect(result, expected);
     });
 
@@ -98,8 +97,10 @@ void main() {
     test('should return correct groupconsumedata', () async {
       CurrentUser user = CurrentUser();
       var result = await user.getGroupConsumeData(mode: 'test');
-      var expected = [ConsumeDataPerMonthPerUser('001', 1),
-      ConsumeDataPerMonthPerUser('002', 2)];
+      var expected = [
+        ConsumeDataPerMonthPerUser('001', 1),
+        ConsumeDataPerMonthPerUser('002', 2)
+      ];
       expect(result, expected);
     });
 
@@ -141,7 +142,7 @@ void main() {
 
     test('should return correct user', () async {
       var result = await User.getUser('', mode: 'test');
-      var expected = User('001',0,'user','Q','2019','groupAdmin');
+      var expected = User('001', 0, 'user', 'Q', '2019', 'groupAdmin');
       expect(result, expected);
     });
 
@@ -194,9 +195,22 @@ void main() {
       ]);
     });
 
+    test('should return correct names and pics', () async {
+      var result = await Group.getNamesAndPics(1, mode: 'test');
+      var expected = [
+        {'name': '001', 'picture': '2019'}
+      ];
+      expect(result, expected);
+    });
+
+    test('should return empty list on fail to get names and pics', () async {
+      var result = await Group.getNamesAndPics(1, mode: 'testfail');
+      expect(result, []);
+    });
+
     test('should return correct group', () async {
       var result = await Group.getGroup(mode: 'test');
-      var expected = Group(users: ['001','002']);
+      var expected = Group(users: ['001', '002']);
       expect(result, expected);
     });
 
@@ -226,6 +240,17 @@ void main() {
       expect(house.createdAt, 'now');
       expect(house.houseName, 'name');
     });
+
+    test('should return correct current house', () async {
+      var result = await House.getCurrentHouse(mode: 'test');
+      var expected = House(groupId: 1, createdAt: 'now', houseName: 'nombre');
+      expect(result, expected);
+    });
+
+    test('should return null on fail to get current house', () async {
+      var result = await House.getCurrentHouse(mode: 'testfail');
+      expect(result, null);
+    });
   });
   group('BeerTally', () {
     test('should be constructed correctly', () {
@@ -254,6 +279,17 @@ void main() {
     test('should have correct string representation', () {
       BeerTally tally = BeerTally(count: [1, 1], product: 'bier');
       expect(tally.toString(), 'TODO:REMAKE TOSTRING');
+    });
+
+    test('should return correct tally', () async {
+      var result = await BeerTally.getData(1, 'bier', mode: 'test');
+      var expected = BeerTally(count: [1, 1], product: 'bier');
+      expect(result, expected);
+    });
+
+    test('should return null on fail to get tally', () async {
+      var result = await BeerTally.getData(1, 'bier', mode: 'testfail');
+      expect(result, null);
     });
   });
 
@@ -311,6 +347,19 @@ void main() {
       expect(copy.date, 'now');
       expect(copy.mutation, 1);
     });
+
+    test('should return correct events', () async {
+      var result = await BeerEvent.getData(1, mode: 'test');
+      var expected = [
+        BeerEvent(1,'001','henk','002','karin','now',1)
+      ];
+      expect(result, expected);
+    });
+
+    test('should return null on fail to get events', () async {
+      var result = await BeerEvent.getData(1, mode: 'testfail');
+      expect(result, null);
+    });
   });
 
   group('ConsumeData', () {
@@ -338,6 +387,19 @@ void main() {
       expect(products[0].name, 'bier');
       expect(products[1].price, 2.0);
       expect(products[1].name, 'ei');
+    });
+
+    test('should return correct products', () async {
+      var result = await Product.getData(1, mode: 'test');
+      var expected = [
+        Product(0.0, 'nombre')
+      ];
+      expect(result, expected);
+    });
+
+    test('should return empty list on fail to get products', () async {
+      var result = await Product.getData(1, mode: 'testfail');
+      expect(result, []);
     });
   });
 

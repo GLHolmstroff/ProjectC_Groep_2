@@ -242,7 +242,9 @@ class Group {
   @override
   bool operator ==(other) {
     if (other is Group) {
-      return this.users.every((el) {return other.users.contains(el);});
+      return this.users.every((el) {
+        return other.users.contains(el);
+      });
     } else {
       return false;
     }
@@ -303,11 +305,22 @@ class Group {
     return currentGroup;
   }
 
-  static Future<List<Map>> getNamesAndPics(int gid) async {
+  static Future<List<Map>> getNamesAndPics(int gid,
+      {String mode = 'main'}) async {
     List<Map> namePics = [];
-    final Response res = await get(
-        "http://10.0.2.2:8080/getPicsAndNames?gid=$gid",
-        headers: {'Content-Type': 'application/json'});
+    Response res;
+    if (mode == 'test') {
+      res = Response(
+          json.encode({
+            '0': {'name': '001', 'picture': '2019'}
+          }),
+          200);
+    } else if (mode == 'testfail') {
+      res = Response(json.encode({}), 400);
+    } else {
+      res = await get("http://10.0.2.2:8080/getPicsAndNames?gid=$gid",
+          headers: {'Content-Type': 'application/json'});
+    }
     if (res.statusCode == 200) {
       namePics = Group.namePicfromJson(json.decode(res.body));
     } else {
@@ -333,19 +346,51 @@ class House {
 
   House({this.groupId, this.createdAt, this.houseName});
 
+  @override
+  bool operator ==(other) {
+    if (other is House) {
+      return this.groupId == other.groupId;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  external int get hashCode;
+
   factory House.fromJson(Map<String, dynamic> json) {
     return House(
         groupId: json['groupid'],
         createdAt: json['created_at'],
         houseName: json['name']);
   }
-  static Future<House> getCurrentHouse() async {
-    CurrentUser currentUser = await CurrentUser.updateCurrentUser();
+  static Future<House> getCurrentHouse({String mode = 'main'}) async {
+    CurrentUser currentUser;
+    if (mode == 'main') {
+      currentUser = await CurrentUser.updateCurrentUser();
+    } else {
+      currentUser = CurrentUser.fromJson({
+        "global_permissions": "",
+        "uid": "",
+        "groupid": 1,
+        "group_permissions": "",
+        "display_name": "",
+        "picture_link": ""
+      });
+    }
     String groupID = currentUser.groupId.toString();
     House currentGroup;
-    final Response res = await get(
-        "http://10.0.2.2:8080/getGroupName?gid=$groupID",
-        headers: {'Content-Type': 'application/json'});
+    Response res;
+    if (mode == 'test') {
+      res = Response(
+          json.encode({'groupid': 1, 'created_at': 'now', 'name': 'nombre'}),
+          200);
+    } else if (mode == 'testfail') {
+      res = Response(json.encode({}), 400);
+    } else {
+      res = await get("http://10.0.2.2:8080/getGroupName?gid=$groupID",
+          headers: {'Content-Type': 'application/json'});
+    }
     if (res.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       currentGroup = House.fromJson(json.decode(res.body));
@@ -364,16 +409,40 @@ class BeerTally {
 
   BeerTally({this.count, this.product});
 
+  @override
+  bool operator ==(other) {
+    if (other is BeerTally) {
+      return this.product == other.product;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  external int get hashCode;
+
   List<int> getCount() {
     return this.count;
   }
 
-  static Future<BeerTally> getData(int gid, String product) async {
+  static Future<BeerTally> getData(int gid, String product,
+      {String mode = 'main'}) async {
     BeerTally beer;
-    final Response res = await get(
-        "http://10.0.2.2:8080/getTally?gid=$gid&product=$product",
-        headers: {'Content-Type': 'application/json'});
-
+    Response res;
+    if (mode == 'test') {
+      res = Response(
+          json.encode({
+            'product': 'bier',
+            '0': {'uid': '001', 'count': 1},
+            '1': {'uid': '002', 'count': 1}
+          }),
+          200);
+    } else if (mode == 'testfail') {
+      res = Response(json.encode({}), 400);
+    } else {
+      res = await get("http://10.0.2.2:8080/getTally?gid=$gid&product=$product",
+          headers: {'Content-Type': 'application/json'});
+    }
     if (res.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       beer = BeerTally.fromJson(json.decode(res.body));
@@ -411,6 +480,21 @@ class BeerEvent {
   BeerEvent(this.gid, this.authorid, this.authorname, this.targetid,
       this.targetname, this.date, this.mutation);
 
+  @override
+  bool operator ==(other) {
+    if (other is BeerEvent) {
+      return this.gid == other.gid &&
+          this.authorid == other.authorid &&
+          this.targetid == other.targetid &&
+          this.date == other.date;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  external int get hashCode;
+
   BeerEvent copyByVal() {
     return BeerEvent(this.gid, this.authorid, this.authorname, this.targetid,
         this.targetname, this.date, this.mutation);
@@ -432,12 +516,31 @@ class BeerEvent {
     return out;
   }
 
-  static Future<List<BeerEvent>> getData(int gid) async {
+  static Future<List<BeerEvent>> getData(int gid,
+      {String mode = 'main'}) async {
     List<BeerEvent> beerEvents;
-    final Response res = await get(
-        "http://10.0.2.2:8080/getTallyEntries?gid=$gid",
-        headers: {'Content-Type': 'application/json'});
-
+    Response res;
+    if (mode == 'test') {
+      res = Response(
+          json.encode([
+            {
+              'gid': 1,
+              'authorid': '001',
+              'authorname': 'henk',
+              'targetid': '002',
+              'targetname': 'karin',
+              'product': 'bier',
+              'mutation': 1,
+              'date': 'now'
+            }
+          ]),
+          200);
+    } else if (mode == 'testfail') {
+      res = Response(json.encode({}), 400);
+    } else {
+      res = await get("http://10.0.2.2:8080/getTallyEntries?gid=$gid",
+          headers: {'Content-Type': 'application/json'});
+    }
     if (res.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       beerEvents = BeerEvent.fromJson(json.decode(res.body));
@@ -471,11 +574,33 @@ class Product {
   final String name;
   Product(this.price, this.name);
 
-  static Future<List<Product>> getData(int gid) async {
+  @override
+  bool operator ==(other) {
+    if (other is Product) {
+      return this.price == other.price && this.name == other.name;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  external int get hashCode;
+
+  static Future<List<Product>> getData(int gid, {String mode = 'main'}) async {
     List<Product> products = [];
-    final Response res = await get(
-        "http://10.0.2.2:8080/getAllProducts?gid=$gid",
-        headers: {'Content-Type': 'application/json'});
+    Response res;
+    if (mode == 'test') {
+      res = Response(
+          json.encode({
+            '0': {'id': '001', 'name': 'nombre', 'price': 0.0}
+          }),
+          200);
+    } else if (mode == 'testfail') {
+      res = Response(json.encode({}), 400);
+    } else {
+      res = await get("http://10.0.2.2:8080/getAllProducts?gid=$gid",
+          headers: {'Content-Type': 'application/json'});
+    }
     if (res.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       products = Product.fromJson(json.decode(res.body));
