@@ -7,6 +7,7 @@ import 'package:huishoudappfrontend/createaccount_widget.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/creategroup_widget.dart';
+import 'package:huishoudappfrontend/groupmanagement/namesetup_widget.dart';
 import 'package:huishoudappfrontend/schedules/admintaskadder_widget.dart';
 import 'package:huishoudappfrontend/home_widget.dart';
 import 'package:huishoudappfrontend/schedules/clickedOnCheckHousemate.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
     TurfWidgetEdit.tag: (context) => TurfWidgetEdit(),
     SchoonmaakPage.tag: (context) => SchoonmaakPage(),
     AdminTaskAdder.tag: (context) => AdminTaskAdder(),
+    NameSetup.tag: (context) => NameSetup(),
   };
 
   @override
@@ -84,6 +86,9 @@ class MyHomePage extends StatelessWidget {
                   future: CurrentUser.updateCurrentUser(),
                   builder: (context, innersnapshot) {
                     if (innersnapshot.hasData) {
+                      if (CurrentUser().displayName == "EmptyName") {
+                        return (NameSetup());
+                      }
                       print(CurrentUser().userId);
                       if (CurrentUser().groupId != null) {
                         return (HomePage());
