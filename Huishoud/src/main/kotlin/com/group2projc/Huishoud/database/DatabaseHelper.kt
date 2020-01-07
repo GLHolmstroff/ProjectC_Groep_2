@@ -789,6 +789,7 @@ class DatabaseHelper(url: String) {
         var user = getUser(uid)
         var groupid = user["groupid"]
         var adminCount = getAdminCount(groupid as Int)
+
         if(user["group_permission"] == "groupAdmin" && adminCount == 1 ) {
            out["result"] = "Group needs at least one admin"
         }

@@ -37,7 +37,7 @@ class TurfWidgetEditState extends State<TurfWidgetEdit> {
 
   void updateEntry() async {
     final Response res = await get(
-        "http://10.0.2.2:8080/updateTallyEntry?gid=${eventNew.gid}&authorid=${eventNew.authorid}&targetid=${eventNew.targetid}&mutation=${eventNew.mutation}&date=${eventNew.date}");
+        "http://seprojects.nl:8080/updateTallyEntry?gid=${eventNew.gid}&authorid=${eventNew.authorid}&targetid=${eventNew.targetid}&mutation=${eventNew.mutation}&date=${eventNew.date}");
     if (res.statusCode == 200) {
       print("updated");
     } else {
