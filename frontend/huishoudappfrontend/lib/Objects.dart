@@ -31,6 +31,8 @@ class BaseUser {
 
 class CurrentUser extends BaseUser {
   static final CurrentUser _instance = CurrentUser._internal();
+  House house;
+
 
   factory CurrentUser() {
     return _instance;
@@ -43,6 +45,7 @@ class CurrentUser extends BaseUser {
     _instance.displayName = json['display_name'];
     _instance.picture_link = json['picture_link'];
     _instance.group_permission = json['group_permissions'];
+    House.getCurrentHouse().then((onValue) => _instance.house = onValue);
     return _instance;
   }
 
@@ -54,6 +57,11 @@ class CurrentUser extends BaseUser {
     if (this.userId == null) {
       updateCurrentUser();
     }
+    _getHouse();
+  }
+
+  void _getHouse() async {
+    house = await House.getCurrentHouse();
   }
 
   static Future<CurrentUser> updateCurrentUser() async {

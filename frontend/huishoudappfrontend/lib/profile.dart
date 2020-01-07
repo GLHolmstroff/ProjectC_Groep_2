@@ -457,7 +457,8 @@ class _Profilepage extends State<Profilepage> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Text(userhouseName != null ? userhouseName : "Laden..."),
+                  //Text(userhouseName != null ? userhouseName : "Laden..."),
+                  Text(currentUser.house.houseName),
                 ],
               ),
 
