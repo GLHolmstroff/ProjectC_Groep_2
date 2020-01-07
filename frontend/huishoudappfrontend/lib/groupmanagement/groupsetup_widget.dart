@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:huishoudappfrontend/groupmanagement/creategroup_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/title_widget.dart';
+import 'package:huishoudappfrontend/setup/auth.dart';
+import 'package:huishoudappfrontend/setup/provider.dart';
+
 
 import 'joingroup_widget.dart';
 
@@ -11,6 +14,7 @@ class GroupWidget extends StatefulWidget {
 }
 
 class _GroupWidget extends State<GroupWidget> {
+
   void _makeGroup() {
     Navigator.push(
         context,
@@ -58,6 +62,13 @@ class _GroupWidget extends State<GroupWidget> {
       child: Text('Neem deel aan een huis', style: TextStyle(fontSize: 20)),
     );
 
+    final logout = RaisedButton(
+      onPressed: () => {
+        Provider.of(context).auth.signOut()
+      },
+      child: Text("Log uit"),
+    );
+
     // TODO: implement build
     return Scaffold(
         body: Column(
@@ -76,6 +87,7 @@ class _GroupWidget extends State<GroupWidget> {
                 children: <Widget>[
                   Center(child: makeGroupButton),
                   Center(child: joinGroupButton),
+                  Center(child: logout),
                 ],
               )
             ],

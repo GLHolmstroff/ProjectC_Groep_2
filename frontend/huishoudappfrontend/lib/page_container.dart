@@ -7,6 +7,7 @@ import 'package:huishoudappfrontend/turf_widget_gridview.dart';
 import 'profile.dart';
 import 'package:huishoudappfrontend/schedules/schoonmaakrooster_widget.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
+import 'objects.dart';
 
 class HomePage extends StatefulWidget {
   static String tag = 'home-page';
@@ -21,17 +22,17 @@ class HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   List<Widget> _children;
 
-  void initState() {
-    super.initState();
-    setState(() {
-      _children = _children = [
-        Home_widget(),
-        SchoonmaakPage(),
-        TurfwidgetGrid(),
-        Profilepage()
-      ];
-    });
-  }
+  //void initState() {
+  //  super.initState();
+  //  setState(() {
+  //    _children = [
+  //      Home_widget(),
+  //      SchoonmaakPage(),
+  //      TurfwidgetGrid(),
+  //      Profilepage()
+  //    ];
+  //  });
+  //}
 
   /*List<Widget> _children = [
     Home_widget(),
@@ -50,18 +51,16 @@ class HomePageState extends State<HomePage> {
   void _setChildren() {
     // replace the placeholder widget with your widget
     // give _steNewBody as argument if you want to change the currentwidget from inside your widget
-    setState(() => [
-          Home_widget(),
-          SchoonmaakPage(),
-          TurfwidgetGrid(),
-          Profilepage()
-        ]);
+    setState(() =>
+
+        _children = [Home_widget(), SchoonmaakPage(), TurfwidgetGrid(), Profilepage()]);
   }
 
   @override
   Widget build(BuildContext context) {
     // initialize all the children, cant be done in the constructor because we are parsing a function
-    //_setChildren();
+    _setChildren();
+    CurrentUser.updateCurrentUser;
     return Scaffold(
       body: _children[_currentIndex],
       backgroundColor: Colors.grey[100],

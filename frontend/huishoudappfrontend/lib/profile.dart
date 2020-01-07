@@ -19,6 +19,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 import 'design.dart';
+import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
 
 class Profilepage extends StatefulWidget {
   static String tag = 'profile_page';
@@ -238,8 +239,7 @@ class _Profilepage extends State<Profilepage> {
       //setState(() {
       //  visible = false;
       //});
-      Navigator.pop(context);
-      Navigator.pop(context);
+      Navigator.popAndPushNamed(context, LoginPage.tag);
     }
   }
 
@@ -248,7 +248,7 @@ class _Profilepage extends State<Profilepage> {
         context: (context),
         builder: (BuildContext context) {
           return (AlertDialog(
-            title: Text("Huisgenoot verwijderen"),
+            title: Text("Jezelf uit jouw huis verwijderen"),
             content: Container(
               height: 100,
               child: Column(
@@ -257,7 +257,7 @@ class _Profilepage extends State<Profilepage> {
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Text("Weet u zeker dat u uw huis wilt verlaten?"),
                   ),
-                  Text("al je data zal hierdoor verloren gaan.")
+                  Text("Al uw data zal hierdoor verloren gaan.")
                 ],
               ),
             ),
