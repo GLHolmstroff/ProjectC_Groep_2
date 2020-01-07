@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'dart:convert';
+import 'package:collection/collection.dart';
 
 class BaseUser {
   String userId;
@@ -238,6 +239,18 @@ class Group {
 
   Group({this.users});
 
+  @override
+  bool operator ==(other) {
+    if (other is Group) {
+      return this.users.every((el) {return other.users.contains(el);});
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  external int get hashCode;
+
   factory Group.fromJson(Map<String, dynamic> json) {
     List<String> users = new List<String>();
     String keyPart = "UserId";
@@ -256,12 +269,31 @@ class Group {
     return out;
   }
 
-  static Future<Group> getGroup() async {
-    CurrentUser currentUser = CurrentUser();
+  static Future<Group> getGroup({mode = 'main'}) async {
+    CurrentUser currentUser;
+    if (mode == 'main') {
+      currentUser = CurrentUser();
+    } else {
+      currentUser = CurrentUser.fromJson({
+        "global_permissions": "",
+        "uid": "",
+        "groupid": 1,
+        "group_permissions": "",
+        "display_name": "",
+        "picture_link": ""
+      });
+    }
     String groupId = currentUser.groupId.toString();
     Group currentGroup;
-    final Response res = await get("http://10.0.2.2:8080/getGroup?gid=$groupId",
-        headers: {'Content-Type': 'application/json'});
+    Response res;
+    if (mode == 'test') {
+      res = Response(json.encode({'UserId0': '001', 'UserId1': '002'}), 200);
+    } else if (mode == 'testfail') {
+      res = Response(json.encode({}), 400);
+    } else {
+      res = await get("http://10.0.2.2:8080/getGroup?gid=$groupId",
+          headers: {'Content-Type': 'application/json'});
+    }
     if (res.statusCode == 200) {
       currentGroup = Group.fromJson(json.decode(res.body));
     } else {

@@ -193,6 +193,17 @@ void main() {
         {"name": "name2", "picture": "pic2"}
       ]);
     });
+
+    test('should return correct group', () async {
+      var result = await Group.getGroup(mode: 'test');
+      var expected = Group(users: ['001','002']);
+      expect(result, expected);
+    });
+
+    test('should return null on fail to get group', () async {
+      var result = await Group.getGroup(mode: 'testfail');
+      expect(result, null);
+    });
   });
 
   group('House', () {
