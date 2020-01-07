@@ -72,7 +72,7 @@ class _Profilepage extends State<Profilepage> {
     String uid = await Auth().currentUser();
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
-    return "http://10.0.2.2:8080/files/users?uid=$uid&t=$timeStamp";
+    return "http://seprojects.nl:8080/files/users?uid=$uid&t=$timeStamp";
   }
 
   Future<File> openGallery() async {
@@ -106,7 +106,7 @@ class _Profilepage extends State<Profilepage> {
         'file', await compressed.readAsBytes(),
         filename: timeStamp + 'testfile.png');
 
-    var uri = Uri.parse("http://10.0.2.2:8080/files/upload");
+    var uri = Uri.parse("http://seprojects.nl:8080/files/upload");
     var request = new MultipartRequest("POST", uri);
     request.fields['uid'] = uid;
     request.files.add(mf);
@@ -233,7 +233,7 @@ class _Profilepage extends State<Profilepage> {
   void _kickUser() async {
     String uid = currentUser.userId;
     final Response res =
-        await get("http://10.0.2.2:8080/deleteUserFromGroup?uid=$uid");
+        await get("http://seprojects.nl:8080/deleteUserFromGroup?uid=$uid");
     if (json.decode(res.body)["result"] == "success") {
       //setState(() {
       //  visible = false;
@@ -288,7 +288,7 @@ class _Profilepage extends State<Profilepage> {
       print(_name);
       String uid = currentUser.userId;
       final Response res = await get(
-          "http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
+          "http://seprojects.nl:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
           headers: {'Content-Type': 'application/json'});
       CurrentUser tempCurrentUser = await CurrentUser.updateCurrentUser();
       setState(() {
@@ -457,7 +457,9 @@ class _Profilepage extends State<Profilepage> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Text(userhouseName != null ? userhouseName : "Laden..."),
+                  Text(userhouseName != null ? userhouseName : "Laden...", style: TextStyle( color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w300)),
                 ],
               ),
 
@@ -470,7 +472,9 @@ class _Profilepage extends State<Profilepage> {
                 future: User.getSaldo(currentUser.userId),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return Text("Saldo: "+ snapshot.data);
+                    return Text("Saldo: "+ snapshot.data,style: TextStyle( color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w300));
                   } else if (snapshot.hasError) {
                     print(snapshot.error);
                     return Text("${snapshot.error}");

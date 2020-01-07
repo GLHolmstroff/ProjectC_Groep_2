@@ -50,7 +50,7 @@ print(grouppermission);
 
   void _changePermission() async{
     bool admin = (grouppermission != "groupAdmin");
-    final Response res= await get("http://10.0.2.2:8080/setGroupPermission?uid=$userid&admin=$admin");
+    final Response res= await get("http://seprojects.nl:8080/setGroupPermission?uid=$userid&admin=$admin");
     print(userid);
     if(json.decode(res.body)["result"] == "success"){
       print("success");
@@ -68,7 +68,7 @@ print(grouppermission);
   
 
   void _kickUser() async{
-    final Response res = await get("http://10.0.2.2:8080/deleteUserFromGroup?uid=$userid");
+    final Response res = await get("http://seprojects.nl:8080/deleteUserFromGroup?uid=$userid");
     if(json.decode(res.body)["result"] == "success"){
       setState(() {
         visible = false;

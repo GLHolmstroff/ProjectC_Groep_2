@@ -29,7 +29,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
   String userPermissions = user.group_permission.toString();
 
   Future<void> getUserTasks() async {
-    final Response res = await get("http://10.0.2.2:8080/getUserTasks?uid=$uid",
+    final Response res = await get("http://seprojects.nl:8080/getUserTasks?uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       return json.decode(res.body);
@@ -41,7 +41,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
 
   Future<void> getHousematesChecks() async {
     final Response res = await get(
-        "http://10.0.2.2:8080/getHousematesChecks?gid=$gid&uid=$uid",
+        "http://seprojects.nl:8080/getHousematesChecks?gid=$gid&uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       return json.decode(res.body);
@@ -55,7 +55,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
     String uid = await Auth().currentUser();
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
-    return "http://10.0.2.2:8080/files/users?uid=$uid&t=$timeStamp";
+    return "http://seprojects.nl:8080/files/users?uid=$uid&t=$timeStamp";
   }
 
   Widget getIcon(int done, int approvals) {
