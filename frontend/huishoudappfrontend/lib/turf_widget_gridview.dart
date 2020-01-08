@@ -221,7 +221,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
           icon: Icon(
             Icons.remove,
             color: Colors.red,
-            size: 35,
+            size: 30,
           ),
           onPressed: () {
             setState(() {
@@ -252,7 +252,8 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(180),
               
-              border: Border.all(width: 1)),
+              // border: Border.all(width: 1)
+              ),
           child: Text(
             sentData[index].numberofbeers.toString(),
             textAlign: TextAlign.center,
@@ -270,7 +271,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
             icon: Icon(
               Icons.add,
               color: Colors.green,
-              size: 35,
+              size: 30,
             ),
             onPressed: () {
               setState(() {
