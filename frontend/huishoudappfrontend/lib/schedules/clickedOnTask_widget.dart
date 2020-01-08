@@ -161,8 +161,8 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
       ),
       alignment: Alignment(-0.8, 0.8),
       decoration: BoxDecoration(
-          color: Design.orange2,
-          boxShadow: [BoxShadow(color: Design.orange2, blurRadius: 15.0)]),
+          color: Design.materialRood,
+          boxShadow: [BoxShadow(color: Design.materialRood, blurRadius: 15.0)]),
     );
   }
 
@@ -171,13 +171,13 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
       child: Row(
         children: <Widget>[
           Text(
-            "Einddatum voor deze taak:",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            "Einddatum taak:",
+            style: TextStyle(fontSize: 16),
           ),
           Spacer(),
           Text(
             widget.clickedTask["datedue"],
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            style: TextStyle(fontSize: 16),
           ),
         ],
       ),
@@ -191,9 +191,7 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
           children: <Widget>[
             Row(
               children: <Widget>[
-                Text("Taak afgerond?",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                Text("Taak afgerond?", style: TextStyle(fontSize: 16)),
                 Spacer(),
                 Checkbox(
                   value: taskDone,
@@ -208,6 +206,8 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
             SizedBox(
               height: 20,
             ),
+            Text("Bijgevoegde foto:", style: TextStyle(fontSize: 16)),
+            SizedBox(height: 5.0),
             Container(
               height: 200,
               width: MediaQuery.of(context).size.width,
@@ -260,11 +260,9 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
       var value = widget.clickedTask["approvals"];
       return Row(
         children: <Widget>[
-          Text("Goedkeuringen: ",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          Text("Goedkeuringen: ", style: TextStyle(fontSize: 16)),
           Spacer(),
-          Text("$value/3",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18))
+          Text("$value/3", style: TextStyle(fontSize: 16))
         ],
       );
     }
@@ -274,7 +272,8 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
   Future<void> makeTaskDone() async {
     var tid = widget.clickedTask["taskid"];
 
-    final Response res = await get("http://seprojects.nl:8080/makeTaskDone?tid=$tid",
+    final Response res = await get(
+        "http://seprojects.nl:8080/makeTaskDone?tid=$tid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       Fluttertoast.showToast(msg: "Taak zit nu in beoordelingsfase");
@@ -303,7 +302,7 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
         child: RaisedButton(
           child: Text(
             "Taak volledig afronden",
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 16),
           ),
           onPressed: () {
             endTask();
@@ -337,7 +336,7 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
         },
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(36.0),
-            side: BorderSide(color: Design.orange2)),
+            side: BorderSide(color: Design.materialRood)),
       ),
     );
   }
@@ -359,9 +358,9 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
                   isTaskDone(),
                   SizedBox(height: 50),
                   showApprovals(),
-                  SizedBox(height: 30),
+                  SizedBox(height: 10),
                   endTaskButton(),
-                  SizedBox(height: 70),
+                  SizedBox(height: 10),
                   buildButton()
                 ],
               ),

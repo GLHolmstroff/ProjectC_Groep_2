@@ -72,7 +72,8 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
               if (response.statusCode == 200) {
                 Fluttertoast.showToast(msg: "Taak is toegevoegd!");
                 print("Schedule added");
-                Navigator.of(context).popUntil(ModalRoute.withName(AdminTaskAdder.tag));
+                Navigator.of(context)
+                    .popUntil(ModalRoute.withName(AdminTaskAdder.tag));
                 Navigator.of(context).pop();
               } else {
                 print(response.statusCode.toString());
@@ -117,7 +118,7 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
       ),
       alignment: Alignment(-0.8, 0.8),
       decoration: BoxDecoration(
-          color: Design.orange2,
+          color: Design.materialRood,
           boxShadow: [BoxShadow(color: Design.orange2, blurRadius: 15.0)]),
     );
 
@@ -170,7 +171,7 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
               child: Icon(Icons.add),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(36.0),
-                  side: BorderSide(color: Design.orange2)),
+                  side: BorderSide(color: Design.materialRood)),
             )
           ],
         ),
@@ -198,7 +199,7 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
           child: Icon(Icons.date_range),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(36.0),
-              side: BorderSide(color: Design.orange2)),
+              side: BorderSide(color: Design.materialRood)),
         )
       ],
     );
@@ -228,45 +229,42 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
       ),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(36.0),
-          side: BorderSide(color: Design.orange2)),
+          side: BorderSide(color: Design.materialRood)),
       onPressed: () {
         createSchedule();
       },
     );
 
     return Scaffold(
-      body: Center(
-        child: Form(
-          key: formKey,
-          child: Column(
+        body: Center(
+      child: Form(
+        key: formKey,
+        child: Container(
+          child: ListView(
             children: <Widget>[
               titleWidget,
-              Flexible(
-                child: Container(
-                  alignment: Alignment(-1.0, 0),
-                  width: 350,
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(height: 35),
-                      taskNameWidget,
-                      SizedBox(height: 25),
-                      selectedUsersWidget,
-                      SizedBox(height: 20),
-                      selectDateWidget,
-                      SizedBox(height: 20),
-                      textDescriptionWidget,
-                      SizedBox(height: 5),
-                      descriptionInputWidget,
-                      SizedBox(height: 15),
-                      addTaskButtonWidget
-                    ],
-                  ),
+              Container(
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 25),
+                    taskNameWidget,
+                    SizedBox(height: 20),
+                    selectedUsersWidget,
+                    SizedBox(height: 20),
+                    selectDateWidget,
+                    SizedBox(height: 20),
+                    textDescriptionWidget,
+                    SizedBox(height: 5),
+                    descriptionInputWidget,
+                    SizedBox(height: 10),
+                    addTaskButtonWidget
+                  ],
                 ),
-              )
+              ),
             ],
           ),
         ),
       ),
-    );
+    ));
   }
 }
