@@ -158,17 +158,14 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
   }
 
   Widget titleWidget() {
-    return Container(
-      height: 125,
-      child: Text(
+    return AppBar(
+    
+      title: Text(
         widget.clickedTask["taskname"],
         style: TextStyle(
-            fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white),
+            color: Colors.white),
       ),
-      alignment: Alignment(-0.8, 0.8),
-      decoration: BoxDecoration(
-          color: Design.materialRood,
-          boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 15.0)]),
+      
     );
   }
 
@@ -287,9 +284,10 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
     if (widget.clickedTask["approvals"] >= 3) {
       return Center(
         child: RaisedButton(
+          color: Design.orange2,
           child: Text(
             "Taak volledig afronden",
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 16, color: Colors.white),
           ),
           onPressed: () {
             endTask();
@@ -331,10 +329,11 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: titleWidget(),
       body: Center(
         child: Column(
           children: <Widget>[
-            titleWidget(),
+            
             Container(
               width: MediaQuery.of(context).size.width * 0.85,
               child: Column(
