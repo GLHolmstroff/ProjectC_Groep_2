@@ -22,7 +22,7 @@ class _Creategroup_widget extends State {
           "http://seprojects.nl:8080/createGroup?name=$groupname&uid=$uid");
       if (response.statusCode == 200) {
         print("Succesfully Registered");
-        //Navigator.popAndPushNamed(context, HomePage.tag);
+        Navigator.popAndPushNamed(context, HomePage.tag);
         Navigator.pop(context);
       } else {
         print("Connection Failed");

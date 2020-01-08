@@ -86,7 +86,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
     for (var pic in picIDs) {
       print("Loading image${picIDs.indexOf(pic)}");
       images.add(new CachedNetworkImageProvider(
-        "http://10.0.2.2/files/users?uid=$pic&t=$timeStamp",
+        "http://seprojects.nl/files/users?uid=$pic&t=$timeStamp",
       ));
     }
     setState(() {

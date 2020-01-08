@@ -22,7 +22,7 @@ class Joingroup_WidgetState extends State {
     if (response.statusCode == 200) {
       print("Succesfully Registered");
       CurrentUser.updateCurrentUser();
-      //Navigator.popAndPushNamed(context, HomePage.tag);
+      Navigator.popAndPushNamed(context, HomePage.tag);
       Navigator.pop(context);
     } else {
       print("Connection Failed");

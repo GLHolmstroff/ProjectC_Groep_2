@@ -22,7 +22,7 @@ class _NameSetup extends State<NameSetup> {
       String uid = await Provider.of(context).auth.currentUser();
       try {
         final Response res = await get(
-            "http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
+            "http://seprojects.nl:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
             headers: {'Content-Type': 'application/json'});
         try {
           //CurrentUser tempCurrentUser = await CurrentUser.updateCurrentUser();
