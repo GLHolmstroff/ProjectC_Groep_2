@@ -250,7 +250,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       ),
       SizedBox(width: 25),
       Container(
-          width: 30,
+          width: 50,
           height: 40,
           margin: EdgeInsets.all(5),
           padding: EdgeInsets.all(5),
