@@ -212,7 +212,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
   Row bottomGridView(int gid, int index) {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
       Container(
-        width: 40,
+        width: 30,
         height: 40,
         margin: EdgeInsets.all(1),
         padding: EdgeInsets.all(1),
@@ -221,7 +221,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
           icon: Icon(
             Icons.remove,
             color: Colors.red,
-            size: 35,
+            size: 30,
           ),
           onPressed: () {
             setState(() {
@@ -245,14 +245,15 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       ),
       SizedBox(width: 25),
       Container(
-          width: 40,
+          width: 30,
           height: 40,
           margin: EdgeInsets.all(5),
           padding: EdgeInsets.all(5),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(180),
               
-              border: Border.all(width: 1)),
+              // border: Border.all(width: 1)
+              ),
           child: Text(
             sentData[index].numberofbeers.toString(),
             textAlign: TextAlign.center,
@@ -270,7 +271,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
             icon: Icon(
               Icons.add,
               color: Colors.green,
-              size: 35,
+              size: 30,
             ),
             onPressed: () {
               setState(() {

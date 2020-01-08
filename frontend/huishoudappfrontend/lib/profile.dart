@@ -244,9 +244,10 @@ class _Profilepage extends State<Profilepage> {
       Navigator.pop(context);
     }
     else{
+
       Navigator.pop(context);
       Fluttertoast.showToast(
-        msg: json.decode(res.body)["result"],
+        msg:"Er moet minstens 1 beheerder in een huis zitten",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIos: 1,

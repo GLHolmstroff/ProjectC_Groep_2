@@ -103,14 +103,17 @@ class _GroupWidget extends State<GroupWidget> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Title_Widget(text: "Setup"),
+        Title_Widget(text: "Aan de slag..."),
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Center(child: explanationText1),
-              Center(child: explanationText2),
+              Center(child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: explanationText2,
+              )),
               Column(
                 children: <Widget>[
                   Center(child: makeGroupButton),
