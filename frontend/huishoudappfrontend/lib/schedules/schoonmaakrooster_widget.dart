@@ -24,10 +24,12 @@ class SchoonmaakPage extends StatefulWidget {
 class _SchoonmaakPageState extends State<SchoonmaakPage> {
   static CurrentUser user = CurrentUser();
 
+  // getting basic info of logged in user to work with
   String uid = user.userId.toString();
   int gid = user.groupId.toInt();
   String userPermissions = user.group_permission.toString();
 
+  // function to make an http request to the backend that returns tasks of given user
   Future<void> getUserTasks() async {
     final Response res = await get("http://10.0.2.2:8080/getUserTasks?uid=$uid",
         headers: {'Content-Type': 'application/json'});
@@ -39,6 +41,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
     }
   }
 
+  // function to make an http request to the backend that returns completed tasks of housemates
   Future<void> getHousematesChecks() async {
     final Response res = await get(
         "http://10.0.2.2:8080/getHousematesChecks?gid=$gid&uid=$uid",
@@ -58,6 +61,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
     return "http://10.0.2.2:8080/files/users?uid=$uid&t=$timeStamp";
   }
 
+  // function that returns the icon that is related to the status of a task
   Widget getIcon(int done, int approvals) {
     if (done == 0) {
       return Icon(Icons.hourglass_empty, color: Colors.orange[800]);
@@ -91,6 +95,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
     ));
   }
 
+  // widget that is used for making cards of user tasks
   Widget checkHousemateCard(BuildContext context, int index, var data) {
     return new Container(
       child: Card(
@@ -115,14 +120,16 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
     );
   }
 
+  // widget that determine if the button appears or not
   Widget adminButton() {
     if (userPermissions == "groupAdmin") {
       return Expanded(
         child: Center(
           child: RaisedButton(
+            color: Design.orange2,
             child: Text(
               "Taken toewijzen",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
             ),
             onPressed: () {
               Navigator.pushNamed(context, AdminTaskAdder.tag);
@@ -141,11 +148,13 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
 
   @override
   Widget build(BuildContext context) {
-    final taskCardsListHeader = Text(
+    final taskCardsListHeader = Padding(
+      padding: EdgeInsets.only(left: 8),
+      child:Text(
       "Jouw taken",
       style: TextStyle(
-          fontWeight: FontWeight.bold, fontSize: 30, color: Colors.orange[800]),
-    );
+          fontWeight: FontWeight.bold, fontSize: 18, color: Colors.orange[800]),
+    ));
 
     final taskCardsList = Container(
       height: 210,
@@ -176,12 +185,15 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
       ),
     );
 
-    final checkHousematesListHeader = Text(
-      "goedkeuren huisgenoten",
+    final checkHousematesListHeader = Padding(
+    padding: EdgeInsets.only(left: 8),
+    child:Text(
+      "Goedkeuren huisgenoten",
       style: TextStyle(
-          fontWeight: FontWeight.bold, fontSize: 30, color: Colors.orange[800]),
-    );
+          fontWeight: FontWeight.bold, fontSize: 18, color: Colors.orange[800]),
+    ));
 
+    // in this variable we load all info of tasks to check into the cards previously defined
     final checkHousematesCardsList = Container(
       height: 210,
       width: MediaQuery.of(context).size.width * 0.85,
@@ -211,8 +223,10 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
       ),
     );
 
-    return Center(
-      child: Column(
+    return Scaffold(
+      appBar: AppBar(title: Text('Rooster'),),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           SizedBox(height: 15),
           taskCardsListHeader,

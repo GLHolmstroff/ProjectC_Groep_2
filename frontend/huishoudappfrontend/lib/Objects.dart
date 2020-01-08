@@ -48,13 +48,13 @@ class CurrentUser extends BaseUser {
   }
 
   CurrentUser._internal() {
-    // if (this.userId == null) {
-    //   updateCurrentUser();
-    // }
     userId = null;
     groupId = null;
     globalPermissions = null;
     displayName = null;
+    if (this.userId == null) {
+      updateCurrentUser();
+    }
   }
 
   static Future<CurrentUser> updateCurrentUser() async {

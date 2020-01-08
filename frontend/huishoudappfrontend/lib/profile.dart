@@ -1,13 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:huishoudappfrontend/login_widget.dart';
 import 'package:huishoudappfrontend/profileconstants.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/page_container.dart';
 import 'package:huishoudappfrontend/setup/validators.dart';
+import 'package:path_provider/path_provider.dart';
 import 'Objects.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
@@ -16,9 +18,8 @@ import 'services/permission_serivce.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:path_provider/path_provider.dart';
 import 'design.dart';
+import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
 
 class Profilepage extends StatefulWidget {
   static String tag = 'profile_page';
@@ -103,7 +104,7 @@ class _Profilepage extends State<Profilepage> {
     }
 
     MultipartFile mf = MultipartFile.fromBytes(
-        'file', await compressed.readAsBytes(),
+        'file', await image.readAsBytes(),
         filename: timeStamp + 'testfile.png');
 
     var uri = Uri.parse("http://10.0.2.2:8080/files/upload");
@@ -238,8 +239,20 @@ class _Profilepage extends State<Profilepage> {
       //setState(() {
       //  visible = false;
       //});
+      Navigator.popAndPushNamed(context, LoginPage.tag);
+    }
+    else{
       Navigator.pop(context);
-      Navigator.pop(context);
+      Fluttertoast.showToast(
+        msg: json.decode(res.body)["result"],
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+
     }
   }
 
@@ -248,7 +261,7 @@ class _Profilepage extends State<Profilepage> {
         context: (context),
         builder: (BuildContext context) {
           return (AlertDialog(
-            title: Text("Huisgenoot verwijderen"),
+            title: Text("Jezelf uit jouw huis verwijderen"),
             content: Container(
               height: 100,
               child: Column(
@@ -257,7 +270,7 @@ class _Profilepage extends State<Profilepage> {
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Text("Weet u zeker dat u uw huis wilt verlaten?"),
                   ),
-                  Text("al je data zal hierdoor verloren gaan.")
+                  Text("Al uw data zal hierdoor verloren gaan.")
                 ],
               ),
             ),
@@ -397,7 +410,7 @@ class _Profilepage extends State<Profilepage> {
 
     final upperpart = new Container(
       color: Design.rood,
-      height: (MediaQuery.of(context).size.height - Design.navBarHeight) * 0.33,
+      height: (MediaQuery.of(context).size.height - 50) * 0.30,
       width: MediaQuery.of(context).size.width,
       child: Stack(
         children: <Widget>[
@@ -427,9 +440,9 @@ class _Profilepage extends State<Profilepage> {
     );
 
     final middelpart = new Material(
-        elevation: 15,
+        
         child: Container(
-          color: Design.orange1,
+          color: Design.rood,
           height: (MediaQuery.of(context).size.height - 50) * 0.08,
           width: MediaQuery.of(context).size.width,
           child: Row(
@@ -437,34 +450,44 @@ class _Profilepage extends State<Profilepage> {
             children: <Widget>[
               //userDisplayname,
               Text(
+
                 currentUser.displayName != null
                     ? currentUser.displayName
                     : "Laden...",
+
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
-                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.w300
+                  // fontStyle: FontStyle.italic,
                 ),
               ),
               // VerticalDivider(
               //   color: Design.geel,
               //   thickness: 2,
               // ),
+
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Text(userhouseName != null ? userhouseName : "Laden..."),
+                  Text(userhouseName != null ? userhouseName : "Laden...", style: TextStyle( color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w300)),
                 ],
               ),
+
               // VerticalDivider(
               //   color: Design.geel,
               //   thickness: 2,
               // ),
+
               FutureBuilder<String>(
                 future: User.getSaldo(currentUser.userId),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return Text("Saldo: "+ snapshot.data);
+                    return Text("Saldo: "+ snapshot.data,style: TextStyle( color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w300));
                   } else if (snapshot.hasError) {
                     print(snapshot.error);
                     return Text("${snapshot.error}");
@@ -473,6 +496,7 @@ class _Profilepage extends State<Profilepage> {
                   }
                 },
               ),
+
             ],
           ),
         ));
@@ -496,10 +520,12 @@ class _Profilepage extends State<Profilepage> {
                         child: SfCartesianChart(
                             title: ChartTitle(
                               text: "Jouw bier data",
-                              alignment: ChartAlignment.center,
+                              borderWidth: 8,
+                              
+                              alignment: ChartAlignment.near,
                               textStyle: ChartTextStyle(
                                 color: Design.orange2,
-                                fontSize: 20,
+                                fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

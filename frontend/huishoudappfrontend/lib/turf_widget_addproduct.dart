@@ -11,7 +11,7 @@ import 'package:huishoudappfrontend/turf_widget_edit.dart';
 import 'design.dart';
 
 class TurfWidgetAddProduct extends StatefulWidget {
-  static get tag => 'turfwidgetaddproduct';
+  static get tag => "turfwidgetaddproduct";
 
   @override
   State<StatefulWidget> createState() => TurfWidgetAddProductState();
