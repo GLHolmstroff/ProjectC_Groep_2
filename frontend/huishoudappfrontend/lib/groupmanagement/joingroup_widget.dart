@@ -11,23 +11,30 @@ class Joingroup_Widget extends StatefulWidget {
   Joingroup_WidgetState createState() => Joingroup_WidgetState();
 }
 
-class Joingroup_WidgetState extends State {
-  final _inviteCodeController = TextEditingController();
-
-  Future<void> _joinGroup() async {
-    var currentUser = CurrentUser();
-    var code = int.tryParse(_inviteCodeController.text);
-    if(code < 999999 || code == null){
-       Fluttertoast.showToast(
+void showToast(text){
+  Fluttertoast.showToast(
         msg: "Code moet uit zes cijfers bestaan",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIos: 1,
         backgroundColor: Colors.red,
         textColor: Colors.white,
-        fontSize: 16.0
-    );
+        fontSize: 16.0);
+}
+
+class Joingroup_WidgetState extends State {
+  final _inviteCodeController = TextEditingController();
+
+  Future<void> _joinGroup() async {
+    var currentUser = CurrentUser();
+    var code = int.tryParse(_inviteCodeController.text);
+    if(code == null){
+       showToast("Code mag alleen cijfers bevatten");
     }
+    else if(code < 99999){
+      showToast("Code moet uit 6 cijfers bestaan");
+    }
+    else{
     var uid = currentUser.userId;
     final response = await get(
         "http://seprojects.nl:8080/joinGroupByCode?uid=$uid&ic=$code");
@@ -38,7 +45,17 @@ class Joingroup_WidgetState extends State {
       Navigator.pop(context);
     } else {
       print("Connection Failed");
+      Fluttertoast.showToast(
+        msg: "Ongeldige code",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
       print(response.body);
+    }
     }
   }
 
