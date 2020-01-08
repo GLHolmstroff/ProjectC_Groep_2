@@ -36,7 +36,7 @@ class Home_widget_state extends State<Home_widget> {
 
   Future<void> initActual() async {
     CurrentUser tempCurrentUser = await CurrentUser.updateCurrentUser();
-    String temphouse = tempCurrentUser.house.houseName;
+    String temphouse = (await House.getCurrentHouse()).houseName;
     appBarActions.add(
       Visibility(
         visible: tempCurrentUser.group_permission == "groupAdmin",
