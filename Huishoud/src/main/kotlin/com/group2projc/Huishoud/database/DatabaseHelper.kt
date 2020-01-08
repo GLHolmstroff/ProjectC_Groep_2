@@ -845,7 +845,7 @@ fun DatabaseHelper.createGroup(n: String, uid: String): DatabaseHelper {
             it[created_at] = LocalDate.now().toString()
             it[name] = n
         }
-        addProduct(group[DatabaseHelper.Groups.id], "bier", 1.0)
+        addProduct(group[DatabaseHelper.Groups.id], "Bier", 1.0)
         addUserToGroup(uid, group[DatabaseHelper.Groups.id], makeUserAdmin = true)
 
     }
