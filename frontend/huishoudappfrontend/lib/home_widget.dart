@@ -124,7 +124,7 @@ class Home_widget_state extends State<Home_widget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('welkom ' + currentUser.displayName),
+            Text('Welkom ' + currentUser.displayName, style: TextStyle(color: Design.rood, fontSize: 30, fontWeight: FontWeight.bold ),),
             Container(
               decoration: new BoxDecoration(
                 borderRadius: BorderRadius.circular(100.0),
