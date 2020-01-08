@@ -251,13 +251,13 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
           padding: EdgeInsets.all(5),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(180),
-              color: Design.rood,
+              
               border: Border.all(width: 1)),
           child: Text(
             sentData[index].numberofbeers.toString(),
             textAlign: TextAlign.center,
             style: TextStyle(
-                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                fontSize: 20, fontWeight: FontWeight.bold, color: Design.rood),
           )),
       SizedBox(width: 25),
       Container(
