@@ -31,7 +31,7 @@ class TurfWidgetAddProductState extends State<TurfWidgetAddProduct> {
     print(name);
     print(price);
     final Response res = await get(
-        "http://seprojects.nl:8080/addProduct?gid=$gid&name=$name&price=$price");
+        "http://10.0.2.2:8080/addProduct?gid=$gid&name=$name&price=$price");
 
     if (res.statusCode == 200) {
       // If server returns an OK response, parse the JSON.

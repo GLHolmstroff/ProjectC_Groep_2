@@ -338,7 +338,8 @@ class DatabaseHelper(url: String) {
         var users = getAllInGroup(gid).values
         users.forEach {
             var user = getUser(it)
-            if(user["group_permission"] == "groupAdmin"){
+            println("user = " + user["uid"])
+            if(user["group_permissions"] == "groupAdmin"){
                 out++
             }
         }
@@ -813,9 +814,12 @@ class DatabaseHelper(url: String) {
         var out = HashMap<String, String>()
         var user = getUser(uid)
         var groupid = user["groupid"]
+        var groupCount = getAllInGroup(groupid as Int).values.size
+        println("displayname = " + user["displayname"])
+        println(user["groupid"])
         var adminCount = getAdminCount(groupid as Int)
-
-        if(user["group_permission"] == "groupAdmin" && adminCount == 1 ) {
+        println("adminCount = " + adminCount)
+        if(user["group_permissions"] == "groupAdmin" && adminCount == 1 && groupCount > 1) {
            out["result"] = "Group needs at least one admin"
         }
         else{
