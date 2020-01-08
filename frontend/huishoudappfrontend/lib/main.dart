@@ -90,18 +90,13 @@ class MyHomePage extends StatelessWidget {
                   future: CurrentUser.updateCurrentUser(),
                   builder: (context, innersnapshot) {
                     if (innersnapshot.hasData) {
-                      return StreamBuilder<int>(
-                        stream: CurrentUser().hasHouse(),
-                        builder: (context, AsyncSnapshot<int> snapshot2) {
                           if (CurrentUser().displayName == "EmptyName") {
                             return (NameSetup());
-                          } else if (snapshot2.data == null) {
+                          } else if (CurrentUser().groupId == null) {
                             return (GroupWidget());
                           } else {
                             return (HomePage());
                           }
-                        }
-                      );
                     } else if (innersnapshot.hasError) {
                       return Text("${innersnapshot.error}");
                     }

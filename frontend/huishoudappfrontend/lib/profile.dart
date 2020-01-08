@@ -46,7 +46,7 @@ class _Profilepage extends State<Profilepage> {
   Future<void> initActual() async {
     
     CurrentUser tempCurrentUser = await CurrentUser.updateCurrentUser();
-    String temphouse = tempCurrentUser.house.houseName;
+    String temphouse = (await House.getCurrentHouse()).houseName;
     setState(() {
       userhouseName = temphouse;
       currentUser = tempCurrentUser;

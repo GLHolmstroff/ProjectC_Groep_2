@@ -46,7 +46,7 @@ class CurrentUser extends BaseUser {
     _instance.displayName = json['display_name'];
     _instance.picture_link = json['picture_link'];
     _instance.group_permission = json['group_permissions'];
-    House.getCurrentHouse().then((onValue) => _instance.house = onValue);
+    //House.getCurrentHouse().then((onValue) => _instance.house = onValue);
     return _instance;
   }
 
@@ -84,7 +84,7 @@ class CurrentUser extends BaseUser {
     int groupid = 1000000000000000000;
     while (true) {
       final Response res = await get(
-          "http://10.0.2.2:8080/authCurrent?uid=$uid",
+          "http://seprojects.nl:8080/authCurrent?uid=$uid",
           headers: {'Content-Type': 'application/json'});
       if (res.statusCode == 200) {
         placehoderCurrentUser = CurrentUser.fromJson(json.decode(res.body));
