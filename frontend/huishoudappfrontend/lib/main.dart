@@ -2,6 +2,7 @@ import 'dart:convert';
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/Objects.dart';
 import 'package:huishoudappfrontend/createaccount_widget.dart';
@@ -78,6 +79,11 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context){
+
+    SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+      ]);
+ 
     final Auth auth = Provider.of(context).auth;
     return StreamBuilder<String>(
         stream: auth.onAuthStateChanged,
