@@ -31,7 +31,8 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
 
   // function to make an http request to the backend that returns tasks of given user
   Future<void> getUserTasks() async {
-    final Response res = await get("http://seprojects.nl:8080/getUserTasks?uid=$uid",
+    final Response res = await get(
+        "http://seprojects.nl:8080/getUserTasks?uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       return json.decode(res.body);
@@ -129,7 +130,8 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
             color: Design.orange2,
             child: Text(
               "Taken toewijzen",
-              style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
             onPressed: () {
               Navigator.pushNamed(context, AdminTaskAdder.tag);
@@ -149,12 +151,14 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
   @override
   Widget build(BuildContext context) {
     final taskCardsListHeader = Padding(
-      padding: EdgeInsets.only(left: 8),
-      child:Text(
-      "Jouw taken",
-      style: TextStyle(
-          fontWeight: FontWeight.bold, fontSize: 18, color: Colors.orange[800]),
-    ));
+        padding: EdgeInsets.only(left: 8),
+        child: Text(
+          "Jouw taken",
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Colors.orange[800]),
+        ));
 
     final taskCardsList = Container(
       height: 210,
@@ -186,12 +190,14 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
     );
 
     final checkHousematesListHeader = Padding(
-    padding: EdgeInsets.only(left: 8),
-    child:Text(
-      "Goedkeuren huisgenoten",
-      style: TextStyle(
-          fontWeight: FontWeight.bold, fontSize: 18, color: Colors.orange[800]),
-    ));
+        padding: EdgeInsets.only(left: 8),
+        child: Text(
+          "Goedkeuren huisgenoten",
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Colors.orange[800]),
+        ));
 
     // in this variable we load all info of tasks to check into the cards previously defined
     final checkHousematesCardsList = Container(
@@ -224,14 +230,16 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text('Rooster'),),
+      appBar: AppBar(
+        title: Text('Rooster'),
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          SizedBox(height: 15),
+          SizedBox(height: 10),
           taskCardsListHeader,
           taskCardsList,
-          SizedBox(height: 30),
+          SizedBox(height: 20),
           checkHousematesListHeader,
           checkHousematesCardsList,
           adminButton()

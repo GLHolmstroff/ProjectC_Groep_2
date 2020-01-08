@@ -65,7 +65,7 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
 
   Widget titleWidget() {
     return Container(
-      height: 125,
+      height: 100,
       child: Text(
         widget.clickedTask["taskname"],
         style: TextStyle(
@@ -73,8 +73,8 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
       ),
       alignment: Alignment(-0.8, 0.8),
       decoration: BoxDecoration(
-          color: Design.orange2,
-          boxShadow: [BoxShadow(color: Design.orange2, blurRadius: 15.0)]),
+          color: Design.materialRood,
+          boxShadow: [BoxShadow(color: Design.materialRood, blurRadius: 15.0)]),
     );
   }
 
@@ -84,12 +84,12 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
       children: <Widget>[
         Text(
           "Taak gedaan door:",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: TextStyle(fontSize: 16),
         ),
         Spacer(),
         Text(
           widget.clickedTask["displayname"],
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: TextStyle(fontSize: 18),
         ),
       ],
     ));
@@ -100,7 +100,7 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
       children: <Widget>[
         Text(
           "Bijgevoegde foto:",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: TextStyle(fontSize: 16),
         ),
 
         Container(
@@ -134,8 +134,7 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
     return Container(
       child: Row(
         children: <Widget>[
-          Text("Taak voldoende?",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          Text("Taak goedkeuren", style: TextStyle(fontSize: 16)),
           Spacer(),
           Checkbox(
             value: goedgekeurd,
@@ -176,16 +175,19 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
   Widget button() {
     return Center(
       child: RaisedButton(
+        color: Design.orange2,
         child: Text(
           "Bevestigen",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         onPressed: () {
           buttonPressAction();
         },
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(36.0),
+            
             side: BorderSide(color: Design.orange2)),
+
       ),
     );
   }
@@ -206,6 +208,7 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
                 SizedBox(height: 50),
                 showTaskPic(),
                 goedkeuren(),
+                SizedBox(height: 20),
                 button()
               ],
             ),

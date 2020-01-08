@@ -79,7 +79,7 @@ class _SelectUsersForTasksState extends State<SelectUsersForTasks> {
       ),
       alignment: Alignment(-0.8, 0.8),
       decoration: BoxDecoration(
-          color: Design.orange2,
+          color: Design.materialRood,
           boxShadow: [BoxShadow(color: Design.orange2, blurRadius: 15.0)]),
     );
 
