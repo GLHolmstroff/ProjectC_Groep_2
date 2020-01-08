@@ -8,8 +8,6 @@ class Design {
     static Color rood = const Color.fromRGBO(191, 15, 15, 1);
     static Color zwart = const Color.fromRGBO(13, 13, 13, 1);
 
-    static int navBarHeight = 50;
-
     static Map<int, Color> roodMap = {
       50:Color.fromRGBO(191,15,15, .1),
       100:Color.fromRGBO(191,15,15, .2),

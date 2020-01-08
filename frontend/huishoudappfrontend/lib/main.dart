@@ -7,7 +7,9 @@ import 'package:huishoudappfrontend/createaccount_widget.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/creategroup_widget.dart';
+import 'package:huishoudappfrontend/groupmanagement/namesetup_widget.dart';
 import 'package:huishoudappfrontend/schedules/admintaskadder_widget.dart';
+import 'package:huishoudappfrontend/home_widget.dart';
 import 'package:huishoudappfrontend/schedules/clickedOnCheckHousemate.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:huishoudappfrontend/services/permission_serivce.dart';
@@ -15,6 +17,7 @@ import 'package:huishoudappfrontend/turf_widget.dart';
 import 'package:huishoudappfrontend/turf_widget_addproduct.dart';
 import 'package:huishoudappfrontend/turf_widget_admin.dart';
 import 'package:huishoudappfrontend/turf_widget_edit.dart';
+import 'package:huishoudappfrontend/turf_widget_gridview.dart';
 import 'login_widget.dart';
 import 'page_container.dart';
 import 'createaccount_widget.dart';
@@ -30,15 +33,19 @@ class MyApp extends StatelessWidget {
   final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(),
     HomePage.tag: (context) => HomePage(),
+    Home_widget.tag: (context) => Home_widget(),
     CreateAccount.tag: (context) => CreateAccount(),
     Profilepage.tag: (context) => Profilepage(),
     GroupWidget.tag: (context) => GroupWidget(),
-    Turfwidget.tag: (context) => Turfwidget(),
+    // Turfwidget.tag: (context) => Turfwidget(),
     TurfWidgetAdmin.tag: (context) => TurfWidgetAdmin(),
     TurfWidgetAddProduct.tag: (context) => TurfWidgetAddProduct(),
     TurfWidgetEdit.tag: (context) => TurfWidgetEdit(),
+    TurfWidgetAddProduct.tag: (context) => TurfWidgetAddProduct(),
+    TurfwidgetGrid.tag: (context) => TurfwidgetGrid(),
     SchoonmaakPage.tag: (context) => SchoonmaakPage(),
     AdminTaskAdder.tag: (context) => AdminTaskAdder(),
+    NameSetup.tag: (context) => NameSetup(),
   };
 
   @override
@@ -82,6 +89,9 @@ class MyHomePage extends StatelessWidget {
                   future: CurrentUser.updateCurrentUser(),
                   builder: (context, innersnapshot) {
                     if (innersnapshot.hasData) {
+                      if (CurrentUser().displayName == "EmptyName") {
+                        return (NameSetup());
+                      }
                       print(CurrentUser().userId);
                       if (CurrentUser().groupId != null) {
                         return (HomePage());

@@ -184,6 +184,13 @@ class HttpResponseController {
 
     }
 
+    @RequestMapping("/getSaldoPerUser")
+    fun getSaldoPerUser(@RequestParam(value = "uid", defaultValue = "") uid: String) : Double {
+        val saldo = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres")
+                .getSaldoPerUser(uid)
+        return saldo
+    }
+
     @RequestMapping("/updateTallyEntry")
     fun updateTallyEntry(   @RequestParam(value = "gid", defaultValue = "") gid: Int,
                             @RequestParam(value= "authorid", defaultValue = "")authorid: String,

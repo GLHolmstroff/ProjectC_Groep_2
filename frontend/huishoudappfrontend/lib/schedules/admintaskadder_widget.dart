@@ -35,6 +35,7 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
   DateTime dateSelected = DateTime.now();
   String savedDate = "";
 
+  // function to show a datepicker in flutter
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
@@ -56,10 +57,12 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
     return false;
   }
 
+  // function to create a schedule with http request
   Future<void> createSchedule() async {
     if (!(widget.schedule == null)) {
       if (widget.schedule.length > 0) {
         if (saveStates()) {
+          // checkers if all input is correct
           if (_taskName.length > 0 && savedDate.toString().length > 0) {
             widget.schedule.forEach((user) async {
               String uid = user["uid"];
