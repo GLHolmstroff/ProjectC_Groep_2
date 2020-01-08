@@ -36,7 +36,7 @@ class Home_widget_state extends State<Home_widget> {
 
   Future<void> initActual() async {
     CurrentUser tempCurrentUser = await CurrentUser.updateCurrentUser();
-    String temphouse = (await House.getCurrentHouse()).houseName;
+    String temphouse = tempCurrentUser.house.houseName;
     appBarActions.add(
       Visibility(
         visible: tempCurrentUser.group_permission == "groupAdmin",
@@ -116,8 +116,7 @@ class Home_widget_state extends State<Home_widget> {
 
     return Scaffold(
       appBar: AppBar(
-        //title: Text(userhouseName != null ? userhouseName : "Laden..."),
-        title:  Text(currentUser.house.houseName),
+        title: Text(userhouseName != null ? userhouseName : "Laden..."),
         actions: appBarActions,
         backgroundColor: Design.rood,
       ),

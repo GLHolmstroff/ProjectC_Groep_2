@@ -250,7 +250,7 @@ class House {
         houseName: json['name']);
   }
   static Future<House> getCurrentHouse() async {
-    CurrentUser currentUser = await CurrentUser.updateCurrentUser();
+    CurrentUser currentUser = CurrentUser();
     String groupID = currentUser.groupId.toString();
     House currentGroup;
     final Response res = await get(
