@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/design.dart';
+import 'package:huishoudappfrontend/groupmanagement/title_widget.dart';
 import 'package:huishoudappfrontend/schedules/clickedOnTask_widget.dart';
 import '../profile.dart';
 import '../Objects.dart';
@@ -29,10 +31,12 @@ class ClickedOnCheckHousemate extends StatefulWidget {
 class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
   bool goedgekeurd = false;
   Map task;
+  
   String imgUrl;
 
   void initState() {
     super.initState();
+    imgUrl = "http://seprojects.nl:8080/files/tasks?tid=${widget.clickedTask["taskid"]}";
     initActual();
   }
 
@@ -44,33 +48,31 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
       setState(() {
         task = jsonTask;
       });
-      getImgUrl();
+      String img = await getImgUrl();
+      setState(() {
+        imgUrl = img;
+      });
     } else {
       print(res.statusCode);
     }
   }
 
-  Future<void> getImgUrl() async {
+  Future<String> getImgUrl() async {
     int tid = task["taskid"];
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
-    setState(() {
-      imgUrl = "http://seprojects.nl:8080/files/tasks?tid=$tid&t=$timeStamp";
-    });
+    return "http://seprojects.nl:8080/files/tasks?tid=$tid&t=$timeStamp";
   }
 
   Widget titleWidget() {
-    return Container(
-      height: 100,
-      child: Text(
+    return AppBar(
+     
+      title: Text(
         widget.clickedTask["taskname"],
         style: TextStyle(
-            fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white),
+           color: Colors.white),
       ),
-      alignment: Alignment(-0.8, 0.8),
-      decoration: BoxDecoration(
-          color: Design.materialRood,
-          boxShadow: [BoxShadow(color: Design.materialRood, blurRadius: 15.0)]),
+     
     );
   }
 
@@ -92,17 +94,26 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
   }
 
   Widget showTaskPic() {
-    Widget img = Icon(Icons.event);
-    if (imgUrl != null) {
-      img = Container(height: 100, child: Image.network(imgUrl));
-    }
     return Column(
       children: <Widget>[
         Text(
           "Bijgevoegde foto:",
           style: TextStyle(fontSize: 16),
         ),
-        img
+
+        Container(
+          height: 200,
+          child: Card(
+            elevation: 3,
+            child: InkWell(
+              child: CachedNetworkImage(
+                imageUrl: imgUrl,
+                placeholder: (context, url) => Icon(Icons.camera),
+                errorWidget: (context, url, error) => Icon(Icons.camera),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -182,10 +193,11 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: titleWidget(),
       body: Center(
           child: Column(
         children: <Widget>[
-          titleWidget(),
+          
           Container(
             width: MediaQuery.of(context).size.width * 0.85,
             child: Column(

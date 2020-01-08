@@ -109,18 +109,18 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
 
   @override
   Widget build(BuildContext context) {
-    final titleWidget = Container(
-      height: 100,
-      child: Text(
-        "Taken toewijzen",
-        style: TextStyle(
-            fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white),
-      ),
-      alignment: Alignment(-0.8, 0.8),
-      decoration: BoxDecoration(
-          color: Design.materialRood,
-          boxShadow: [BoxShadow(color: Design.orange2, blurRadius: 15.0)]),
-    );
+    // final titleWidget = Container(
+    //   height: 100,
+    //   child: Text(
+    //     "Taken toewijzen",
+    //     style: TextStyle(
+    //         fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white),
+    //   ),
+    //   alignment: Alignment(-0.8, 0.8),
+    //   decoration: BoxDecoration(
+    //       color: Design.materialRood,
+    //       boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 15.0)]),
+    // );
 
     final taskNameWidget = TextFormField(
         textAlign: TextAlign.center,
@@ -162,16 +162,17 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
                 style: TextStyle(fontWeight: FontWeight.bold)),
             Spacer(),
             RaisedButton(
+              color: Design.orange2,
               onPressed: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => new SelectUsersForTasks()));
               },
-              child: Icon(Icons.add),
+              child: Icon(Icons.add, color: Colors.white,),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(36.0),
-                  side: BorderSide(color: Design.materialRood)),
+                  side: BorderSide(color: Design.orange2)),
             )
           ],
         ),
@@ -195,11 +196,12 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
         ),
         Spacer(),
         RaisedButton(
+          color: Design.orange2,
           onPressed: () => _selectDate(context),
-          child: Icon(Icons.date_range),
+          child: Icon(Icons.date_range, color: Colors.white,),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(36.0),
-              side: BorderSide(color: Design.materialRood)),
+              side: BorderSide(color: Design.orange2)),
         )
       ],
     );
@@ -224,25 +226,27 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
     );
 
     final addTaskButtonWidget = RaisedButton(
+      color: Design.orange2,
       child: Text(
-        "Opslaan",
+        "Opslaan",style: TextStyle(color: Colors.white),
       ),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(36.0),
-          side: BorderSide(color: Design.materialRood)),
+          side: BorderSide(color: Design.orange2)),
       onPressed: () {
         createSchedule();
       },
     );
 
     return Scaffold(
+        appBar: AppBar(title: Text("Taken toewijzen", style: TextStyle(color: Colors.white)),),
         body: Center(
       child: Form(
         key: formKey,
         child: Container(
           child: ListView(
             children: <Widget>[
-              titleWidget,
+              // titleWidget,
               Container(
                 child: Column(
                   children: <Widget>[
