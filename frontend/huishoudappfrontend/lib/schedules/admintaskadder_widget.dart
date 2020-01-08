@@ -67,7 +67,7 @@ class AdminTaskAdderState extends State<AdminTaskAdder> {
             widget.schedule.forEach((user) async {
               String uid = user["uid"];
               final response = await get(
-                  "http://10.0.2.2:8080/insertSchedule?gid=$currentGroup&userid=$uid&taskname=$_taskName&description=$_taskDescription&datedue=$savedDate",
+                  "http://seprojects.nl:8080/insertSchedule?gid=$currentGroup&userid=$uid&taskname=$_taskName&description=$_taskDescription&datedue=$savedDate",
                   headers: {'Content-Type': 'application/json'});
               if (response.statusCode == 200) {
                 Fluttertoast.showToast(msg: "Taak is toegevoegd!");

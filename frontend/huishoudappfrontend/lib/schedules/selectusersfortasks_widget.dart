@@ -23,7 +23,7 @@ class _SelectUsersForTasksState extends State<SelectUsersForTasks> {
 
   Future<void> getPicUsernameUsers() async {
     final Response res = await get(
-        "http://10.0.2.2:8080/getUserInfoInGroup?gid=$groupId",
+        "http://seprojects.nl:8080/getUserInfoInGroup?gid=$groupId",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       return json.decode(res.body);
