@@ -54,6 +54,13 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "images/appicon.png"
+
+
+
 flutter:
 
   # The following line ensures that the Material Icons font is
@@ -73,9 +80,8 @@ flutter:
     - images/appicon.png
     - assets/brc.gif
   
-flutter_icons:
-  android: "launcher_icon"
-  
+
+
 
 
 
