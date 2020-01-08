@@ -28,6 +28,36 @@ class ClickedOnCheckHousemate extends StatefulWidget {
 
 class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
   bool goedgekeurd = false;
+  Map task;
+  String imgUrl;
+
+  void initState() {
+    super.initState();
+    initActual();
+  }
+
+  initActual() async {
+    var res = await get(
+        "http://seprojects.nl:8080/getTask?tid=${widget.clickedTask["taskid"]}");
+    if (res.statusCode == 200) {
+      var jsonTask = json.decode(res.body);
+      setState(() {
+        task = jsonTask;
+      });
+      getImgUrl();
+    } else {
+      print(res.statusCode);
+    }
+  }
+
+  Future<void> getImgUrl() async {
+    int tid = task["taskid"];
+    String timeStamp =
+        DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
+    setState(() {
+      imgUrl = "http://seprojects.nl:8080/files/tasks?tid=$tid&t=$timeStamp";
+    });
+  }
 
   Widget titleWidget() {
     return Container(
@@ -62,13 +92,19 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
   }
 
   Widget showTaskPic() {
+    Widget img = Icon(Icons.event);
+    if (imgUrl != null){
+    img = Container(
+      height: 100,
+      child: Image.network(imgUrl));
+    }
     return Column(
       children: <Widget>[
         Text(
           "Bijgevoegde foto:",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-        )
-        // Laat foto zien die is gijgevoegd
+        ),
+        img
       ],
     );
   }
