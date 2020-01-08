@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/Objects.dart';
 import 'package:huishoudappfrontend/groupmanagement/title_widget.dart';
@@ -15,7 +16,18 @@ class Joingroup_WidgetState extends State {
 
   Future<void> _joinGroup() async {
     var currentUser = CurrentUser();
-    var code = int.parse(_inviteCodeController.text);
+    var code = int.tryParse(_inviteCodeController.text);
+    if(code < 999999 || code == null){
+       Fluttertoast.showToast(
+        msg: "Code moet uit zes cijfers bestaan",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+    }
     var uid = currentUser.userId;
     final response = await get(
         "http://seprojects.nl:8080/joinGroupByCode?uid=$uid&ic=$code");
