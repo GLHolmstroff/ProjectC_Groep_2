@@ -5,7 +5,6 @@ import 'package:huishoudappfrontend/groupmanagement/title_widget.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 
-
 import 'joingroup_widget.dart';
 
 class GroupWidget extends StatefulWidget {
@@ -14,7 +13,6 @@ class GroupWidget extends StatefulWidget {
 }
 
 class _GroupWidget extends State<GroupWidget> {
-
   void _makeGroup() {
     Navigator.push(
         context,
@@ -50,23 +48,53 @@ class _GroupWidget extends State<GroupWidget> {
       ),
     );
 
-
-
-    final makeGroupButton = RaisedButton(
-      onPressed: _makeGroup,
-      child: Text('Maak een nieuw huis aan', style: TextStyle(fontSize: 20)),
+    final makeGroupButton = Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        padding: EdgeInsets.all(12),
+        color: Colors.orange[700],
+        onPressed: _makeGroup,
+        child: Text('Maak een nieuw huis aan',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            )),
+      ),
     );
 
-    final joinGroupButton = RaisedButton(
-      onPressed: _joinGroup,
-      child: Text('Neem deel aan een huis', style: TextStyle(fontSize: 20)),
+    final joinGroupButton = Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        padding: EdgeInsets.all(12),
+        color: Colors.orange[700],
+        onPressed: _joinGroup,
+        child: Text(
+          'Neem deel aan een huis',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
 
-    final logout = RaisedButton(
-      onPressed: () => {
-        Provider.of(context).auth.signOut()
-      },
-      child: Text("Log uit"),
+    final logout = Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        padding: EdgeInsets.all(12),
+        color: Colors.orange[700],
+        onPressed: () => {Provider.of(context).auth.signOut()},
+        child: Text(
+          "Log uit",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
 
     // TODO: implement build

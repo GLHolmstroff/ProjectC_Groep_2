@@ -17,8 +17,8 @@ class Joingroup_WidgetState extends State {
     var currentUser = CurrentUser();
     var code = int.parse(_inviteCodeController.text);
     var uid = currentUser.userId;
-    final response =
-        await get("http://seprojects.nl:8080/joinGroupByCode?uid=$uid&ic=$code");
+    final response = await get(
+        "http://seprojects.nl:8080/joinGroupByCode?uid=$uid&ic=$code");
     if (response.statusCode == 200) {
       print("Succesfully Registered");
       CurrentUser.updateCurrentUser();
@@ -28,14 +28,25 @@ class Joingroup_WidgetState extends State {
       print("Connection Failed");
       print(response.body);
     }
-    
   }
 
   @override
   Widget build(BuildContext context) {
-    final joinGroupButton = RaisedButton(
-      onPressed: _joinGroup,
-      child: Text('Neem deel aan een groep', style: TextStyle(fontSize: 20)),
+    final joinGroupButton = Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        padding: EdgeInsets.all(12),
+        color: Colors.orange[700],
+        onPressed: _joinGroup,
+        child: Text(
+          'Neem deel aan een groep',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
 
     final explanationText1 = Text(
