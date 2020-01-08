@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/schedules/clickedOnTask_widget.dart';
@@ -29,10 +30,12 @@ class ClickedOnCheckHousemate extends StatefulWidget {
 class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
   bool goedgekeurd = false;
   Map task;
+  
   String imgUrl;
 
   void initState() {
     super.initState();
+    imgUrl = "http://seprojects.nl:8080/files/tasks?tid=${widget.clickedTask["taskid"]}";
     initActual();
   }
 
@@ -44,19 +47,20 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
       setState(() {
         task = jsonTask;
       });
-      getImgUrl();
+      String img = await getImgUrl();
+      setState(() {
+        imgUrl = img;
+      });
     } else {
       print(res.statusCode);
     }
   }
 
-  Future<void> getImgUrl() async {
+  Future<String> getImgUrl() async {
     int tid = task["taskid"];
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
-    setState(() {
-      imgUrl = "http://seprojects.nl:8080/files/tasks?tid=$tid&t=$timeStamp";
-    });
+    return "http://seprojects.nl:8080/files/tasks?tid=$tid&t=$timeStamp";
   }
 
   Widget titleWidget() {
@@ -92,19 +96,26 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
   }
 
   Widget showTaskPic() {
-    Widget img = Icon(Icons.event);
-    if (imgUrl != null){
-    img = Container(
-      height: 100,
-      child: Image.network(imgUrl));
-    }
     return Column(
       children: <Widget>[
         Text(
           "Bijgevoegde foto:",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
-        img
+
+        Container(
+          height: 200,
+          child: Card(
+            elevation: 3,
+            child: InkWell(
+              child: CachedNetworkImage(
+                imageUrl: imgUrl,
+                placeholder: (context, url) => Icon(Icons.camera),
+                errorWidget: (context, url, error) => Icon(Icons.camera),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -142,7 +153,8 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
   Future<void> approveTask() async {
     var tid = widget.clickedTask["taskid"];
 
-    final Response res = await get("http://seprojects.nl:8080/approveTask?tid=$tid",
+    final Response res = await get(
+        "http://seprojects.nl:8080/approveTask?tid=$tid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       Fluttertoast.showToast(msg: "Je hebt deze taak goedgekeurd");
