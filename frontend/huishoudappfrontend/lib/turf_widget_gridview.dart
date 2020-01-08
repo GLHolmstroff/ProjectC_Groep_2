@@ -231,18 +231,21 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
               //Profielfoto
               Stack(
                 children: <Widget>[
-                  Container(
-                    width: 120,
-                    height: 120,
-                    // margin: const EdgeInsets.all(25),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      image: DecorationImage(
-                        image: NetworkImage(pics[index].imageUrl),
-                        fit: BoxFit.cover,
+                  Padding(
+                    padding: const EdgeInsets.only(top:8.0),
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      // margin: const EdgeInsets.all(25),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        image: DecorationImage(
+                          image: NetworkImage(pics[index].imageUrl),
+                          fit: BoxFit.cover,
+                        ),
+                        borderRadius: BorderRadius.circular(180),
+                        // border: Border.all(color: Design.rood, width: 3)
                       ),
-                      borderRadius: BorderRadius.circular(180),
-                      // border: Border.all(color: Design.rood, width: 3)
                     ),
                   ),
                   Container(
@@ -255,7 +258,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                             end: Alignment.bottomCenter,
                             stops: [
                               
-                              0.5,
+                              0.3,
                              
                               0.9
                             ],
