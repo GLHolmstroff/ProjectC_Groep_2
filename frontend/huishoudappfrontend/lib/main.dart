@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
@@ -68,7 +67,8 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   Future<bool> _checkGroup() async {
     String uid = await Auth().currentUser();
-    final Response res = await get("http://seprojects.nl:8080/authCurrent?uid=$uid");
+    final Response res =
+        await get("http://seprojects.nl:8080/authCurrent?uid=$uid");
     User user = User.fromJson(json.decode(res.body));
     print("user loaded" + user.toString());
     if (user.groupId == null) {
@@ -78,42 +78,54 @@ class MyHomePage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context){
-
+  Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-      ]);
- 
+      DeviceOrientation.portraitUp,
+    ]);
+
     final Auth auth = Provider.of(context).auth;
     return StreamBuilder<String>(
-        stream: auth.onAuthStateChanged,
-        builder: (context, AsyncSnapshot<String> snapshot) {
-          if (snapshot.connectionState == ConnectionState.active ||
-              snapshot.connectionState == ConnectionState.waiting) {
-            if (snapshot.hasData) {
-              print("Waiting");
-              return FutureBuilder<CurrentUser>(
-                  future: CurrentUser.updateCurrentUser(),
-                  builder: (context, innersnapshot) {
-                    if (innersnapshot.hasData) {
-                          if (CurrentUser().displayName == "EmptyName") {
-                            return (NameSetup());
-                          } else if (CurrentUser().groupId == null) {
-                            return (GroupWidget());
-                          } else {
-                            return (HomePage());
-                          }
-                    } else if (innersnapshot.hasError) {
-                      return Text("${innersnapshot.error}");
-                    }
-                    // By default, show a loading spinner.
-                    return Image(image: AssetImage('assets/brc.gif'),);
-                  });
-            } else {
-              print('to the loginpage');
-              return LoginPage();
-            }
+      stream: auth.onAuthStateChanged,
+      builder: (context, AsyncSnapshot<String> snapshot) {
+        if (snapshot.connectionState == ConnectionState.active ||
+            snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.hasData) {
+            print("Waiting");
+            return FutureBuilder<CurrentUser>(
+              future: CurrentUser.updateCurrentUser(),
+              builder: (context, innersnapshot) {
+                if (innersnapshot.hasData) {
+                  return StreamBuilder<int>(
+                    stream: CurrentUser().hasHouse(),
+                    builder: (context, AsyncSnapshot<int> snapshot2) {
+                      print("main: " + snapshot2.data.toString());
+                      if (snapshot2.hasData) {
+                        
+                        if (CurrentUser().displayName == "EmptyName") {
+                          return (NameSetup());
+                        } else {
+                          return (HomePage());
+                        }
+                      } else {
+                        return (GroupWidget());
+                      }
+                    },
+                  );
+                } else if (innersnapshot.hasError) {
+                  return Text("${innersnapshot.error}");
+                }
+                // By default, show a loading spinner.
+                return Image(
+                  image: AssetImage('assets/brc.gif'),
+                );
+              },
+            );
+          } else {
+            print('to the loginpage');
+            return LoginPage();
           }
-        });
+        }
+      },
+    );
   }
 }

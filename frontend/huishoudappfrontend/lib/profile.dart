@@ -237,6 +237,7 @@ class _Profilepage extends State<Profilepage> {
     final Response res =
         await get("http://seprojects.nl:8080/deleteUserFromGroup?uid=$uid");
     if (json.decode(res.body)["result"] == "success") {
+      await CurrentUser.updateCurrentUser();
       //setState(() {
       //  visible = false;
       //});

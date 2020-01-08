@@ -58,7 +58,7 @@ class CurrentUser extends BaseUser {
     if (this.userId == null) {
       updateCurrentUser();
     }
-    _getHouse();
+    //_getHouse();
   }
 
   void _getHouse() async {
@@ -79,25 +79,16 @@ class CurrentUser extends BaseUser {
   }
 
   Stream<int> hasHouse() async* {
-    String uid = CurrentUser().userId;
-    CurrentUser placehoderCurrentUser;
-    int groupid = 1000000000000000000;
+    int placeholdergroupid = 100000000;
+    //print("hasHouse(): " + (placeholdergroupid != CurrentUser().groupId).toString());
     while (true) {
-      final Response res = await get(
-          "http://seprojects.nl:8080/authCurrent?uid=$uid",
-          headers: {'Content-Type': 'application/json'});
-      if (res.statusCode == 200) {
-        placehoderCurrentUser = CurrentUser.fromJson(json.decode(res.body));
-      } else {
-        print("Could not find user");
+      //print("hasHouse(): "+ (placeholdergroupid != CurrentUser().groupId).toString());
+      if (placeholdergroupid != CurrentUser().groupId) {
+        yield CurrentUser().groupId;
+        placeholdergroupid = CurrentUser().groupId;
+        print("hasHouse(): " + CurrentUser().groupId.toString());
       }
-      
-      if (placehoderCurrentUser.groupId != groupid) {
-        print("groupid is: " + placehoderCurrentUser.groupId.toString());
-        yield placehoderCurrentUser.groupId;
-        groupid = placehoderCurrentUser.groupId;
-      }
-      await Future.delayed(Duration(seconds: 10));
+      await Future.delayed(Duration(seconds: 1));
     }
   }
 
