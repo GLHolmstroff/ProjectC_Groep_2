@@ -212,7 +212,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
   Row bottomGridView(int gid, int index) {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
       Container(
-        width: 40,
+        width: 30,
         height: 40,
         margin: EdgeInsets.all(1),
         padding: EdgeInsets.all(1),
@@ -245,7 +245,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       ),
       SizedBox(width: 25),
       Container(
-          width: 40,
+          width: 30,
           height: 40,
           margin: EdgeInsets.all(5),
           padding: EdgeInsets.all(5),
