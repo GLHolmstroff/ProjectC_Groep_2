@@ -248,9 +248,9 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
           },
         ),
       ),
-      SizedBox(width: 25),
+      SizedBox(width: 20),
       Container(
-          width: 50,
+          width: 60,
           height: 40,
           margin: EdgeInsets.all(5),
           padding: EdgeInsets.all(5),
@@ -265,7 +265,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
             style: TextStyle(
                 fontSize: 20, fontWeight: FontWeight.bold, color: Design.rood),
           )),
-      SizedBox(width: 25),
+      SizedBox(width: 20),
       Container(
         width: 40,
         height: 40,
