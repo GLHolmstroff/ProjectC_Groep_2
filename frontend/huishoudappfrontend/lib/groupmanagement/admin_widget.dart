@@ -21,18 +21,21 @@ class Admin_widget extends StatefulWidget {
 class Admin_widget_state extends State {
   final fromkey = GlobalKey<FormState>();
   String _name;
-  String userhouseName;
+  String userhouseName = "laden...";
   Future<Group> currentGroup = Group.getGroup();
 
-  var currentUser = CurrentUser();
+  CurrentUser currentUser = CurrentUser();
   void initState() {
     initActual();
   }
 
   Future<void> initActual() async {
+    CurrentUser tempCurrentUser = await CurrentUser.updateCurrentUser();
     String temphouse = (await House.getCurrentHouse()).houseName;
+    
 
     setState(() {
+      currentUser = tempCurrentUser;
       userhouseName = temphouse;
     });
   }
