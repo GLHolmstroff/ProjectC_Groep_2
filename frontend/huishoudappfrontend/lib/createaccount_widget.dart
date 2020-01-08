@@ -8,6 +8,7 @@ import 'package:huishoudappfrontend/setup/validators.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:http/http.dart';
 import 'package:toast/toast.dart';
+import 'design.dart';
 import 'login_widget.dart';
 
 class CreateAccount extends StatefulWidget {
@@ -122,7 +123,7 @@ class _CreateAccountState extends State<CreateAccount> {
       style: TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 40,
-        color: Colors.orange[700],
+        color: Design.rood,
       ),
     );
 
