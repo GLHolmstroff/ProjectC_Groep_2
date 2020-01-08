@@ -70,17 +70,14 @@ class _SelectUsersForTasksState extends State<SelectUsersForTasks> {
   @override
   Widget build(BuildContext context) {
     getPicUsernameUsers();
-    final titleWidget = Container(
-      height: 100,
-      child: Text(
+    final titleWidget = AppBar(
+      
+      title: Text(
         "Personen selecteren",
         style: TextStyle(
-            fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white),
+            color: Colors.white),
       ),
-      alignment: Alignment(-0.8, 0.8),
-      decoration: BoxDecoration(
-          color: Design.materialRood,
-          boxShadow: [BoxShadow(color: Design.orange2, blurRadius: 15.0)]),
+     
     );
 
     final userCards = Container(
@@ -106,6 +103,7 @@ class _SelectUsersForTasksState extends State<SelectUsersForTasks> {
     );
 
     final readyButton = RaisedButton(
+      color: Design.orange2,
       onPressed: () {
         Navigator.push(
             context,
@@ -115,7 +113,7 @@ class _SelectUsersForTasksState extends State<SelectUsersForTasks> {
       },
       child: Text(
         "Gereed",
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
       ),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(36.0),
@@ -123,10 +121,11 @@ class _SelectUsersForTasksState extends State<SelectUsersForTasks> {
     );
 
     return Scaffold(
+      appBar: titleWidget,
       body: Center(
         child: Column(
           children: <Widget>[
-            titleWidget,
+            
             SizedBox(height: 35),
             userCards,
             SizedBox(height: 50),

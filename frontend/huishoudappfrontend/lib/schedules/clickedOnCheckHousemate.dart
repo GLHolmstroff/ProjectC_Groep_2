@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/design.dart';
+import 'package:huishoudappfrontend/groupmanagement/title_widget.dart';
 import 'package:huishoudappfrontend/schedules/clickedOnTask_widget.dart';
 import '../profile.dart';
 import '../Objects.dart';
@@ -60,17 +61,14 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
   }
 
   Widget titleWidget() {
-    return Container(
-      height: 100,
-      child: Text(
+    return AppBar(
+     
+      title: Text(
         widget.clickedTask["taskname"],
         style: TextStyle(
-            fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white),
+           color: Colors.white),
       ),
-      alignment: Alignment(-0.8, 0.8),
-      decoration: BoxDecoration(
-          color: Design.materialRood,
-          boxShadow: [BoxShadow(color: Design.materialRood, blurRadius: 15.0)]),
+     
     );
   }
 
@@ -182,10 +180,11 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: titleWidget(),
       body: Center(
           child: Column(
         children: <Widget>[
-          titleWidget(),
+          
           Container(
             width: MediaQuery.of(context).size.width * 0.85,
             child: Column(

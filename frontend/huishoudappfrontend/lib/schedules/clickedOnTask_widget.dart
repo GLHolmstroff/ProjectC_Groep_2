@@ -162,7 +162,7 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
       alignment: Alignment(-0.8, 0.8),
       decoration: BoxDecoration(
           color: Design.materialRood,
-          boxShadow: [BoxShadow(color: Design.materialRood, blurRadius: 15.0)]),
+          boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 15.0)]),
     );
   }
 
