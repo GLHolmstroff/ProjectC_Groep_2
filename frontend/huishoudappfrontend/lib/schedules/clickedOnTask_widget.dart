@@ -312,6 +312,7 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
   Widget buildButton() {
     return Center(
       child: RaisedButton(
+        color: Design.orange2,
         child: Text(
           "Gereed",
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -321,7 +322,7 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
         },
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(36.0),
-            side: BorderSide(color: Design.materialRood)),
+            side: BorderSide(color: Design.orange2)),
       ),
     );
   }
