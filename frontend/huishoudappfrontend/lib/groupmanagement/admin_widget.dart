@@ -204,7 +204,7 @@ class Admin_widget_state extends State {
                       borderRadius: BorderRadius.circular(24)),
                   padding: EdgeInsets.all(12),
                   child: Text(
-                    "Toevoegen",
+                    "Huisgenoot toevoegen",
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
