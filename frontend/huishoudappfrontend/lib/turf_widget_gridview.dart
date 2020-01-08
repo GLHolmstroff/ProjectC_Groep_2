@@ -36,6 +36,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
   List<CachedNetworkImageProvider> pics = [];
   List<String> picIDs = [];
   List<String> names = [];
+  List<String> imgUrls = [];
 
   List<TurfInfo> receivedData = [];
 
@@ -81,6 +82,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
     List<CachedNetworkImageProvider> images = [];
+    List<String> imgurls = [];
     print("Picture length: ${picIDs.length}");
 
     for (var pic in picIDs) {
@@ -88,10 +90,14 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       images.add(new CachedNetworkImageProvider(
         "http://seprojects.nl:8080/files/users?uid=$pic&t=$timeStamp",
       ));
+      imgurls
+          .add("http://seprojects.nl:8080/files/users?uid=$pic&t=$timeStamp");
     }
+    print(images);
     setState(() {
       for (int i = 0; i < images.length; i++) {
         pics.add(images[i]);
+        imgUrls.add(imgurls[i]);
       }
     });
   }
@@ -228,14 +234,13 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
               if (sentData[index].numberofbeers == 0) {
                 print('Can' 't remove any more beers');
                 Fluttertoast.showToast(
-        msg: "Kan niet meer bier verwijderen",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIos: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0
-    );
+                    msg: "Kan niet meer bier verwijderen",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    timeInSecForIos: 1,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 16.0);
               } else {
                 sentData[index].numberofbeers -= 1;
               }
@@ -250,10 +255,10 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
           margin: EdgeInsets.all(5),
           padding: EdgeInsets.all(5),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(180),
-              
-              // border: Border.all(width: 1)
-              ),
+            borderRadius: BorderRadius.circular(180),
+
+            // border: Border.all(width: 1)
+          ),
           child: Text(
             sentData[index].numberofbeers.toString(),
             textAlign: TextAlign.center,
@@ -282,47 +287,47 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
     ]);
   }
 
-  Container pictureGridview(int gid, int index) {
-    return Container(
-      width: 150,
-      height: 150,
-      child: Stack(
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color:
-                    Design.materialRood, //                   <--- border color
-                width: 2.0,
-              ),
-              image: DecorationImage(
-                  image: AssetImage('images/person.jpg'), fit: BoxFit.cover),
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color:
-                    Design.materialRood, //                   <--- border color
-                width: 2.0,
-              ),
-              image: DecorationImage(image: pics[index], fit: BoxFit.cover),
-            ),
-          ),
-        ],
-      ),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: Design.materialRood, //                   <--- border color
-          width: 2.0,
-        ),
-        image: DecorationImage(image: pics[index], fit: BoxFit.cover),
-      ),
-    );
-  }
+  // Container pictureGridview(int gid, int index) {
+  //   return Container(
+  //     width: 150,
+  //     height: 150,
+  //     child: Stack(
+  //       children: <Widget>[
+  //         Container(
+  //           decoration: BoxDecoration(
+  //             shape: BoxShape.circle,
+  //             border: Border.all(
+  //               color:
+  //                   Design.materialRood, //                   <--- border color
+  //               width: 2.0,
+  //             ),
+  //             image: DecorationImage(
+  //                 image: AssetImage('images/person.jpg'), fit: BoxFit.cover),
+  //           ),
+  //         ),
+  //         Container(
+  //           decoration: BoxDecoration(
+  //             shape: BoxShape.circle,
+  //             border: Border.all(
+  //               color:
+  //                   Design.materialRood, //                   <--- border color
+  //               width: 2.0,
+  //             ),
+  //             image: DecorationImage(image: pics[index], fit: BoxFit.cover),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //     decoration: BoxDecoration(
+  //       shape: BoxShape.circle,
+  //       border: Border.all(
+  //         color: Design.materialRood, //                   <--- border color
+  //         width: 2.0,
+  //       ),
+  //       image: DecorationImage(image: pics[index], fit: BoxFit.cover),
+  //     ),
+  //   );
+  // }
 
   Container userNameGridView(int gid, int index) {
     return Container(
@@ -363,8 +368,11 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       addAutomaticKeepAlives: true,
       itemCount: pics.length,
       itemBuilder: (BuildContext context, int index) {
+        ImageProvider img = AssetImage('images/person.jpg');
+        if (pics[index] != null) {
+          img = pics[index];
+        }
         return new GridTile(
-
             // color: Colors.black,
             child: new Card(
                 elevation: 1,
@@ -376,14 +384,31 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                         width: 120,
                         height: 120,
                         // margin: const EdgeInsets.all(25),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          image: DecorationImage(
-                            image: pics[index],
-                            fit: BoxFit.cover,
+                        child: CachedNetworkImage(
+                          imageUrl: imgUrls[index],
+                          imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(180),
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                          borderRadius: BorderRadius.circular(180),
-                          // border: Border.all(color: Design.rood, width: 3)
+                          placeholder: (context, url) => Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(180),
+                              image: DecorationImage(
+                                  image: AssetImage('images/person.jpg')),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(180),
+                              image: DecorationImage(
+                                  image: AssetImage('images/person.jpg')),
+                            ),
+                          ),
                         ),
                       ),
                       Container(
@@ -421,47 +446,11 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                   // Naam
 
                   // Knoppen
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: <Widget>[
-                  //     Container(
-                  //         width: 40,
-                  //         height: 40,
-                  //         margin: EdgeInsets.all(1),
-                  //         padding: EdgeInsets.all(1),
-                  //         // decoration: BoxDecoration(
-                  //         //     borderRadius: BorderRadius.circular(180),
-                  //         //     //color: Colors.orange[700],
-                  //         //     border: Border.all(width: 1)),
-                  //         child: IconButton(
-                  //             padding: const EdgeInsets.symmetric(
-                  //                 vertical: 0, horizontal: 0),
-                  //             icon: Icon(
-                  //               Icons.add,
-                  //               color: Colors.green,
-                  //               size: 30,
-                  //             ),
-                  //             onPressed: () {
-                  //               setState(() {
-                  //                 sentData[index].numberofbeers += 1;
-                  //               });
-                  //             })),
-                  //     Container(
-                  //       width: 40,
-                  //       height: 40,
-                  //       margin: EdgeInsets.all(5),
-                  //       padding: EdgeInsets.all(5),
-                  //       decoration: BoxDecoration(
-                  //           borderRadius: BorderRadius.circular(180),
-                  //           border: Border.all(color: Design.rood, width: 3)),
-                  //     ),
-                      bottomGridView(gid, index),
-                  //   ],
-                  // ),
+                  bottomGridView(gid, index),
                 ])));
       },
       gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, childAspectRatio: 0.9),
+          crossAxisCount: 2, childAspectRatio: 1.1),
     );
   }
 
