@@ -25,7 +25,6 @@ class DatabaseHelper(url: String) {
 
     }
     //Table definitions
-
     object Groups : Table() {
         val id = integer("groupid").primaryKey().autoIncrement()
         val created_at = varchar("created_at", 20)
@@ -126,7 +125,7 @@ class DatabaseHelper(url: String) {
 //        var count by BeerTallies.count
 //    }
 
-
+    //Setup database tables
     fun initDataBase(): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
@@ -147,7 +146,7 @@ class DatabaseHelper(url: String) {
 //        }
 //        return this@DatabaseHelper
 //    }
-
+    //Register usertoken from firebase in user table
     fun registerFireBaseUser(t: String, n: String): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
@@ -165,7 +164,7 @@ class DatabaseHelper(url: String) {
         }
         return this@DatabaseHelper
     }
-
+    //Return User info from database
     fun getUser(uid: String): HashMap<String, Any?> {
         var out = HashMap<String, Any?>()
         transaction(db) {
@@ -183,7 +182,7 @@ class DatabaseHelper(url: String) {
         }
         return out
     }
-
+    //Update displayname of user
     fun userUpdateDisplayName(uid: String, displayname1: String): DatabaseHelper {
         transaction(db) {
             Users.update({ Users.id eq uid }) {
@@ -192,7 +191,7 @@ class DatabaseHelper(url: String) {
         }
         return this@DatabaseHelper
     }
-
+    //update symlink in db for user
     fun userUpdatePicture(uid: String, picturePath: String): DatabaseHelper {
         transaction(db) {
             Users.update({ Users.id eq uid }) {
@@ -202,7 +201,7 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
-
+    //Return name of group
     fun getGroupName(gid: Int): HashMap<String, Any?> {
         var out = HashMap<String, Any?>()
         transaction(db) {
@@ -214,7 +213,7 @@ class DatabaseHelper(url: String) {
         }
         return out
     }
-
+    //Update name of group
     fun setGroupName(gid: Int, newName: String): HashMap<String, Any?> {
         var out = HashMap<String, Any?>()
         out["Succes"] = 0;
@@ -228,6 +227,7 @@ class DatabaseHelper(url: String) {
         return out;
     }
 
+    //Set group attribute in user table
     fun addUserToGroup(uid: String, gid: Int, makeUserAdmin: Boolean = false): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
@@ -269,6 +269,7 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
+    //Update grouppermissions for user
     fun setGroupPermission(gid: Int, uid: String, p: String): DatabaseHelper {
         transaction(db) {
             var gpg = 0
@@ -296,6 +297,7 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
+    //Calculate remaining saldo for user
     fun getSaldoPerUser(uid: String) : Double {
         var User = getUser(uid)
         var gid = User["groupid"] as Int
@@ -313,6 +315,7 @@ class DatabaseHelper(url: String) {
         return saldo
     }
 
+    //Get current tallies for all users in a group for a certain product
     fun getTallyforGroup(gid: Int, product: String): HashMap<String, Any> {
         val uids = getAllInGroup(gid).values
         var out = HashMap<String, Any>()
@@ -329,7 +332,7 @@ class DatabaseHelper(url: String) {
         return out;
     }
 
-
+    //Return number of admins in a group
     fun getAdminCount(gid: Int): Int{
         var out = 0
         var users = getAllInGroup(gid).values
@@ -342,7 +345,7 @@ class DatabaseHelper(url: String) {
         return  out
     }
 
-
+    //Return displaynames and symlinks for pictures for members of a group
     fun getNamesAndPicsForGroup(gid: Int): HashMap<String, HashMap<String, String>> {
         val uids = getAllInGroup(gid).values
         var out = HashMap<String, HashMap<String, String>>()
@@ -357,6 +360,7 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+    //Return displaynames, symlinks for pics and tallies for all members in a group for a certain product
     fun getTallyForGroupByNameAndPic(gid: Int, product: String): HashMap<String, HashMap<String, Any>> {
         val uids = getAllInGroup(gid).values
         print(uids);
@@ -378,6 +382,7 @@ class DatabaseHelper(url: String) {
         return out;
     }
 
+    //Return the productID for a certain product. Products belong to a group
     fun getProductIdByGidAndProductName(gid: Int, product: String): Int{
         var productId = 0
         transaction(db) {
@@ -388,6 +393,7 @@ class DatabaseHelper(url: String) {
         return productId
     }
 
+    //Return the name of a product from its id
     fun getProductNameByProductId(ProductId: Int): String {
         var productName = ""
         transaction(db) {
@@ -398,7 +404,7 @@ class DatabaseHelper(url: String) {
         return productName
     }
 
-
+    //Create a new mutation in the tally of a certain user for a certain product
     fun createBeerEntry(gid: Int, authoruid: String, targetuid: String, mutation: Int, product: String): DatabaseHelper {
         transaction(db) {
             var productId = getProductIdByGidAndProductName(gid,product)
@@ -416,7 +422,7 @@ class DatabaseHelper(url: String) {
         }
         return this@DatabaseHelper
     }
-
+    //Return a list of all mutations in the tallies for all products in a certain group
     fun getAllBeerEntriesForGroup(gid: Int): ArrayList<HashMap<String, Any>> {
         var outArr = ArrayList<HashMap<String, Any>>()
         transaction(db) {
@@ -441,6 +447,7 @@ class DatabaseHelper(url: String) {
         return outArr
     }
 
+    //Change the mutation of a certain beer event in a group
     fun updateBeerEntry(gid: Int, author: String, target: String, date: String, mut: Int, prod: String): DatabaseHelper {
         transaction(db) {
             var productId = getProductIdByGidAndProductName(gid, prod)
@@ -450,7 +457,7 @@ class DatabaseHelper(url: String) {
         }
         return this@DatabaseHelper
     }
-
+    //Calculate the current tally for a certain product for a certain user in a group
     fun getBeerTally(gid: Int, product: String, targetuid: String): Int {
         var count = 0
         transaction(db) {
@@ -468,7 +475,7 @@ class DatabaseHelper(url: String) {
         }
         return count
     }
-
+    //Get the consume data for a certain user, for display in a graph
     fun getBeerTallyPerUserPerDay(gid: Int, targetuid: String): HashMap<Int, HashMap<String, Int>> {
         var out = HashMap<Int, HashMap<String, Int>>()
         var i = 0
@@ -495,6 +502,7 @@ class DatabaseHelper(url: String) {
         return out
     } // todo make it perday (groupby maybe?) todo: give days with 0 count still data...
 
+    //Return all userID's for a group
     fun getAllInGroup(gid: Int): HashMap<String, String> {
         var out = HashMap<String, String>()
         transaction(db) {
@@ -567,6 +575,7 @@ class DatabaseHelper(url: String) {
         return task
     }
 
+    //Calculate the consume data for all users in a group for the last month
     fun getTotalConsumePerMonthPerUser(gid: Int): HashMap<String, Int> {
         val uids = getAllInGroup(gid).values
         var month = LocalDateTime.now()
@@ -646,6 +655,7 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
+    //Change the picture associated with a task
     fun updateTaskPicture(tid: Int, piclink:String): DatabaseHelper {
         transaction(db) {
             Schedules.update({Schedules.taskid eq tid}) {
@@ -690,7 +700,7 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
-
+    //Create a single use invite code a user can use to join a group
     fun createInviteCode(): Int {
 
         var random = Random();
@@ -700,6 +710,7 @@ class DatabaseHelper(url: String) {
 
     }
 
+    //Return the invite code a user can use to join a group
     fun getInviteCode(gid: Int): HashMap<String, Int> {
         var keyFound = false;
         var finalKey = 0;
@@ -728,6 +739,7 @@ class DatabaseHelper(url: String) {
         return out;
     }
 
+    //Add a user to a group that the invitecode corresponds to
     fun joinGroubByCode(ic: Int, uid: String): HashMap<String, String> {
         var groupid: Int? = null;
         var out = HashMap<String, String>()
@@ -749,6 +761,7 @@ class DatabaseHelper(url: String) {
         return out;
     }
 
+    //Return all products corresponding to a certain group
     fun getAllProducts(gid: Int): HashMap<String, HashMap<String, Any>> {
         var out = HashMap<String, HashMap<String, Any>>()
         transaction(db) {
@@ -764,6 +777,7 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+    //Add a product to a group
     fun addProduct(gid: Int, name: String, price: Double): DatabaseHelper {
         transaction(db) {
             Products.insert {
@@ -776,6 +790,7 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
+    //Update permissions for a user within a group
     fun setGroupPermission(uid: String, admin: Boolean): HashMap<String, String> {
         var out = HashMap<String, String>()
         out["result"] = "failed"
@@ -793,6 +808,7 @@ class DatabaseHelper(url: String) {
         return out;
     }
 
+    //Remove a user from a group
     fun deleteUserFromGroup(uid: String): HashMap<String, String> {
         var out = HashMap<String, String>()
         var user = getUser(uid)
@@ -817,7 +833,7 @@ class DatabaseHelper(url: String) {
         return out;
     }
 }
-
+//Create a group
 fun DatabaseHelper.createGroup(n: String, uid: String): DatabaseHelper {
     transaction(db) {
         addLogger(StdOutSqlLogger)

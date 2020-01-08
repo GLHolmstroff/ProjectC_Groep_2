@@ -26,7 +26,7 @@ constructor(@Qualifier("storageProperties") properties: StorageProperties) : Sto
     init {
         this.rootLocation = Paths.get(properties.location)
     }
-
+    //Store a file in upload-dir
     override fun store(file: MultipartFile, uid:String) {
         try {
             if (file.isEmpty) {
@@ -40,7 +40,7 @@ constructor(@Qualifier("storageProperties") properties: StorageProperties) : Sto
         }
 
     }
-
+    //Store a file corresponding to a task in upload-dir
     override fun storeTask(file: MultipartFile, taskid:Int) {
         try {
             if (file.isEmpty) {
@@ -55,6 +55,7 @@ constructor(@Qualifier("storageProperties") properties: StorageProperties) : Sto
 
     }
 
+    //Return a list of all stored filenames
     override fun loadAll(): Stream<Path> {
         try {
             return Files.walk(this.rootLocation, 1)
@@ -66,10 +67,12 @@ constructor(@Qualifier("storageProperties") properties: StorageProperties) : Sto
 
     }
 
+    //Return a file location
     override fun load(filename: String): Path {
         return rootLocation.resolve(filename)
     }
 
+    //Return a file
     override fun loadAsResource(filename: String): Resource {
         try {
             val file = load(filename)
@@ -86,10 +89,12 @@ constructor(@Qualifier("storageProperties") properties: StorageProperties) : Sto
 
     }
 
+    //Remove a file
     override fun deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile())
     }
 
+    //Initialize storage directory
     override fun init() {
         try {
             Files.createDirectory(rootLocation)
