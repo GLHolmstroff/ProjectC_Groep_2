@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:huishoudappfrontend/design.dart';
@@ -32,6 +33,7 @@ class ClickedOnTask extends StatefulWidget {
 
 class _ClickedOnTaskState extends State<ClickedOnTask> {
   bool taskDone = false;
+  String imgUrl;
   Map task;
 
   void initState() {
@@ -46,6 +48,10 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
       var jsonTask = json.decode(res.body);
       setState(() {
         task = jsonTask;
+      });
+      String img = await getImgUrl();
+      setState(() {
+        imgUrl = img;
       });
     } else {
       print(res.statusCode);
@@ -185,6 +191,10 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
   }
 
   Widget isTaskDone() {
+    String img = '';
+    if(imgUrl != null){
+      img = imgUrl;
+    }
     if (widget.clickedTask["done"] == 0) {
       return Container(
         child: Column(
@@ -214,34 +224,11 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
               child: Card(
                 elevation: 3,
                 child: InkWell(
-                  child: FutureBuilder<String>(
-                      future: getImgUrl(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          var imgUrl = snapshot.data;
-                          print(imgUrl);
-                          return Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  image: DecorationImage(
-                                    image: NetworkImage(
-                                      imgUrl,
-                                    ),
-                                    fit: BoxFit.fill,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 1.0,
-                                  )));
-                        } else if (snapshot.hasError) {
-                          return Icon(Icons.error);
-                        }
-                        return Icon(
-                          Icons.photo_camera,
-                          color: Colors.green,
-                        );
-                      }),
+                  child: CachedNetworkImage(
+                    imageUrl: img,
+                    placeholder: (context, url) => Icon(Icons.camera),
+                    errorWidget: (context, url, error) => Icon(Icons.camera),
+                  ),
                   onTap: () {
                     _imageOptionsDialogBox();
                   },
@@ -352,11 +339,11 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
               width: MediaQuery.of(context).size.width * 0.85,
               child: Column(
                 children: <Widget>[
-                  SizedBox(height: 50),
+                  SizedBox(height: 20),
                   dueDate(),
-                  SizedBox(height: 40),
+                  SizedBox(height: 20),
                   isTaskDone(),
-                  SizedBox(height: 50),
+                  SizedBox(height: 20),
                   showApprovals(),
                   SizedBox(height: 10),
                   endTaskButton(),
