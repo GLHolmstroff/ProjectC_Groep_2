@@ -32,7 +32,6 @@ class Admin_widget_state extends State {
   Future<void> initActual() async {
     CurrentUser tempCurrentUser = await CurrentUser.updateCurrentUser();
     String temphouse = (await House.getCurrentHouse()).houseName;
-    
 
     setState(() {
       currentUser = tempCurrentUser;
@@ -133,7 +132,8 @@ class Admin_widget_state extends State {
                   if (snapshot.hasError)
                     return Text('Error: ${snapshot.error}');
                   // return(Text(snapshot.data.group_permission));
-                  return listitem(snapshot.data.displayName, snapshot.data.userId, snapshot.data.group_permission);
+                  return listitem(snapshot.data.displayName,
+                      snapshot.data.userId, snapshot.data.group_permission);
                 // Text('Result: ${snapshot.data.users}');
               }
               return null; // unreachable
@@ -160,16 +160,18 @@ class Admin_widget_state extends State {
             FlatButton(
               onPressed: _showDialog,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                
-                Padding(
-                  padding: const EdgeInsets.only(right:8.0),
-                  child: Text(userhouseName, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),),
-                ),
-                Icon(Icons.edit)
-                ]
-                ),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Text(
+                        userhouseName,
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                    Icon(Icons.edit)
+                  ]),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -194,16 +196,30 @@ class Admin_widget_state extends State {
               ),
             ),
             Center(
-              child: RaisedButton(
-                color: Colors.orange[700],
-        child: Text("Toevoegen", style:TextStyle(color: Colors.white)),
-        onPressed: () {
-          Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => InviteCode_widget(),
-                ));
-        }),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 16.0),
+                child: RaisedButton(
+                  color: Colors.orange[700],
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24)),
+                  padding: EdgeInsets.all(12),
+                  child: Text(
+                    "Toevoegen",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => InviteCode_widget(),
+                      ),
+                    );
+                  },
+                ),
+              ),
             )
           ],
         )

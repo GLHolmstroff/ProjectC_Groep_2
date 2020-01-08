@@ -27,16 +27,11 @@ class _Creategroup_widget extends State {
       } else {
         print("Connection Failed");
       }
-      
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
-    
-
-    
     final explanationText1 = Text(
       "Verzin een huisnaam",
       textAlign: TextAlign.center,
@@ -46,15 +41,20 @@ class _Creategroup_widget extends State {
       ),
     );
 
-    
-
     final groupName = TextFormField(
       keyboardType: TextInputType.text,
       controller: _groupnameController,
       decoration: InputDecoration(
         hintText: 'Huisnaam',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.orange[700]),
+          borderRadius: BorderRadius.circular(32.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32.0),
+          borderSide: BorderSide(color: Colors.grey),
+        ),
       ),
     );
 
@@ -63,38 +63,49 @@ class _Creategroup_widget extends State {
       textAlign: TextAlign.center,
     );
 
-    final makeGroupButton = RaisedButton(
-      onPressed: _makeGroup,
-      child: Text('Aanmaken', style: TextStyle(fontSize: 20)),
+    final makeGroupButton = Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        onPressed: _makeGroup,
+        padding: EdgeInsets.all(12),
+        color: Colors.orange[700],
+        child: Text(
+          'Aanmaken',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
 
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Title_Widget(text:"Huis aanmaken"),
-          Expanded(
-                      child: Column(
+        body: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Title_Widget(text: "Huis aanmaken"),
+        Expanded(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              
-              
               Center(
-                child:
-                    Container(width: 250.0, height: 50.0, child: explanationText1),
+                child: Container(
+                    width: 250.0, height: 50.0, child: explanationText1),
               ),
-              Center(child: Container(width: 250.0, height: 100.0,child: groupName)),
               Center(
-              child:Container(
-                
+                  child:
+                      Container(width: 250.0, height: 100.0, child: groupName)),
+              Center(
+                  child: Container(
                 child: makeGroupButton,
               ))
             ],
-    ),
           ),
-        ],
-      ));
+        ),
+      ],
+    ));
   }
 }

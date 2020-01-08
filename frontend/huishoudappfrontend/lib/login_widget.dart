@@ -230,8 +230,8 @@ class _LoginPageState extends State<LoginPage> {
     final loginButton = Padding(
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: RaisedButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         onPressed: submit,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         padding: EdgeInsets.all(12),
         color: Colors.orange[700],
         child: Text(
