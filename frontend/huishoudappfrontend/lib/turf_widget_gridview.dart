@@ -195,7 +195,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       String target = map['targetid'];
       int mutation = map['mutation'];
       final Response res = await get(
-          "http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$target&mutation=$mutation&product=$product");
+          "http://seprojects.nl:8080/updateTally?gid=$gid&authorid=$uid&targetid=$target&mutation=$mutation&product=$product");
       if (res.statusCode == 200) {
         print("tally update sent");
       } else {

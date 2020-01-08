@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   Future<bool> _checkGroup() async {
     String uid = await Auth().currentUser();
-    final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid");
+    final Response res = await get("http://seprojects.nl:8080/authCurrent?uid=$uid");
     User user = User.fromJson(json.decode(res.body));
     print("user loaded" + user.toString());
     if (user.groupId == null) {

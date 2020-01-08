@@ -60,7 +60,7 @@ class CurrentUser extends BaseUser {
   static Future<CurrentUser> updateCurrentUser() async {
     String uid = await Auth().currentUser();
     CurrentUser placehoderCurrentUser;
-    final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
+    final Response res = await get("http://seprojects.nl:8080/authCurrent?uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       placehoderCurrentUser = CurrentUser.fromJson(json.decode(res.body));
@@ -94,6 +94,7 @@ class CurrentUser extends BaseUser {
       {String mode = 'main'}) async {
     String gid = CurrentUser().groupId.toString();
     List<ConsumeDataPerMonthPerUser> placeHolderList;
+
     Response res;
     if (mode == 'test') {
       res = Response(json.encode({'001': 1, '002': 2}), 200);
@@ -116,6 +117,7 @@ class CurrentUser extends BaseUser {
     String uid = CurrentUser().userId.toString();
     String gid = CurrentUser().groupId.toString();
     List<ConsumeData> placeHolderListConsumeData;
+
     Response res;
     if (mode == 'test') {
       res = Response(
@@ -204,6 +206,7 @@ class User extends BaseUser {
       res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
           headers: {'Content-Type': 'application/json'});
     }
+
     if (res.statusCode == 200) {
       placeholdesUser = User.fromJson(json.decode(res.body));
     } else {
@@ -443,6 +446,7 @@ class BeerTally {
       res = await get("http://10.0.2.2:8080/getTally?gid=$gid&product=$product",
           headers: {'Content-Type': 'application/json'});
     }
+
     if (res.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
       beer = BeerTally.fromJson(json.decode(res.body));
