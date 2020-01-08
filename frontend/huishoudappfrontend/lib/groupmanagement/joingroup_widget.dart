@@ -64,7 +64,14 @@ class Joingroup_WidgetState extends State {
       decoration: InputDecoration(
         hintText: 'Code',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.orange[700]),
+          borderRadius: BorderRadius.circular(32.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32.0),
+          borderSide: BorderSide(color: Colors.grey),
+        ),
       ),
     );
 
