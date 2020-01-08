@@ -482,7 +482,7 @@ class DatabaseHelper(url: String) {
         var i = 0
         var count = 0
         transaction(db) {
-            var productId = getProductIdByGidAndProductName(gid, "bier")
+            var productId = getProductIdByGidAndProductName(gid, "Bier")
             BeerTallies
                     .slice(mutation.sum(), date.substring(0, 11))
                     .select { (targetuserid eq targetuid  ) and (BeerTallies.product eq productId) }
