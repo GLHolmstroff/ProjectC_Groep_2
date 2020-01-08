@@ -72,7 +72,10 @@ class Joingroup_WidgetState extends State {
                   child: explanationText1,
                 ),
                 Center(
-                  child: inviteCode,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left:8.0, right: 8.0),
+                    child: inviteCode,
+                  ),
                 ),
                 Center(child: joinGroupButton),
               ],
