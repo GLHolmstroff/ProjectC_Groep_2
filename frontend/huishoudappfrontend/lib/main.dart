@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/Objects.dart';
@@ -86,16 +87,18 @@ class MyHomePage extends StatelessWidget {
                   future: CurrentUser.updateCurrentUser(),
                   builder: (context, innersnapshot) {
                     if (innersnapshot.hasData) {
-                      if (CurrentUser().displayName == "EmptyName") {
-                        return (NameSetup());
-                      }
-                      print(CurrentUser().userId);
-                      if (CurrentUser().groupId != null) {
-                        return (HomePage());
-                      } else {
-                        
-                        return (GroupWidget());
-                      }
+                      return StreamBuilder<int>(
+                        stream: CurrentUser().hasHouse(),
+                        builder: (context, AsyncSnapshot<int> snapshot2) {
+                          if (CurrentUser().displayName == "EmptyName") {
+                            return (NameSetup());
+                          } else if (snapshot2.data == null) {
+                            return (GroupWidget());
+                          } else {
+                            return (HomePage());
+                          }
+                        }
+                      );
                     } else if (innersnapshot.hasError) {
                       return Text("${innersnapshot.error}");
                     }

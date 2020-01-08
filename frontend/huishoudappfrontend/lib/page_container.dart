@@ -60,7 +60,7 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // initialize all the children, cant be done in the constructor because we are parsing a function
     _setChildren();
-    CurrentUser.updateCurrentUser;
+    CurrentUser.updateCurrentUser();
     return Scaffold(
       body: _children[_currentIndex],
       backgroundColor: Colors.grey[100],

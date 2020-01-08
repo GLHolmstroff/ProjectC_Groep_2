@@ -22,11 +22,12 @@ class _Creategroup_widget extends State {
           "http://10.0.2.2:8080/createGroup?name=$groupname&uid=$uid");
       if (response.statusCode == 200) {
         print("Succesfully Registered");
+        //Navigator.popAndPushNamed(context, HomePage.tag);
+        Navigator.pop(context);
       } else {
         print("Connection Failed");
       }
-      Navigator.popAndPushNamed(context, HomePage.tag);
-      Navigator.pop(context);
+      
     }
   }
 

@@ -240,7 +240,8 @@ class _Profilepage extends State<Profilepage> {
       //setState(() {
       //  visible = false;
       //});
-      Navigator.popAndPushNamed(context, LoginPage.tag);
+      //Navigator.popAndPushNamed(context, GroupWidget.tag);
+      Navigator.pop(context);
     }
   }
 

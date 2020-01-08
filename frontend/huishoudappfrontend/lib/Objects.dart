@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'dart:convert';
@@ -32,7 +33,6 @@ class BaseUser {
 class CurrentUser extends BaseUser {
   static final CurrentUser _instance = CurrentUser._internal();
   House house;
-
 
   factory CurrentUser() {
     return _instance;
@@ -75,6 +75,29 @@ class CurrentUser extends BaseUser {
       print("Could not find user");
     }
     return placehoderCurrentUser;
+  }
+
+  Stream<int> hasHouse() async* {
+    String uid = CurrentUser().userId;
+    CurrentUser placehoderCurrentUser;
+    int groupid = 1000000000000000000;
+    while (true) {
+      final Response res = await get(
+          "http://10.0.2.2:8080/authCurrent?uid=$uid",
+          headers: {'Content-Type': 'application/json'});
+      if (res.statusCode == 200) {
+        placehoderCurrentUser = CurrentUser.fromJson(json.decode(res.body));
+      } else {
+        print("Could not find user");
+      }
+      
+      if (placehoderCurrentUser.groupId != groupid) {
+        print("groupid is: " + placehoderCurrentUser.groupId.toString());
+        yield placehoderCurrentUser.groupId;
+        groupid = placehoderCurrentUser.groupId;
+      }
+      await Future.delayed(Duration(seconds: 10));
+    }
   }
 
   static List<ConsumeData> _listFromJson(Map<String, dynamic> json) {
