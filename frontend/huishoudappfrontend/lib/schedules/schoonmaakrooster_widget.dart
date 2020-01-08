@@ -31,7 +31,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
 
   // function to make an http request to the backend that returns tasks of given user
   Future<void> getUserTasks() async {
-    final Response res = await get("http://10.0.2.2:8080/getUserTasks?uid=$uid",
+    final Response res = await get("http://seprojects.nl:8080/getUserTasks?uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       return json.decode(res.body);
@@ -44,7 +44,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
   // function to make an http request to the backend that returns completed tasks of housemates
   Future<void> getHousematesChecks() async {
     final Response res = await get(
-        "http://10.0.2.2:8080/getHousematesChecks?gid=$gid&uid=$uid",
+        "http://seprojects.nl:8080/getHousematesChecks?gid=$gid&uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       return json.decode(res.body);
@@ -58,7 +58,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
     String uid = await Auth().currentUser();
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
-    return "http://10.0.2.2:8080/files/users?uid=$uid&t=$timeStamp";
+    return "http://seprojects.nl:8080/files/users?uid=$uid&t=$timeStamp";
   }
 
   // function that returns the icon that is related to the status of a task
@@ -126,9 +126,10 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
       return Expanded(
         child: Center(
           child: RaisedButton(
+            color: Design.orange2,
             child: Text(
               "Taken toewijzen",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
             ),
             onPressed: () {
               Navigator.pushNamed(context, AdminTaskAdder.tag);
@@ -147,12 +148,13 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
 
   @override
   Widget build(BuildContext context) {
-    // declaration of some variables that are loaded in the build method
-    final taskCardsListHeader = Text(
+    final taskCardsListHeader = Padding(
+      padding: EdgeInsets.only(left: 8),
+      child:Text(
       "Jouw taken",
       style: TextStyle(
-          fontWeight: FontWeight.bold, fontSize: 30, color: Colors.orange[800]),
-    );
+          fontWeight: FontWeight.bold, fontSize: 18, color: Colors.orange[800]),
+    ));
 
     final taskCardsList = Container(
       height: 210,
@@ -183,11 +185,13 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
       ),
     );
 
-    final checkHousematesListHeader = Text(
-      "goedkeuren huisgenoten",
+    final checkHousematesListHeader = Padding(
+    padding: EdgeInsets.only(left: 8),
+    child:Text(
+      "Goedkeuren huisgenoten",
       style: TextStyle(
-          fontWeight: FontWeight.bold, fontSize: 30, color: Colors.orange[800]),
-    );
+          fontWeight: FontWeight.bold, fontSize: 18, color: Colors.orange[800]),
+    ));
 
     // in this variable we load all info of tasks to check into the cards previously defined
     final checkHousematesCardsList = Container(
@@ -219,9 +223,10 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
       ),
     );
 
-    // this is the main screen layout with the widgets spread out over a column
-    return Center(
-      child: Column(
+    return Scaffold(
+      appBar: AppBar(title: Text('Rooster'),),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           SizedBox(height: 15),
           taskCardsListHeader,

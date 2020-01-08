@@ -21,18 +21,21 @@ class Admin_widget extends StatefulWidget {
 class Admin_widget_state extends State {
   final fromkey = GlobalKey<FormState>();
   String _name;
-  String userhouseName;
+  String userhouseName = "laden...";
   Future<Group> currentGroup = Group.getGroup();
 
-  var currentUser = CurrentUser();
+  CurrentUser currentUser = CurrentUser();
   void initState() {
     initActual();
   }
 
   Future<void> initActual() async {
+    CurrentUser tempCurrentUser = await CurrentUser.updateCurrentUser();
     String temphouse = (await House.getCurrentHouse()).houseName;
+    
 
     setState(() {
+      currentUser = tempCurrentUser;
       userhouseName = temphouse;
     });
   }
@@ -44,7 +47,7 @@ class Admin_widget_state extends State {
       print(_name);
       int groupid = currentUser.groupId;
       final Response res = await get(
-          "http://10.0.2.2:8080/setGroupName?gid=$groupid&newName=$_name",
+          "http://seprojects.nl:8080/setGroupName?gid=$groupid&newName=$_name",
           headers: {'Content-Type': 'application/json'});
       if (json.decode(res.body)["Succes"] == 1) {
         setState(() {
