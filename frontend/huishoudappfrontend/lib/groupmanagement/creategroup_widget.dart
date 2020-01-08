@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/groupmanagement/title_widget.dart';
+import 'package:huishoudappfrontend/home_widget.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/page_container.dart';
 import '../Objects.dart';
@@ -18,22 +19,19 @@ class _Creategroup_widget extends State {
       String uid = await Auth().currentUser();
 
       final response = await get(
-          "http://10.0.2.2:8080/createGroup?name=$groupname&uid=$uid");
+          "http://seprojects.nl:8080/createGroup?name=$groupname&uid=$uid");
       if (response.statusCode == 200) {
         print("Succesfully Registered");
+        Navigator.popAndPushNamed(context, HomePage.tag);
+        Navigator.pop(context);
       } else {
         print("Connection Failed");
       }
-      Navigator.popAndPushNamed(context, HomePage.tag);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
-    
-
-    
     final explanationText1 = Text(
       "Verzin een huisnaam",
       textAlign: TextAlign.center,
@@ -43,15 +41,20 @@ class _Creategroup_widget extends State {
       ),
     );
 
-    
-
     final groupName = TextFormField(
       keyboardType: TextInputType.text,
       controller: _groupnameController,
       decoration: InputDecoration(
         hintText: 'Huisnaam',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.orange[700]),
+          borderRadius: BorderRadius.circular(32.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32.0),
+          borderSide: BorderSide(color: Colors.grey),
+        ),
       ),
     );
 
@@ -60,38 +63,62 @@ class _Creategroup_widget extends State {
       textAlign: TextAlign.center,
     );
 
-    final makeGroupButton = RaisedButton(
-      onPressed: _makeGroup,
-      child: Text('Aanmaken', style: TextStyle(fontSize: 20)),
+    final makeGroupButton = Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        onPressed: _makeGroup,
+        padding: EdgeInsets.all(12),
+        color: Colors.orange[700],
+        child: Text(
+          'Aanmaken',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
 
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: ListView(
         children: <Widget>[
-          Title_Widget(text:"Huis aanmaken"),
-          Expanded(
-                      child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              
-              
-              Center(
-                child:
-                    Container(width: 250.0, height: 50.0, child: explanationText1),
+              Title_Widget(text: "Huis aanmaken"),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  SizedBox(height: 50,),
+                  Center(
+                    child: Container(
+                      width: 250.0,
+                      height: 50.0,
+                      child: explanationText1,
+                    ),
+                  ),
+
+                  Center(
+                    child: Container(
+                      width: 250.0,
+                      height: 100.0,
+                      child: groupName,
+                    ),
+                  ),
+                  Center(
+                    child: Container(
+                      child: makeGroupButton,
+                    ),
+                  ),
+                ],
               ),
-              Center(child: Container(width: 250.0, height: 100.0,child: groupName)),
-              Center(
-              child:Container(
-                
-                child: makeGroupButton,
-              ))
             ],
-    ),
           ),
         ],
-      ));
+      ),
+    );
   }
 }

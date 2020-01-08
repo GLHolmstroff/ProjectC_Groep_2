@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:huishoudappfrontend/groupmanagement/creategroup_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/title_widget.dart';
+import 'package:huishoudappfrontend/setup/auth.dart';
+import 'package:huishoudappfrontend/setup/provider.dart';
 
 import 'joingroup_widget.dart';
 
@@ -46,20 +48,53 @@ class _GroupWidget extends State<GroupWidget> {
       ),
     );
 
-    final uitnodigingText = Text(
-      "Uitnodigingen",
-      textAlign: TextAlign.center,
-      style: TextStyle(fontWeight: FontWeight.w300),
+    final makeGroupButton = Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        padding: EdgeInsets.all(12),
+        color: Colors.orange[700],
+        onPressed: _makeGroup,
+        child: Text('Maak een nieuw huis aan',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            )),
+      ),
     );
 
-    final makeGroupButton = RaisedButton(
-      onPressed: _makeGroup,
-      child: Text('Maak een nieuw huis aan', style: TextStyle(fontSize: 20)),
+    final joinGroupButton = Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        padding: EdgeInsets.all(12),
+        color: Colors.orange[700],
+        onPressed: _joinGroup,
+        child: Text(
+          'Neem deel aan een huis',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
 
-    final joinGroupButton = RaisedButton(
-      onPressed: _joinGroup,
-      child: Text('Neem deel aan een huis', style: TextStyle(fontSize: 20)),
+    final logout = Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        padding: EdgeInsets.all(12),
+        color: Colors.orange[700],
+        onPressed: () => {Provider.of(context).auth.signOut()},
+        child: Text(
+          "Log uit",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
 
     // TODO: implement build
@@ -68,18 +103,22 @@ class _GroupWidget extends State<GroupWidget> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Title_Widget(text: "Setup"),
+        Title_Widget(text: "Aan de slag..."),
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Center(child: explanationText1),
-              Center(child: explanationText2),
+              Center(child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: explanationText2,
+              )),
               Column(
                 children: <Widget>[
                   Center(child: makeGroupButton),
                   Center(child: joinGroupButton),
+                  Center(child: logout),
                 ],
               )
             ],

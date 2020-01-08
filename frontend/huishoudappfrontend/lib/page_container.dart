@@ -1,19 +1,16 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/home_widget.dart';
 import 'package:huishoudappfrontend/turf_widget.dart';
+import 'package:huishoudappfrontend/turf_widget_gridview.dart';
 import 'profile.dart';
-import 'package:huishoudappfrontend/schoonmaakrooster_widget.dart';
+import 'package:huishoudappfrontend/schedules/schoonmaakrooster_widget.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
-
-import 'placeholder_widget.dart';
+import 'objects.dart';
 
 class HomePage extends StatefulWidget {
   static String tag = 'home-page';
-
-  static Future<HomePage> _init() async {
-    return HomePage();
-  }
 
   @override
   State<StatefulWidget> createState() {
@@ -23,12 +20,26 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  final List<Widget> _children = [
+  List<Widget> _children;
+
+  //void initState() {
+  //  super.initState();
+  //  setState(() {
+  //    _children = [
+  //      Home_widget(),
+  //      SchoonmaakPage(),
+  //      TurfwidgetGrid(),
+  //      Profilepage()
+  //    ];
+  //  });
+  //}
+
+  /*List<Widget> _children = [
     Home_widget(),
     SchoonmaakPage(),
-    Turfwidget(),
+    TurfwidgetGrid(),
     Profilepage()
-  ];
+  ];*/
 
   void onTabTapped(int index) {
     setState(() {
@@ -40,55 +51,47 @@ class HomePageState extends State<HomePage> {
   void _setChildren() {
     // replace the placeholder widget with your widget
     // give _steNewBody as argument if you want to change the currentwidget from inside your widget
-    setState(() => [
-          Home_widget(),
-          PlaceholderWidget(Colors.deepOrange),
-          Turfwidget(),
-          Profilepage()
-        ]);
+    setState(() =>
+
+        _children = [Home_widget(), SchoonmaakPage(), TurfwidgetGrid(), Profilepage()]);
   }
 
   @override
   Widget build(BuildContext context) {
     // initialize all the children, cant be done in the constructor because we are parsing a function
     _setChildren();
+    CurrentUser.updateCurrentUser();
     return Scaffold(
-      /*appBar: AppBar(
-        title: Text('Welcome Page'),
-        actions: <Widget>[
-          FlatButton(
-            child: Text("Jouw profiel"),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => Profilepage()));
-            },
-          )
-        ],
-      ),
-      // The body of the scaffold is the currentwidget
-      body: _currentWidget,
-      ),*/
       body: _children[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
+      backgroundColor: Colors.grey[100],
+      bottomNavigationBar: CurvedNavigationBar(
         // type needs to be fixed otherwise the color of the navigationBariItems will be white, (weird bug)
-        type: BottomNavigationBarType.fixed,
         // set function for when an navigationbaritem is tapped
         onTap: onTabTapped,
-        currentIndex:
-            _currentIndex, // this will be set when a new tab is tapped
-        items: [
-          BottomNavigationBarItem(
-            icon: new Icon(LineAwesomeIcons.home),
-            title: new Text('Huis'),
+        backgroundColor: Colors.grey[100],
+        buttonBackgroundColor: Design.rood,
+
+        height: 50,
+        color: Design.rood,
+        animationCurve: Curves.easeInBack,
+        index: _currentIndex, // this will be set when a new tab is tapped
+        items: <Widget>[
+          Icon(
+            LineAwesomeIcons.home,
+            color: Colors.white,
           ),
-          BottomNavigationBarItem(
-            icon: new Icon(LineAwesomeIcons.clipboard),
-            title: new Text('Taken'),
+          Icon(
+            LineAwesomeIcons.clipboard,
+            color: Colors.white,
           ),
-          BottomNavigationBarItem(
-              icon: new Icon(LineAwesomeIcons.beer), title: new Text("Turven")),
-          BottomNavigationBarItem(
-              icon: new Icon(LineAwesomeIcons.user), title: new Text("Profiel"))
+          Icon(
+            LineAwesomeIcons.beer,
+            color: Colors.white,
+          ),
+          Icon(
+            LineAwesomeIcons.user,
+            color: Colors.white,
+          )
         ],
       ),
     );

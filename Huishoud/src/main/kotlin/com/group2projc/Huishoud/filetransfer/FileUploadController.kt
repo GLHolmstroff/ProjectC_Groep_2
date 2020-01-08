@@ -61,12 +61,34 @@ constructor(private val storageService: StorageService) {
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file)
     }
 
+    @GetMapping("/files/tasks")
+    @ResponseBody
+    fun serveFileByTask(@RequestParam("tid",defaultValue= "TokenNotSet") tid: Int): ResponseEntity<Resource> {
+
+        val filename:String = DatabaseHelper("jdbc:postgresql://localhost:5432/postgres").getTask(tid)["picturelink"].toString()
+        val file = storageService.loadAsResource(filename)
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + file.getFilename() + "\"").body(file)
+    }
+
     @PostMapping("/files/upload")
     fun handleFileUpload(@RequestParam("file") file: MultipartFile,
                          @RequestParam("uid" ,defaultValue = "TokenNotSet") uid: String,
                          redirectAttributes: RedirectAttributes): String {
 
         storageService.store(file,uid)
+        redirectAttributes.addFlashAttribute("message",
+                "You successfully uploaded " + file.originalFilename + "!")
+
+        return "redirect:/files/readall"
+    }
+
+    @PostMapping("/files/uploadtask")
+    fun handleTaskFileUpload(@RequestParam("file") file: MultipartFile,
+                         @RequestParam("taskid" ,defaultValue = "TokenNotSet") taskid: Int,
+                         redirectAttributes: RedirectAttributes): String {
+
+        storageService.storeTask(file,taskid)
         redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.originalFilename + "!")
 
