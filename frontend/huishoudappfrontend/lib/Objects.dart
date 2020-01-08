@@ -101,7 +101,7 @@ class CurrentUser extends BaseUser {
     } else if (mode == 'testfail') {
       res = Response(json.encode({'001': 1, '002': 2}), 400);
     } else {
-      res = await get("http://10.0.2.2:8080/getTallyPerUserPerMonth?gid=$gid",
+      res = await get("http://seprojects.nl:8080/getTallyPerUserPerMonth?gid=$gid",
           headers: {'Content-Type': 'application/json'});
     }
     if (res.statusCode == 200) {
@@ -135,7 +135,7 @@ class CurrentUser extends BaseUser {
           400);
     } else {
       res = await get(
-          "http://10.0.2.2:8080/getTallyPerUserPerDay?gid=$gid&uid=$uid",
+          "http://seprojects.nl:8080/getTallyPerUserPerDay?gid=$gid&uid=$uid",
           headers: {'Content-Type': 'application/json'});
     }
     if (res.statusCode == 200) {
@@ -203,7 +203,7 @@ class User extends BaseUser {
           }),
           400);
     } else {
-      res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid",
+      res = await get("http://seprojects.nl:8080/authCurrent?uid=$uid",
           headers: {'Content-Type': 'application/json'});
     }
 
@@ -223,7 +223,7 @@ class User extends BaseUser {
     } else if (mode == 'testfail') {
       res = Response(json.encode(0.1), 400);
     } else {
-      res = await get("http://10.0.2.2:8080/getSaldoPerUser?uid=$uid",
+      res = await get("http://seprojects.nl:8080/getSaldoPerUser?uid=$uid",
           headers: {'Content-Type': 'application/json'});
     }
     if (res.statusCode == 200) {
@@ -296,7 +296,7 @@ class Group {
     } else if (mode == 'testfail') {
       res = Response(json.encode({}), 400);
     } else {
-      res = await get("http://10.0.2.2:8080/getGroup?gid=$groupId",
+      res = await get("http://seprojects.nl:8080/getGroup?gid=$groupId",
           headers: {'Content-Type': 'application/json'});
     }
     if (res.statusCode == 200) {
@@ -321,7 +321,7 @@ class Group {
     } else if (mode == 'testfail') {
       res = Response(json.encode({}), 400);
     } else {
-      res = await get("http://10.0.2.2:8080/getPicsAndNames?gid=$gid",
+      res = await get("http://seprojects.nl:8080/getPicsAndNames?gid=$gid",
           headers: {'Content-Type': 'application/json'});
     }
     if (res.statusCode == 200) {
@@ -391,7 +391,7 @@ class House {
     } else if (mode == 'testfail') {
       res = Response(json.encode({}), 400);
     } else {
-      res = await get("http://10.0.2.2:8080/getGroupName?gid=$groupID",
+      res = await get("http://seprojects.nl:8080/getGroupName?gid=$groupID",
           headers: {'Content-Type': 'application/json'});
     }
     if (res.statusCode == 200) {
@@ -443,7 +443,7 @@ class BeerTally {
     } else if (mode == 'testfail') {
       res = Response(json.encode({}), 400);
     } else {
-      res = await get("http://10.0.2.2:8080/getTally?gid=$gid&product=$product",
+      res = await get("http://seprojects.nl:8080/getTally?gid=$gid&product=$product",
           headers: {'Content-Type': 'application/json'});
     }
 
@@ -542,7 +542,7 @@ class BeerEvent {
     } else if (mode == 'testfail') {
       res = Response(json.encode({}), 400);
     } else {
-      res = await get("http://10.0.2.2:8080/getTallyEntries?gid=$gid",
+      res = await get("http://seprojects.nl:8080/getTallyEntries?gid=$gid",
           headers: {'Content-Type': 'application/json'});
     }
     if (res.statusCode == 200) {
@@ -602,7 +602,7 @@ class Product {
     } else if (mode == 'testfail') {
       res = Response(json.encode({}), 400);
     } else {
-      res = await get("http://10.0.2.2:8080/getAllProducts?gid=$gid",
+      res = await get("http://seprojects.nl:8080/getAllProducts?gid=$gid",
           headers: {'Content-Type': 'application/json'});
     }
     if (res.statusCode == 200) {
