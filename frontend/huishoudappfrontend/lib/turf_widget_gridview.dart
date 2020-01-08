@@ -4,6 +4,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -16,6 +17,7 @@ import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:huishoudappfrontend/turf_widget_admin.dart';
 import 'Objects.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:typed_data';
 
 class TurfInfo {
   TurfInfo({this.numberofbeers, this.uid});
@@ -24,12 +26,14 @@ class TurfInfo {
 }
 
 class TurfwidgetGrid extends StatefulWidget {
+  static String tag = 'turfwidgetgrid';
+
   @override
   State<StatefulWidget> createState() => _TurfwidgetGrid();
 }
 
 class _TurfwidgetGrid extends State<TurfwidgetGrid> {
-  List<CachedNetworkImage> pics = [];
+  List<CachedNetworkImageProvider> pics = [];
   List<String> picIDs = [];
   List<String> names = [];
 
@@ -76,19 +80,14 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
     }
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
-    List<CachedNetworkImage> images = [];
+    List<CachedNetworkImageProvider> images = [];
     print("Picture length: ${picIDs.length}");
 
     for (var pic in picIDs) {
       print("Loading image${picIDs.indexOf(pic)}");
-      images.add(new CachedNetworkImage(
-        imageUrl: "http://seprojects.nl:8080/files/users?uid=$pic&t=$timeStamp",
-        placeholder: (BuildContext context, String s) {
-          return new Icon(Icons.person);
-        },
-        errorWidget: (BuildContext context, String s, Object o) {
-          return new Icon(Icons.error);
-        },
+      images.add(new CachedNetworkImageProvider(
+        "http://10.0.2.2:8080/files/users?uid=$pic&t=$timeStamp",
+
       ));
     }
     setState(() {
@@ -114,7 +113,6 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
         )
       ],
     );
-    print(CurrentUser().group_permission);
     if (CurrentUser().group_permission == "groupAdmin") {
       buttons.children.add(RaisedButton(
         child: Text(
@@ -124,11 +122,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         color: Colors.orange[700],
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => new TurfWidgetAdmin(),
-              ));
+          Navigator.pushNamed(context, TurfWidgetAdmin.tag);
         },
       ));
       buttons.children.add(RaisedButton(
@@ -214,6 +208,144 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
         }
       });
     }
+  }
+
+  Row bottomGridView(int gid, int index) {
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+      Container(
+        width: 40,
+        height: 40,
+        margin: EdgeInsets.all(1),
+        padding: EdgeInsets.all(1),
+        child: IconButton(
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+          icon: Icon(
+            Icons.remove,
+            color: Colors.red,
+            size: 35,
+          ),
+          onPressed: () {
+            setState(() {
+              if (sentData[index].numberofbeers == 0) {
+                print('Can' 't remove any more beers');
+              } else {
+                sentData[index].numberofbeers -= 1;
+              }
+            });
+          },
+        ),
+      ),
+      SizedBox(width: 25),
+      Container(
+          width: 40,
+          height: 40,
+          margin: EdgeInsets.all(5),
+          padding: EdgeInsets.all(5),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(180),
+              color: Design.rood,
+              border: Border.all(width: 1)),
+          child: Text(
+            sentData[index].numberofbeers.toString(),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+          )),
+      SizedBox(width: 25),
+      Container(
+        width: 40,
+        height: 40,
+        margin: EdgeInsets.all(1),
+        padding: EdgeInsets.all(1),
+        child: IconButton(
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+            icon: Icon(
+              Icons.add,
+              color: Colors.green,
+              size: 35,
+            ),
+            onPressed: () {
+              setState(() {
+                sentData[index].numberofbeers += 1;
+              });
+            }),
+      ),
+    ]);
+  }
+
+  Container pictureGridview(int gid, int index) {
+    return Container(
+      width: 150,
+      height: 150,
+      child: Stack(
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color:
+                    Design.materialRood, //                   <--- border color
+                width: 2.0,
+              ),
+              image: DecorationImage(image: AssetImage('images/person.jpg'),fit: BoxFit.cover),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color:
+                    Design.materialRood, //                   <--- border color
+                width: 2.0,
+              ),
+              image: DecorationImage(image: pics[index], fit: BoxFit.cover),
+            ),
+          ),
+        ],
+      ),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: Design.materialRood, //                   <--- border color
+          width: 2.0,
+        ),
+        image: DecorationImage(image: pics[index], fit: BoxFit.cover),
+      ),
+    );
+  }
+
+  Container userNameGridView(int gid, int index) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      child: Text(
+        names[index],
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            backgroundColor: Colors.transparent,
+            color: Colors.black,
+            shadows: [
+              Shadow(
+                  // bottomLeft
+                  offset: Offset(-1.5, -1.5),
+                  color: Colors.white),
+              Shadow(
+                  // bottomRight
+                  offset: Offset(1.5, -1.5),
+                  color: Colors.white),
+              Shadow(
+                  // topRight
+                  offset: Offset(1.5, 1.5),
+                  color: Colors.white),
+              Shadow(
+                  // topLeft
+                  offset: Offset(-1.5, 1.5),
+                  color: Colors.white),
+            ]),
+      ),
+    );
   }
 
   GridView createGridView(int gid) {
@@ -321,56 +453,20 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                           // color: Design.rood,
                           // border: Border.all(width: 1)
                         ),
-                        child: Text(
-                          sentData[index].numberofbeers.toString(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Design.rood),
-                        )),
-                    Container(
-                        width: 40,
-                        height: 40,
-                        margin: EdgeInsets.all(1),
-                        padding: EdgeInsets.all(1),
-                        // decoration: BoxDecoration(
-                        //     borderRadius: BorderRadius.circular(180),
-                        //     color: Colors.black,
-                        //     border: Border.all(width: 1)),
-                        child: IconButton(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 0),
-                          icon: Icon(
-                            Icons.remove,
-                            color: Colors.red,
-                            size: 30,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              if (sentData[index].numberofbeers == 0) {
-                                Fluttertoast.showToast(
-                                    msg: "Kan niet meer bier verwijderen",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.CENTER,
-                                    timeInSecForIos: 1,
-                                    backgroundColor: Design.rood,
-                                    textColor: Colors.white,
-                                    fontSize: 16.0);
-                                print('Can' 't remove any more beers');
-                              } else {
-                                sentData[index].numberofbeers -= 1;
-                              }
-                            });
-                          },
-                        )),
-                  ]),
-            ],
+
+                        fit: BoxFit.cover,
+                      ),
+                      borderRadius: BorderRadius.circular(180),
+                      border: Border.all(color: Design.rood, width: 3)),
+                ),
+                bottomGridView(gid, index),
+              ],
+            ),
           ),
-        ));
+        );
       },
-      gridDelegate:
-          new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2, childAspectRatio: 0.9),
     );
   }
 
@@ -428,10 +524,8 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                   Container(
                     height: MediaQuery.of(context).size.height * .60,
                     // padding: const EdgeInsets.only(top: 10),
-                    child: createGridView(snapshot.data
-                        .groupId), //functie neerzetten die de gridview aanmaakt
+                    child: createGridView(snapshot.data.groupId),
                   ),
-                  //addProducts(),
                   buildButtons(),
                 ])
               ]));

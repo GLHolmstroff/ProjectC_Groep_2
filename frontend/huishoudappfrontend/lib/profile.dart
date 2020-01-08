@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:huishoudappfrontend/login_widget.dart';
 import 'package:huishoudappfrontend/profileconstants.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
@@ -16,8 +15,6 @@ import 'services/permission_serivce.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:path_provider/path_provider.dart';
 import 'design.dart';
 import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
 
@@ -104,7 +101,7 @@ class _Profilepage extends State<Profilepage> {
     }
 
     MultipartFile mf = MultipartFile.fromBytes(
-        'file', await compressed.readAsBytes(),
+        'file', await image.readAsBytes(),
         filename: timeStamp + 'testfile.png');
 
     var uri = Uri.parse("http://seprojects.nl:8080/files/upload");
