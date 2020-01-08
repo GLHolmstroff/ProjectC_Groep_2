@@ -164,15 +164,17 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
   Widget button() {
     return Center(
       child: RaisedButton(
+        color: Design.orange2,
         child: Text(
           "Bevestigen",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         onPressed: () {
           buttonPressAction();
         },
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(36.0),
+            
             side: BorderSide(color: Design.orange2)),
       ),
     );
