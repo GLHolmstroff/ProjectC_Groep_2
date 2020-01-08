@@ -16,6 +16,7 @@ import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'design.dart';
+import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
 
 class Profilepage extends StatefulWidget {
   static String tag = 'profile_page';
@@ -48,10 +49,6 @@ class _Profilepage extends State<Profilepage> {
     });
   }
 
-
-
-
-
   Future<bool> _loggedinWithEmail() async {
     final auth = Provider.of(context).auth;
     try {
@@ -73,7 +70,7 @@ class _Profilepage extends State<Profilepage> {
     String uid = await Auth().currentUser();
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
-    return "http://10.0.2.2:8080/files/users?uid=$uid&t=$timeStamp";
+    return "http://seprojects.nl:8080/files/users?uid=$uid&t=$timeStamp";
   }
 
   Future<File> openGallery() async {
@@ -107,7 +104,7 @@ class _Profilepage extends State<Profilepage> {
         'file', await image.readAsBytes(),
         filename: timeStamp + 'testfile.png');
 
-    var uri = Uri.parse("http://10.0.2.2:8080/files/upload");
+    var uri = Uri.parse("http://seprojects.nl:8080/files/upload");
     var request = new MultipartRequest("POST", uri);
     request.fields['uid'] = uid;
     request.files.add(mf);
@@ -234,13 +231,12 @@ class _Profilepage extends State<Profilepage> {
   void _kickUser() async {
     String uid = currentUser.userId;
     final Response res =
-        await get("http://10.0.2.2:8080/deleteUserFromGroup?uid=$uid");
+        await get("http://seprojects.nl:8080/deleteUserFromGroup?uid=$uid");
     if (json.decode(res.body)["result"] == "success") {
       //setState(() {
       //  visible = false;
       //});
-      Navigator.pop(context);
-      Navigator.pop(context);
+      Navigator.popAndPushNamed(context, LoginPage.tag);
     }
   }
 
@@ -249,7 +245,7 @@ class _Profilepage extends State<Profilepage> {
         context: (context),
         builder: (BuildContext context) {
           return (AlertDialog(
-            title: Text("Huisgenoot verwijderen"),
+            title: Text("Jezelf uit jouw huis verwijderen"),
             content: Container(
               height: 100,
               child: Column(
@@ -258,7 +254,7 @@ class _Profilepage extends State<Profilepage> {
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Text("Weet u zeker dat u uw huis wilt verlaten?"),
                   ),
-                  Text("al je data zal hierdoor verloren gaan.")
+                  Text("Al uw data zal hierdoor verloren gaan.")
                 ],
               ),
             ),
@@ -289,7 +285,7 @@ class _Profilepage extends State<Profilepage> {
       print(_name);
       String uid = currentUser.userId;
       final Response res = await get(
-          "http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
+          "http://seprojects.nl:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
           headers: {'Content-Type': 'application/json'});
       CurrentUser tempCurrentUser = await CurrentUser.updateCurrentUser();
       setState(() {
@@ -398,7 +394,7 @@ class _Profilepage extends State<Profilepage> {
 
     final upperpart = new Container(
       color: Design.rood,
-      height: (MediaQuery.of(context).size.height - 50) * 0.33,
+      height: (MediaQuery.of(context).size.height - Design.navBarHeight) * 0.30,
       width: MediaQuery.of(context).size.width,
       child: Stack(
         children: <Widget>[
@@ -428,9 +424,9 @@ class _Profilepage extends State<Profilepage> {
     );
 
     final middelpart = new Material(
-        elevation: 15,
+        
         child: Container(
-          color: Design.orange1,
+          color: Design.rood,
           height: (MediaQuery.of(context).size.height - 50) * 0.08,
           width: MediaQuery.of(context).size.width,
           child: Row(
@@ -438,28 +434,53 @@ class _Profilepage extends State<Profilepage> {
             children: <Widget>[
               //userDisplayname,
               Text(
-                currentUser.displayName != null ? currentUser.displayName : "Laden...",
+
+                currentUser.displayName != null
+                    ? currentUser.displayName
+                    : "Laden...",
+
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
-                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.w300
+                  // fontStyle: FontStyle.italic,
                 ),
               ),
               // VerticalDivider(
               //   color: Design.geel,
               //   thickness: 2,
               // ),
+
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Text(userhouseName != null ? userhouseName : "Laden..."),
+                  Text(userhouseName != null ? userhouseName : "Laden...", style: TextStyle( color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w300)),
                 ],
               ),
+
               // VerticalDivider(
               //   color: Design.geel,
               //   thickness: 2,
               // ),
-              Text("Saldo"),
+
+              FutureBuilder<String>(
+                future: User.getSaldo(currentUser.userId),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Text("Saldo: "+ snapshot.data,style: TextStyle( color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w300));
+                  } else if (snapshot.hasError) {
+                    print(snapshot.error);
+                    return Text("${snapshot.error}");
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
+
             ],
           ),
         ));
@@ -483,10 +504,12 @@ class _Profilepage extends State<Profilepage> {
                         child: SfCartesianChart(
                             title: ChartTitle(
                               text: "Jouw bier data",
-                              alignment: ChartAlignment.center,
+                              borderWidth: 8,
+                              
+                              alignment: ChartAlignment.near,
                               textStyle: ChartTextStyle(
                                 color: Design.orange2,
-                                fontSize: 20,
+                                fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

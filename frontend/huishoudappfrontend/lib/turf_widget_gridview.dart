@@ -7,6 +7,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
@@ -86,6 +87,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       print("Loading image${picIDs.indexOf(pic)}");
       images.add(new CachedNetworkImageProvider(
         "http://10.0.2.2:8080/files/users?uid=$pic&t=$timeStamp",
+
       ));
     }
     setState(() {
@@ -194,7 +196,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       String target = map['targetid'];
       int mutation = map['mutation'];
       final Response res = await get(
-          "http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$target&mutation=$mutation&product=$product");
+          "http://seprojects.nl:8080/updateTally?gid=$gid&authorid=$uid&targetid=$target&mutation=$mutation&product=$product");
       if (res.statusCode == 200) {
         print("tally update sent");
       } else {
@@ -351,88 +353,107 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       addAutomaticKeepAlives: true,
       itemCount: pics.length,
       itemBuilder: (BuildContext context, int index) {
-        return new Card(
-          elevation: 10,
+        return new GridTile(
+
             // color: Colors.black,
-            child: new GridTile(
-                footer: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                          width: 40,
-                          height: 40,
-                          margin: EdgeInsets.all(1),
-                          padding: EdgeInsets.all(1),
-                          // decoration: BoxDecoration(
-                          //     borderRadius: BorderRadius.circular(180),
-                          //     //color: Colors.orange[700],
-                          //     border: Border.all(width: 1)),
-                          child: IconButton(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 0),
-                              icon: Icon(
-                                Icons.add,
-                                color: Colors.green,
-                                size: 35,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  sentData[index].numberofbeers += 1;
-                                });
-                              })),
-                      Container(
-                          width: 40,
-                          height: 40,
-                          margin: EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(180),
-                              color: Design.rood,
-                              border: Border.all(width: 1)),
-                          child: Text(
-                            sentData[index].numberofbeers.toString(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold,color: Colors.white),
-                          )),
-                      Container(
-                          width: 40,
-                          height: 40,
-                          margin: EdgeInsets.all(1),
-                          padding: EdgeInsets.all(1),
-                          // decoration: BoxDecoration(
-                          //     borderRadius: BorderRadius.circular(180),
-                          //     color: Colors.black,
-                          //     border: Border.all(width: 1)),
-                          child: IconButton(
+            child: new Card(
+          elevation: 1,
+          child: Column(
+            children: <Widget>[
+              //Profielfoto
+              Stack(
+                children: <Widget>[
+                  Container(
+                    width: 120,
+                    height: 120,
+                    // margin: const EdgeInsets.all(25),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      image: DecorationImage(
+                        image: NetworkImage(pics[index].imageUrl),
+                        fit: BoxFit.cover,
+                      ),
+                      borderRadius: BorderRadius.circular(180),
+                      // border: Border.all(color: Design.rood, width: 3)
+                    ),
+                  ),
+                  Container(
+                      height: 120,
+                      width: 120,
+                      decoration: BoxDecoration(
+                         borderRadius: BorderRadius.circular(180),
+                        gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            stops: [
+                              
+                              0.5,
+                             
+                              0.9
+                            ],
+                            colors: [
+                              
+                              Color.fromRGBO(255, 255, 255, 0),
+                              Color.fromRGBO(0, 0, 0, 0.6)
+                            ]),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 0),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top:80.0),
+                        child: Text(
+                          
+                          names[index],
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
+                            
+                           
+                            color: Colors.white,
+                          ),
+                        ),
+                      ))
+                ],
+              ),
+              // Naam
+
+              // Knoppen
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                        width: 40,
+                        height: 40,
+                        margin: EdgeInsets.all(1),
+                        padding: EdgeInsets.all(1),
+                        // decoration: BoxDecoration(
+                        //     borderRadius: BorderRadius.circular(180),
+                        //     //color: Colors.orange[700],
+                        //     border: Border.all(width: 1)),
+                        child: IconButton(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 0, horizontal: 0),
                             icon: Icon(
-                              Icons.remove,
-                              color: Colors.red,
-                              size: 35,
+                              Icons.add,
+                              color: Colors.green,
+                              size: 30,
                             ),
                             onPressed: () {
                               setState(() {
-                                if (sentData[index].numberofbeers == 0) {
-                                  print('Can' 't remove any more beers');
-                                } else {
-                                  sentData[index].numberofbeers -= 1;
-                                }
+                                sentData[index].numberofbeers += 1;
                               });
-                            },
-                          )),
-                    ]),
-                child: Container(
-                  width: 150,
-                  height: 150,
-                  margin: const EdgeInsets.all(25),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      image: DecorationImage( 
-                        image: NetworkImage(
-                          pics[index].imageUrl
+                            })),
+                    Container(
+                        width: 40,
+                        height: 40,
+                        margin: EdgeInsets.all(5),
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(180),
+                          // color: Design.rood,
+                          // border: Border.all(width: 1)
                         ),
+
                         fit: BoxFit.cover,
                       ),
                       borderRadius: BorderRadius.circular(180),
@@ -471,7 +492,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       }),
       value: _currentItemSelected,
       isExpanded: true,
-      icon: Icon(Icons.more_horiz),
+      icon: Icon(Icons.arrow_drop_down),
       iconEnabledColor: Design.rood,
       iconSize: 40,
     );
@@ -490,11 +511,9 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
           return Scaffold(
               appBar: AppBar(
                 backgroundColor: Design.rood,
-                title: Center(
-                  child: Text(
-                    snapshot.data.houseName,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                title: Text(
+                  "Turflijsten",
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               body: Column(children: <Widget>[
@@ -513,8 +532,12 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
-        return AnimatedLiquidCustomProgressIndicator(
-            MediaQuery.of(context).size);
+        return Center(
+            child: Container(
+          height: 100,
+          width: 100,
+          child: CircularProgressIndicator(),
+        ));
       },
     );
   }

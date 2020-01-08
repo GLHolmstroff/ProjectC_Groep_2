@@ -6,7 +6,6 @@ import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.groupid
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.mutation
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.product
 import com.group2projc.Huishoud.database.DatabaseHelper.BeerTallies.targetuserid
-import com.group2projc.Huishoud.database.DatabaseHelper.InviteCodes.code
 import com.group2projc.Huishoud.database.DatabaseHelper.Users.displayname
 import com.group2projc.Huishoud.database.DatabaseHelper.Users.id
 import org.jetbrains.exposed.sql.*
@@ -131,7 +130,7 @@ class DatabaseHelper(url: String) {
     fun initDataBase(): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
-            SchemaUtils.create(Groups, Users, GroupPermissions, Schedules,Products, BeerTallies, InviteCodes)
+            SchemaUtils.create(Groups, Users, GroupPermissions, Schedules, Products, BeerTallies, InviteCodes)
         }
 
         return this@DatabaseHelper
@@ -297,6 +296,23 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
+    fun getSaldoPerUser(uid: String) : Double {
+        var User = getUser(uid)
+        var gid = User["groupid"] as Int
+        var productsMap:HashMap<String, HashMap<String, Any>> = getAllProducts(gid);
+        var saldo : Double = 0.0
+        productsMap.forEach { k, v ->
+            val name: String = v["name"] as String
+            val price: Double = v["price"] as Double
+            val amount : Int = getBeerTally(gid,name,uid)
+            print(amount.toString())
+            print(price.toString())
+            saldo += price*amount
+        }
+
+        return saldo
+    }
+
     fun getTallyforGroup(gid: Int, product: String): HashMap<String, Any> {
         val uids = getAllInGroup(gid).values
         var out = HashMap<String, Any>()
@@ -312,6 +328,20 @@ class DatabaseHelper(url: String) {
 
         return out;
     }
+
+
+    fun getAdminCount(gid: Int): Int{
+        var out = 0
+        var users = getAllInGroup(gid).values
+        users.forEach {
+            var user = getUser(it)
+            if(user["group_permission"] == "groupAdmin"){
+                out++
+            }
+        }
+        return  out
+    }
+
 
     fun getNamesAndPicsForGroup(gid: Int): HashMap<String, HashMap<String, String>> {
         val uids = getAllInGroup(gid).values
@@ -444,9 +474,10 @@ class DatabaseHelper(url: String) {
         var i = 0
         var count = 0
         transaction(db) {
+            var productId = getProductIdByGidAndProductName(gid, "bier")
             BeerTallies
                     .slice(mutation.sum(), date.substring(0, 11))
-                    .select { (targetuserid eq targetuid) }
+                    .select { (targetuserid eq targetuid  ) and (BeerTallies.product eq productId) }
                     .groupBy(date.substring(0, 11))
                     .orderBy(date.substring(0, 11))
                     .forEach {
@@ -476,6 +507,7 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+    // functie die informatie returnt voor alle users in een bepaalde groep
     fun getUserInfoInGroup(gid: Int): ArrayList<HashMap<String, String>> {
         var out = ArrayList<HashMap<String, String>>()
 
@@ -493,6 +525,7 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+    // functie die alle taken van een bepaalde user returnt
     fun getUserTasks(uid: String): ArrayList<HashMap<String, Any>> {
         var out = ArrayList<HashMap<String, Any>>()
 
@@ -516,6 +549,7 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+    // functie die alle taakinformatie returnt voor een bepaalde taakid
     fun getTask(tid: Int): HashMap<String, Any> {
         var task = HashMap<String, Any>()
         transaction(db) {
@@ -562,13 +596,14 @@ class DatabaseHelper(url: String) {
         return out
     }
 
-
+    // functie die taken returnt die goed moeten worden gekeurd door bepaalde users
     fun getHousematesChecks(gid: Int, uid: String): ArrayList<HashMap<String, Any>> {
         var out = ArrayList<HashMap<String, Any>>()
 
         transaction(db) {
             addLogger(StdOutSqlLogger)
             (Schedules innerJoin Users).select { (Schedules.groupid eq gid) and (Schedules.done eq 1) }.forEach {
+                // je wilt niet je eigen taken kunnen goedkeuren, vandaar deze if statement.
                 if (it[Users.id] != uid && it[Schedules.ended] == 0) {
                     var task = HashMap<String, Any>()
                     task["taskid"] = it[Schedules.taskid]
@@ -590,15 +625,18 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+    // deze functie zorgt ervoor dat een taak naar done kan worden gezet in de database
     fun makeTaskDone(tid: Int): DatabaseHelper {
         transaction(db) {
             Schedules.update({ (Schedules.taskid eq tid) }) {
+                // de waarden van done wordt naar 1 gezet, dit staat representatief voor 'true'
                 it[done] = 1
             }
         }
         return this@DatabaseHelper
     }
 
+    // functie om een taak af te maken. Als een taak is afgemaakt is deze niet meer zichtbaar voor users
     fun endTask(tid: Int): DatabaseHelper {
         transaction(db) {
             Schedules.update({ (Schedules.taskid eq tid) }) {
@@ -617,6 +655,7 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
+    // functie die gebruikt wordt wanneer users taken goedkeuren van andere users.
     fun approveTask(tid: Int): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
@@ -631,6 +670,7 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
+    // functie die kan worden gebruikt door admins om taken aan te kunnen maken
     fun makeSchedule(gid: Int, uid: String, taskName: String, taskDescription: String, dateDue: String): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
@@ -755,19 +795,26 @@ class DatabaseHelper(url: String) {
 
     fun deleteUserFromGroup(uid: String): HashMap<String, String> {
         var out = HashMap<String, String>()
-        out["result"] = "failed"
-        transaction(db) {
-            BeerTallies.deleteWhere { BeerTallies.targetuserid eq uid }
-            Schedules.deleteWhere { Schedules.userid eq uid }
-            GroupPermissions.deleteWhere { GroupPermissions.userid eq uid }
-            Users.update({ Users.id eq uid }) {
-                it[Users.groupid] = null
+        var user = getUser(uid)
+        var groupid = user["groupid"]
+        var adminCount = getAdminCount(groupid as Int)
+
+        if(user["group_permission"] == "groupAdmin" && adminCount == 1 ) {
+           out["result"] = "Group needs at least one admin"
+        }
+        else{
+            out["result"] = "failed"
+            transaction(db) {
+                BeerTallies.deleteWhere { BeerTallies.targetuserid eq uid }
+                Schedules.deleteWhere { Schedules.userid eq uid }
+                GroupPermissions.deleteWhere { GroupPermissions.userid eq uid }
+                Users.update({ Users.id eq uid }) {
+                    it[Users.groupid] = null
+                }
+                out["result"] = "success"
             }
-            out["result"] = "success"
         }
         return out;
-
-
     }
 }
 

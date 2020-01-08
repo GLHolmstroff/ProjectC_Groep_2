@@ -16,12 +16,13 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'design.dart';
 
 class Home_widget extends StatefulWidget {
-  static User currentUser;
+  static String tag = 'home-widget';
+  //static User currentUser;
 
-  final ValueChanged<Widget> changeToWidget;
+  //final ValueChanged<Widget> changeToWidget;
 
-  Home_widget({Key key, User currentUser = null, this.changeToWidget})
-      : super(key: key);
+  //Home_widget({Key key, User currentUser = null, this.changeToWidget})
+  //    : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -30,16 +31,24 @@ class Home_widget extends StatefulWidget {
 }
 
 class Home_widget_state extends State<Home_widget> {
-  String _userinfo = Home_widget.currentUser.toString();
+  //String _userinfo = Home_widget.currentUser.toString();
   CurrentUser currentUser = CurrentUser();
-  var userhouseName;
+  String userhouseName = "Laden...";
   var appBarActions = <Widget>[];
 
   void initState() {
+    super.initState();
     initActual();
-    print("user =" + currentUser.group_permission);
+    //print("user =" + currentUser.group_permission);
+    
+    
+  }
+
+  Future<void> initActual() async {
+    CurrentUser tempCurrentUser = await CurrentUser.updateCurrentUser();
+    String temphouse = (await House.getCurrentHouse()).houseName;
     appBarActions.add(Visibility(
-      visible: currentUser.group_permission == "groupAdmin",
+      visible: tempCurrentUser.group_permission == "groupAdmin",
         child: IconButton(
         
       icon: Icon(
@@ -48,12 +57,6 @@ class Home_widget_state extends State<Home_widget> {
       ),
       onPressed: _toAdminWidget,
     )));
-    
-  }
-
-  Future<void> initActual() async {
-    CurrentUser tempCurrentUser = await CurrentUser.updateCurrentUser();
-    String temphouse = (await House.getCurrentHouse()).houseName;
 
     setState(() {
       userhouseName = temphouse;
@@ -62,11 +65,11 @@ class Home_widget_state extends State<Home_widget> {
     });
   }
 
-  void _changeUserInfo(String newinfo) {
-    setState(() {
-      _userinfo = newinfo;
-    });
-  }
+  //void _changeUserInfo(String newinfo) {
+  //  setState(() {
+  //    _userinfo = newinfo;
+  //  });
+  // }
 
 
   void _toAdminWidget() {
@@ -80,20 +83,7 @@ class Home_widget_state extends State<Home_widget> {
   @override
   Widget build(BuildContext context) {
     CurrentUser.updateCurrentUser();
-    Widget addUserToGroupButton = FlatButton(
-        child: Text("Get invite code"),
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => InviteCode_widget(),
-              ));
-        });
-
-    if (currentUser.group_permission != "groupAdmin") {
-      print(currentUser.group_permission);
-      addUserToGroupButton = new Container();
-    }
+    
 
     FutureBuilder grafiek = FutureBuilder<List<ConsumeDataPerMonthPerUser>>(
       future: CurrentUser().getGroupConsumeData(),
@@ -149,40 +139,12 @@ class Home_widget_state extends State<Home_widget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('welkom ' + currentUser.displayName),
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  
-                  // FlatButton(
-                  //   child: Text("Go to Beer"),
-                  //   onPressed: () {
-                  //     CurrentUser currentUser = CurrentUser();
+           
+            
+            
 
-                  //     //   Navigator.push(
-                  //     //       context,
-                  //     //       MaterialPageRoute(
-                  //     //         builder: (context) =>
-                  //     //             BeerPage(currentUser: currentUser),
-                  //     //       ));
-                  //   },
-                  // ),
-                  FlatButton(
-                    child: Text("Go to group"),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => GroupWidget(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-            addUserToGroupButton,
+            Text('welkom ' + currentUser.displayName),
+
             Container(
               decoration: new BoxDecoration(
                 borderRadius: BorderRadius.circular(100.0),

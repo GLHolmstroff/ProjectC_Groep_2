@@ -7,7 +7,9 @@ import 'package:huishoudappfrontend/createaccount_widget.dart';
 import 'package:huishoudappfrontend/design.dart';
 import 'package:huishoudappfrontend/groupmanagement/groupsetup_widget.dart';
 import 'package:huishoudappfrontend/groupmanagement/creategroup_widget.dart';
+import 'package:huishoudappfrontend/groupmanagement/namesetup_widget.dart';
 import 'package:huishoudappfrontend/schedules/admintaskadder_widget.dart';
+import 'package:huishoudappfrontend/home_widget.dart';
 import 'package:huishoudappfrontend/schedules/clickedOnCheckHousemate.dart';
 import 'package:huishoudappfrontend/setup/widgets.dart';
 import 'package:huishoudappfrontend/services/permission_serivce.dart';
@@ -31,6 +33,7 @@ class MyApp extends StatelessWidget {
   final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(),
     HomePage.tag: (context) => HomePage(),
+    Home_widget.tag: (context) => Home_widget(),
     CreateAccount.tag: (context) => CreateAccount(),
     Profilepage.tag: (context) => Profilepage(),
     GroupWidget.tag: (context) => GroupWidget(),
@@ -42,6 +45,7 @@ class MyApp extends StatelessWidget {
     TurfwidgetGrid.tag: (context) => TurfwidgetGrid(),
     SchoonmaakPage.tag: (context) => SchoonmaakPage(),
     AdminTaskAdder.tag: (context) => AdminTaskAdder(),
+    NameSetup.tag: (context) => NameSetup(),
   };
 
   @override
@@ -62,7 +66,7 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   Future<bool> _checkGroup() async {
     String uid = await Auth().currentUser();
-    final Response res = await get("http://10.0.2.2:8080/authCurrent?uid=$uid");
+    final Response res = await get("http://seprojects.nl:8080/authCurrent?uid=$uid");
     User user = User.fromJson(json.decode(res.body));
     print("user loaded" + user.toString());
     if (user.groupId == null) {
@@ -85,6 +89,9 @@ class MyHomePage extends StatelessWidget {
                   future: CurrentUser.updateCurrentUser(),
                   builder: (context, innersnapshot) {
                     if (innersnapshot.hasData) {
+                      if (CurrentUser().displayName == "EmptyName") {
+                        return (NameSetup());
+                      }
                       print(CurrentUser().userId);
                       if (CurrentUser().groupId != null) {
                         return (HomePage());

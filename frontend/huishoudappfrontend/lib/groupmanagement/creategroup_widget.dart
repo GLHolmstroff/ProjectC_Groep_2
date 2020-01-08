@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:huishoudappfrontend/groupmanagement/title_widget.dart';
+import 'package:huishoudappfrontend/home_widget.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/page_container.dart';
 import '../Objects.dart';
@@ -18,13 +19,14 @@ class _Creategroup_widget extends State {
       String uid = await Auth().currentUser();
 
       final response = await get(
-          "http://10.0.2.2:8080/createGroup?name=$groupname&uid=$uid");
+          "http://seprojects.nl:8080/createGroup?name=$groupname&uid=$uid");
       if (response.statusCode == 200) {
         print("Succesfully Registered");
       } else {
         print("Connection Failed");
       }
       Navigator.popAndPushNamed(context, HomePage.tag);
+      Navigator.pop(context);
     }
   }
 
