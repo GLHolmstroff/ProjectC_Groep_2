@@ -1,12 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:huishoudappfrontend/login_widget.dart';
 import 'package:huishoudappfrontend/profileconstants.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
 import 'package:huishoudappfrontend/setup/auth.dart';
 import 'package:huishoudappfrontend/page_container.dart';
 import 'package:huishoudappfrontend/setup/validators.dart';
+import 'package:path_provider/path_provider.dart';
 import 'Objects.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
@@ -394,7 +396,7 @@ class _Profilepage extends State<Profilepage> {
 
     final upperpart = new Container(
       color: Design.rood,
-      height: (MediaQuery.of(context).size.height - Design.navBarHeight) * 0.30,
+      height: (MediaQuery.of(context).size.height - 50) * 0.30,
       width: MediaQuery.of(context).size.width,
       child: Stack(
         children: <Widget>[

@@ -86,8 +86,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
     for (var pic in picIDs) {
       print("Loading image${picIDs.indexOf(pic)}");
       images.add(new CachedNetworkImageProvider(
-        "http://10.0.2.2:8080/files/users?uid=$pic&t=$timeStamp",
-
+        "http://seprojects.nl/files/users?uid=$pic&t=$timeStamp",
       ));
     }
     setState(() {
@@ -287,7 +286,8 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
                     Design.materialRood, //                   <--- border color
                 width: 2.0,
               ),
-              image: DecorationImage(image: AssetImage('images/person.jpg'),fit: BoxFit.cover),
+              image: DecorationImage(
+                  image: AssetImage('images/person.jpg'), fit: BoxFit.cover),
             ),
           ),
           Container(
@@ -357,113 +357,98 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
 
             // color: Colors.black,
             child: new Card(
-          elevation: 1,
-          child: Column(
-            children: <Widget>[
-              //Profielfoto
-              Stack(
-                children: <Widget>[
-                  Container(
-                    width: 120,
-                    height: 120,
-                    // margin: const EdgeInsets.all(25),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      image: DecorationImage(
-                        image: NetworkImage(pics[index].imageUrl),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.circular(180),
-                      // border: Border.all(color: Design.rood, width: 3)
-                    ),
-                  ),
-                  Container(
-                      height: 120,
-                      width: 120,
-                      decoration: BoxDecoration(
-                         borderRadius: BorderRadius.circular(180),
-                        gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            stops: [
-                              
-                              0.5,
-                             
-                              0.9
-                            ],
-                            colors: [
-                              
-                              Color.fromRGBO(255, 255, 255, 0),
-                              Color.fromRGBO(0, 0, 0, 0.6)
-                            ]),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 0, horizontal: 0),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top:80.0),
-                        child: Text(
-                          
-                          names[index],
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            
-                           
-                            color: Colors.white,
-                          ),
-                        ),
-                      ))
-                ],
-              ),
-              // Naam
-
-              // Knoppen
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                        width: 40,
-                        height: 40,
-                        margin: EdgeInsets.all(1),
-                        padding: EdgeInsets.all(1),
-                        // decoration: BoxDecoration(
-                        //     borderRadius: BorderRadius.circular(180),
-                        //     //color: Colors.orange[700],
-                        //     border: Border.all(width: 1)),
-                        child: IconButton(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 0),
-                            icon: Icon(
-                              Icons.add,
-                              color: Colors.green,
-                              size: 30,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                sentData[index].numberofbeers += 1;
-                              });
-                            })),
-                    Container(
-                        width: 40,
-                        height: 40,
-                        margin: EdgeInsets.all(5),
-                        padding: EdgeInsets.all(5),
+                elevation: 1,
+                child: Column(children: <Widget>[
+                  //Profielfoto
+                  Stack(
+                    children: <Widget>[
+                      Container(
+                        width: 120,
+                        height: 120,
+                        // margin: const EdgeInsets.all(25),
                         decoration: BoxDecoration(
+                          color: Colors.white,
+                          image: DecorationImage(
+                            image: pics[index],
+                            fit: BoxFit.cover,
+                          ),
                           borderRadius: BorderRadius.circular(180),
-                          // color: Design.rood,
-                          // border: Border.all(width: 1)
+                          // border: Border.all(color: Design.rood, width: 3)
                         ),
-
-                        fit: BoxFit.cover,
                       ),
-                      borderRadius: BorderRadius.circular(180),
-                      border: Border.all(color: Design.rood, width: 3)),
-                ),
-                bottomGridView(gid, index),
-              ],
-            ),
-          ),
-        );
+                      Container(
+                          height: 120,
+                          width: 120,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(180),
+                            gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                stops: [
+                                  0.5,
+                                  0.9
+                                ],
+                                colors: [
+                                  Color.fromRGBO(255, 255, 255, 0),
+                                  Color.fromRGBO(0, 0, 0, 0.6)
+                                ]),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 0),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 80.0),
+                            child: Text(
+                              names[index],
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ))
+                    ],
+                  ),
+                  // Naam
+
+                  // Knoppen
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: <Widget>[
+                  //     Container(
+                  //         width: 40,
+                  //         height: 40,
+                  //         margin: EdgeInsets.all(1),
+                  //         padding: EdgeInsets.all(1),
+                  //         // decoration: BoxDecoration(
+                  //         //     borderRadius: BorderRadius.circular(180),
+                  //         //     //color: Colors.orange[700],
+                  //         //     border: Border.all(width: 1)),
+                  //         child: IconButton(
+                  //             padding: const EdgeInsets.symmetric(
+                  //                 vertical: 0, horizontal: 0),
+                  //             icon: Icon(
+                  //               Icons.add,
+                  //               color: Colors.green,
+                  //               size: 30,
+                  //             ),
+                  //             onPressed: () {
+                  //               setState(() {
+                  //                 sentData[index].numberofbeers += 1;
+                  //               });
+                  //             })),
+                  //     Container(
+                  //       width: 40,
+                  //       height: 40,
+                  //       margin: EdgeInsets.all(5),
+                  //       padding: EdgeInsets.all(5),
+                  //       decoration: BoxDecoration(
+                  //           borderRadius: BorderRadius.circular(180),
+                  //           border: Border.all(color: Design.rood, width: 3)),
+                  //     ),
+                      bottomGridView(gid, index),
+                  //   ],
+                  // ),
+                ])));
       },
       gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2, childAspectRatio: 0.9),
