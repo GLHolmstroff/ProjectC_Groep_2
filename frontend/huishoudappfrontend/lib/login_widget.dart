@@ -9,6 +9,8 @@ import 'package:http/http.dart';
 import 'package:huishoudappfrontend/createaccount_widget.dart';
 import 'package:toast/toast.dart';
 
+import 'design.dart';
+
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
 
@@ -176,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     // Widget variables
     final logo = Image(
-      image: AssetImage('images/beerphoto2.png'),
+      image: AssetImage('images/logoapp.png'),
       fit: BoxFit.cover,
     );
 
@@ -330,10 +332,10 @@ class _LoginPageState extends State<LoginPage> {
                 child: Container(
                   alignment: Alignment.center,
                   child: logo,
-                  width: 150,
-                  height: 150,
+                  width: 250,
+                  height: 100,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(75.0),
+                    borderRadius: BorderRadius.circular(20),
                     color: Colors.white,
                     border: Border.all(
                       color: Colors.grey[200],
@@ -342,7 +344,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 40,),
+              SizedBox(height: 20,),
               Container(
                 padding: EdgeInsets.all(5.0),
                 decoration: new BoxDecoration(
@@ -379,7 +381,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.grey[100]
     );
   }
 }

@@ -46,6 +46,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: "^0.7.3"
 
 
 
@@ -68,7 +69,19 @@ flutter:
     - images/testlogoapp.png
     - images/beerphoto.png
     - images/beerphoto2.png
+    - images/logoapp.png
+    - images/appicon.png
     - assets/brc.gif
+  
+flutter_icons:
+  android: "launcher_icon"
+  
+
+
+
+
+
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
