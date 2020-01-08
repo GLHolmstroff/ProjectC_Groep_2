@@ -106,7 +106,7 @@ class _ClickedOnCheckHousemateState extends State<ClickedOnCheckHousemate> {
   Future<void> approveTask() async {
     var tid = widget.clickedTask["taskid"];
 
-    final Response res = await get("http://seprojects.nl:8080/approveTask?tid=$tid",
+    final Response res = await get("http://10.0.2.2:8080/approveTask?tid=$tid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       Fluttertoast.showToast(msg: "Je hebt deze taak goedgekeurd");

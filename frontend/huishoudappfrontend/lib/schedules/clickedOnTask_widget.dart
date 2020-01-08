@@ -41,7 +41,7 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
 
   initActual() async {
     var res = await get(
-        "http://seprojects.nl:8080/getTask?tid=${widget.clickedTask["taskid"]}");
+        "http://10.0.2.2:8080/getTask?tid=${widget.clickedTask["taskid"]}");
     if (res.statusCode == 200) {
       var jsonTask = json.decode(res.body);
       setState(() {
@@ -56,7 +56,7 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
     int tid = task["taskid"];
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
-    return "http://seprojects.nl:8080/files/tasks?tid=$tid&t=$timeStamp";
+    return "http://10.0.2.2:8080/files/tasks?tid=$tid&t=$timeStamp";
   }
 
   Future<File> openGallery() async {
@@ -89,7 +89,7 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
         'file', await compressed.readAsBytes(),
         filename: timeStamp + 'taskfile.png');
 
-    var uri = Uri.parse("http://seprojects.nl:8080/files/uploadtask");
+    var uri = Uri.parse("http://10.0.2.2:8080/files/uploadtask");
     var request = new MultipartRequest("POST", uri);
     request.fields['taskid'] = widget.clickedTask["taskid"].toString();
     request.files.add(mf);
@@ -97,7 +97,7 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
     var response = await request.send();
     if (response.statusCode == 302) {
       var res = await get(
-          "http://seprojects.nl:8080/getTask?tid=${widget.clickedTask["taskid"]}");
+          "http://10.0.2.2:8080/getTask?tid=${widget.clickedTask["taskid"]}");
       if (res.statusCode == 200) {
         var task = json.decode(res.body);
         setState(() {});
@@ -274,7 +274,7 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
   Future<void> makeTaskDone() async {
     var tid = widget.clickedTask["taskid"];
 
-    final Response res = await get("http://seprojects.nl:8080/makeTaskDone?tid=$tid",
+    final Response res = await get("http://10.0.2.2:8080/makeTaskDone?tid=$tid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       Fluttertoast.showToast(msg: "Taak zit nu in beoordelingsfase");
@@ -287,7 +287,7 @@ class _ClickedOnTaskState extends State<ClickedOnTask> {
   Future<void> endTask() async {
     var tid = widget.clickedTask["taskid"];
 
-    final Response res = await get("http://seprojects.nl:8080/endTask?tid=$tid",
+    final Response res = await get("http://10.0.2.2:8080/endTask?tid=$tid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       Fluttertoast.showToast(msg: "Taak is helemaal afgerond!");

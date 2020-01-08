@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:huishoudappfrontend/login_widget.dart';
 import 'package:huishoudappfrontend/profileconstants.dart';
 import 'package:huishoudappfrontend/setup/provider.dart';
@@ -72,7 +73,7 @@ class _Profilepage extends State<Profilepage> {
     String uid = await Auth().currentUser();
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
-    return "http://seprojects.nl:8080/files/users?uid=$uid&t=$timeStamp";
+    return "http://10.0.2.2:8080/files/users?uid=$uid&t=$timeStamp";
   }
 
   Future<File> openGallery() async {
@@ -106,7 +107,7 @@ class _Profilepage extends State<Profilepage> {
         'file', await image.readAsBytes(),
         filename: timeStamp + 'testfile.png');
 
-    var uri = Uri.parse("http://seprojects.nl:8080/files/upload");
+    var uri = Uri.parse("http://10.0.2.2:8080/files/upload");
     var request = new MultipartRequest("POST", uri);
     request.fields['uid'] = uid;
     request.files.add(mf);
@@ -233,12 +234,25 @@ class _Profilepage extends State<Profilepage> {
   void _kickUser() async {
     String uid = currentUser.userId;
     final Response res =
-        await get("http://seprojects.nl:8080/deleteUserFromGroup?uid=$uid");
+        await get("http://10.0.2.2:8080/deleteUserFromGroup?uid=$uid");
     if (json.decode(res.body)["result"] == "success") {
       //setState(() {
       //  visible = false;
       //});
       Navigator.popAndPushNamed(context, LoginPage.tag);
+    }
+    else{
+      Navigator.pop(context);
+      Fluttertoast.showToast(
+        msg: json.decode(res.body)["result"],
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+
     }
   }
 
@@ -287,7 +301,7 @@ class _Profilepage extends State<Profilepage> {
       print(_name);
       String uid = currentUser.userId;
       final Response res = await get(
-          "http://seprojects.nl:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
+          "http://10.0.2.2:8080/userUpdateDisplayName?uid=$uid&displayname=$_name",
           headers: {'Content-Type': 'application/json'});
       CurrentUser tempCurrentUser = await CurrentUser.updateCurrentUser();
       setState(() {

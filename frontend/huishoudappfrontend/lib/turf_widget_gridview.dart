@@ -86,7 +86,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
     for (var pic in picIDs) {
       print("Loading image${picIDs.indexOf(pic)}");
       images.add(new CachedNetworkImageProvider(
-        "http://seprojects.nl/files/users?uid=$pic&t=$timeStamp",
+        "http://10.0.2.2/files/users?uid=$pic&t=$timeStamp",
       ));
     }
     setState(() {
@@ -195,7 +195,7 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
       String target = map['targetid'];
       int mutation = map['mutation'];
       final Response res = await get(
-          "http://seprojects.nl:8080/updateTally?gid=$gid&authorid=$uid&targetid=$target&mutation=$mutation&product=$product");
+          "http://10.0.2.2:8080/updateTally?gid=$gid&authorid=$uid&targetid=$target&mutation=$mutation&product=$product");
       if (res.statusCode == 200) {
         print("tally update sent");
       } else {
@@ -227,6 +227,15 @@ class _TurfwidgetGrid extends State<TurfwidgetGrid> {
             setState(() {
               if (sentData[index].numberofbeers == 0) {
                 print('Can' 't remove any more beers');
+                Fluttertoast.showToast(
+        msg: "Kan niet meer bier verwijderen",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
               } else {
                 sentData[index].numberofbeers -= 1;
               }

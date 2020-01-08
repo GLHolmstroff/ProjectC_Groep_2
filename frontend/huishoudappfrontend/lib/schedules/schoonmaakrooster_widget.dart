@@ -31,7 +31,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
 
   // function to make an http request to the backend that returns tasks of given user
   Future<void> getUserTasks() async {
-    final Response res = await get("http://seprojects.nl:8080/getUserTasks?uid=$uid",
+    final Response res = await get("http://10.0.2.2:8080/getUserTasks?uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       return json.decode(res.body);
@@ -44,7 +44,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
   // function to make an http request to the backend that returns completed tasks of housemates
   Future<void> getHousematesChecks() async {
     final Response res = await get(
-        "http://seprojects.nl:8080/getHousematesChecks?gid=$gid&uid=$uid",
+        "http://10.0.2.2:8080/getHousematesChecks?gid=$gid&uid=$uid",
         headers: {'Content-Type': 'application/json'});
     if (res.statusCode == 200) {
       return json.decode(res.body);
@@ -58,7 +58,7 @@ class _SchoonmaakPageState extends State<SchoonmaakPage> {
     String uid = await Auth().currentUser();
     String timeStamp =
         DateTime.now().toString().replaceAllMapped(" ", (Match m) => "");
-    return "http://seprojects.nl:8080/files/users?uid=$uid&t=$timeStamp";
+    return "http://10.0.2.2:8080/files/users?uid=$uid&t=$timeStamp";
   }
 
   // function that returns the icon that is related to the status of a task
