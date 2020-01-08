@@ -494,6 +494,7 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+    // functie die informatie returnt voor alle users in een bepaalde groep
     fun getUserInfoInGroup(gid: Int): ArrayList<HashMap<String, String>> {
         var out = ArrayList<HashMap<String, String>>()
 
@@ -511,6 +512,7 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+    // functie die alle taken van een bepaalde user returnt
     fun getUserTasks(uid: String): ArrayList<HashMap<String, Any>> {
         var out = ArrayList<HashMap<String, Any>>()
 
@@ -534,6 +536,7 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+    // functie die alle taakinformatie returnt voor een bepaalde taakid
     fun getTask(tid: Int): HashMap<String, Any> {
         var task = HashMap<String, Any>()
         transaction(db) {
@@ -580,13 +583,14 @@ class DatabaseHelper(url: String) {
         return out
     }
 
-
+    // functie die taken returnt die goed moeten worden gekeurd door bepaalde users
     fun getHousematesChecks(gid: Int, uid: String): ArrayList<HashMap<String, Any>> {
         var out = ArrayList<HashMap<String, Any>>()
 
         transaction(db) {
             addLogger(StdOutSqlLogger)
             (Schedules innerJoin Users).select { (Schedules.groupid eq gid) and (Schedules.done eq 1) }.forEach {
+                // je wilt niet je eigen taken kunnen goedkeuren, vandaar deze if statement.
                 if (it[Users.id] != uid && it[Schedules.ended] == 0) {
                     var task = HashMap<String, Any>()
                     task["taskid"] = it[Schedules.taskid]
@@ -608,15 +612,18 @@ class DatabaseHelper(url: String) {
         return out
     }
 
+    // deze functie zorgt ervoor dat een taak naar done kan worden gezet in de database
     fun makeTaskDone(tid: Int): DatabaseHelper {
         transaction(db) {
             Schedules.update({ (Schedules.taskid eq tid) }) {
+                // de waarden van done wordt naar 1 gezet, dit staat representatief voor 'true'
                 it[done] = 1
             }
         }
         return this@DatabaseHelper
     }
 
+    // functie om een taak af te maken. Als een taak is afgemaakt is deze niet meer zichtbaar voor users
     fun endTask(tid: Int): DatabaseHelper {
         transaction(db) {
             Schedules.update({ (Schedules.taskid eq tid) }) {
@@ -635,6 +642,7 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
+    // functie die gebruikt wordt wanneer users taken goedkeuren van andere users.
     fun approveTask(tid: Int): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
@@ -649,6 +657,7 @@ class DatabaseHelper(url: String) {
         return this@DatabaseHelper
     }
 
+    // functie die kan worden gebruikt door admins om taken aan te kunnen maken
     fun makeSchedule(gid: Int, uid: String, taskName: String, taskDescription: String, dateDue: String): DatabaseHelper {
         transaction(db) {
             addLogger(StdOutSqlLogger)
