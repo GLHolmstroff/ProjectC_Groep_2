@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../design.dart';
+
 class Title_Widget extends StatelessWidget{
   String text;
   Title_Widget({Key key, @required this.text}) : super(key: key);
@@ -10,7 +12,7 @@ class Title_Widget extends StatelessWidget{
    return Container(
         height: 200.0,
         decoration: BoxDecoration(
-          color: Colors.deepOrange,
+          color: Design.rood,
           boxShadow: [
             BoxShadow(
               color: Colors.grey,
