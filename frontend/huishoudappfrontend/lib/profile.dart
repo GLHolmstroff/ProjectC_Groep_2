@@ -33,7 +33,7 @@ class _Profilepage extends State<Profilepage> {
   FormType _formType = FormType.editprofile;
   String _name;
   CurrentUser currentUser = CurrentUser();
-  String userhouseName;
+  String userhouseName = "Laden...";
   bool loginWithEmail;
   ProfileConstants profCons;
 
@@ -44,8 +44,9 @@ class _Profilepage extends State<Profilepage> {
   }
 
   Future<void> initActual() async {
-    String temphouse = (await House.getCurrentHouse()).houseName;
+    
     CurrentUser tempCurrentUser = await CurrentUser.updateCurrentUser();
+    String temphouse = tempCurrentUser.house.houseName;
     setState(() {
       userhouseName = temphouse;
       currentUser = tempCurrentUser;
@@ -239,7 +240,8 @@ class _Profilepage extends State<Profilepage> {
       //setState(() {
       //  visible = false;
       //});
-      Navigator.popAndPushNamed(context, LoginPage.tag);
+      //Navigator.popAndPushNamed(context, GroupWidget.tag);
+      Navigator.pop(context);
     }
     else{
       Navigator.pop(context);
@@ -492,7 +494,7 @@ class _Profilepage extends State<Profilepage> {
                     print(snapshot.error);
                     return Text("${snapshot.error}");
                   } else {
-                    return CircularProgressIndicator();
+                    return Text("Saldo: Laden...");
                   }
                 },
               ),

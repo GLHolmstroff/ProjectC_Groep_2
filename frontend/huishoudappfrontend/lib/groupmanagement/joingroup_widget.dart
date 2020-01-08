@@ -21,11 +21,14 @@ class Joingroup_WidgetState extends State {
         await get("http://seprojects.nl:8080/joinGroupByCode?uid=$uid&ic=$code");
     if (response.statusCode == 200) {
       print("Succesfully Registered");
+      CurrentUser.updateCurrentUser();
+      //Navigator.popAndPushNamed(context, HomePage.tag);
+      Navigator.pop(context);
     } else {
       print("Connection Failed");
       print(response.body);
     }
-    Navigator.popAndPushNamed(context, HomePage.tag);
+    
   }
 
   @override

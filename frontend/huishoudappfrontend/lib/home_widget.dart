@@ -17,12 +17,6 @@ import 'design.dart';
 
 class Home_widget extends StatefulWidget {
   static String tag = 'home-widget';
-  //static User currentUser;
-
-  //final ValueChanged<Widget> changeToWidget;
-
-  //Home_widget({Key key, User currentUser = null, this.changeToWidget})
-  //    : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -31,7 +25,6 @@ class Home_widget extends StatefulWidget {
 }
 
 class Home_widget_state extends State<Home_widget> {
-  //String _userinfo = Home_widget.currentUser.toString();
   CurrentUser currentUser = CurrentUser();
   String userhouseName = "Laden...";
   var appBarActions = <Widget>[];
@@ -39,51 +32,42 @@ class Home_widget_state extends State<Home_widget> {
   void initState() {
     super.initState();
     initActual();
-    //print("user =" + currentUser.group_permission);
-    
-    
   }
 
   Future<void> initActual() async {
     CurrentUser tempCurrentUser = await CurrentUser.updateCurrentUser();
-    String temphouse = (await House.getCurrentHouse()).houseName;
-    appBarActions.add(Visibility(
-      visible: tempCurrentUser.group_permission == "groupAdmin",
+    String temphouse = tempCurrentUser.house.houseName;
+    appBarActions.add(
+      Visibility(
+        visible: tempCurrentUser.group_permission == "groupAdmin",
         child: IconButton(
-        
-      icon: Icon(
-        Icons.edit,
-        color: Colors.white,
+          icon: Icon(
+            Icons.edit,
+            color: Colors.white,
+          ),
+          onPressed: _toAdminWidget,
+        ),
       ),
-      onPressed: _toAdminWidget,
-    )));
+    );
 
     setState(() {
       userhouseName = temphouse;
       currentUser = tempCurrentUser;
-
     });
   }
 
-  //void _changeUserInfo(String newinfo) {
-  //  setState(() {
-  //    _userinfo = newinfo;
-  //  });
-  // }
-
-
   void _toAdminWidget() {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Admin_widget(),
-        ));
+      context,
+      MaterialPageRoute(
+        builder: (context) => Admin_widget(),
+      ),
+    );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     CurrentUser.updateCurrentUser();
-    
 
     FutureBuilder grafiek = FutureBuilder<List<ConsumeDataPerMonthPerUser>>(
       future: CurrentUser().getGroupConsumeData(),
@@ -103,21 +87,22 @@ class Home_widget_state extends State<Home_widget> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                  primaryXAxis: CategoryAxis(),
-                  series: <ChartSeries>[
-                    ColumnSeries<ConsumeDataPerMonthPerUser, String>(
-                      dataSource: snapshot.data,
-                      color: Design.orange2,
-                      borderColor: Design.rood,
-                      width: 0.4,
-                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                      xValueMapper: (ConsumeDataPerMonthPerUser data, _) =>
-                          data.name,
-                      yValueMapper: (ConsumeDataPerMonthPerUser data, _) =>
-                          data.amount,
-                      dataLabelSettings: DataLabelSettings(isVisible: true),
-                    )
-                  ]),
+                primaryXAxis: CategoryAxis(),
+                series: <ChartSeries>[
+                  ColumnSeries<ConsumeDataPerMonthPerUser, String>(
+                    dataSource: snapshot.data,
+                    color: Design.orange2,
+                    borderColor: Design.rood,
+                    width: 0.4,
+                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                    xValueMapper: (ConsumeDataPerMonthPerUser data, _) =>
+                        data.name,
+                    yValueMapper: (ConsumeDataPerMonthPerUser data, _) =>
+                        data.amount,
+                    dataLabelSettings: DataLabelSettings(isVisible: true),
+                  )
+                ],
+              ),
             ),
           );
         } else if (snapshot.hasError) {
@@ -131,7 +116,7 @@ class Home_widget_state extends State<Home_widget> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(userhouseName != null ? userhouseName  : "Laden..."),
+        title: Text(userhouseName != null ? userhouseName : "Laden..."),
         actions: appBarActions,
         backgroundColor: Design.rood,
       ),
@@ -139,12 +124,7 @@ class Home_widget_state extends State<Home_widget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-           
-            
-            
-
             Text('welkom ' + currentUser.displayName),
-
             Container(
               decoration: new BoxDecoration(
                 borderRadius: BorderRadius.circular(100.0),
